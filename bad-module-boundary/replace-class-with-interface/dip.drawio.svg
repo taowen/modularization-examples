@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="421px" height="211px" viewBox="-0.5 -0.5 421 211" content="&lt;mxfile host=&quot;72d9c0a9-5ca0-443d-8b99-756ab9b2d5b5&quot; modified=&quot;2020-08-07T14:42:21.968Z&quot; agent=&quot;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code-Insiders/1.48.0-insider Chrome/78.0.3904.130 Electron/7.3.2 Safari/537.36&quot; etag=&quot;UCjzHLStngSwTnWZG40g&quot; version=&quot;13.1.3&quot;&gt;&lt;diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;&gt;1VZNj5swEP01c10BXj58hMC2h/aUQ7tHb/CCK4ORYwL019eAHaAk0kqrdrWXaObNjO1580YE0KHqv0jSlN9FTjl4Tt4DSsHzsOvo3xEYZiAMDVBIls+QuwBH9psa0Ka1LKfnTaISgivWbMGTqGt6UhuMSCm6bdqr4NtbG1LQHXA8Eb5Hf7BclTMaeeGCf6WsKO3NboDnSEVssunkXJJcdCsIZYAOUgg1W1V/oHzkzvIy1z3diV4fJmmt3lQQmXeowTZHc92rcYVUpShETXi2oIkUbZ3T8QRHe0vONyEaDboa/EWVGszgSKuEhkpVcROlPVM/x/IH33jPq0jam5MnZ7BOreQwF3m+9Z/XwaVu8mzh3ODY1V2ODHQWrTyZLM/IisiC2iz/OiAtbCoqqq/ROZJyothlezwxEiuuecsUtGEGcXso5u4L4a05FLIIkkeIU8hCiDDEeEJSiAPwAq4fmLxIbRWjBVkAcQSxC5kPOAUc7ma8THAkvSuZoseGTL13emO307rL14VKRfsVtOfGRJGR+7Dd425ZHtduRLlanMB5P5ku/oQKD/+DwtEHKhzdUHgA+BGSADIMGE2GD9ETJM7nUPhHStzf0Xkg55JR+dBIocRL+3qbQ00v1sxr2hNDeIIhQSvm38/qjsIbRN9l1Y3+YjX4d7Rqd/nuTrHVnxeU/QE=&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs/>
+    <g>
+        <path d="M 60 60 L 60 105 L 180 105 L 180 143.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 180 148.88 L 176.5 141.88 L 180 143.63 L 183.5 141.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="0" y="0" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 30px; margin-left: 1px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                购物车
+                                <br/>
+                                模块
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="60" y="34" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    购物车&#xa;模块
+                </text>
+            </switch>
+        </g>
+        <path d="M 360 60 L 360 105 L 240 105 L 240 143.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 240 148.88 L 236.5 141.88 L 240 143.63 L 243.5 141.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="300" y="0" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 30px; margin-left: 301px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                收银台
+                                <br/>
+                                模块
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="360" y="34" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    收银台&#xa;模块
+                </text>
+            </switch>
+        </g>
+        <rect x="150" y="150" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 180px; margin-left: 151px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                Cashier.protobuf
+                                <br/>
+                                插件平台
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="210" y="184" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    Cashier.protobuf...
+                </text>
+            </switch>
+        </g>
+    </g>
+    <switch>
+        <g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/>
+        <a transform="translate(0,-5)" xlink:href="https://desk.draw.io/support/solutions/articles/16000042487" target="_blank">
+            <text text-anchor="middle" font-size="10px" x="50%" y="100%">
+                Viewer does not support full SVG 1.1
+            </text>
+        </a>
+    </switch>
+</svg>
