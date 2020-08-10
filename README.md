@@ -1,7 +1,7 @@
 # 如何复用一套代码支持多样性的业务？
 
 有太多的文章教你怎么组织代码了。但是这些文章大都是系统A，模块B的抽象写意派。虽然看着很有道理的样子，但就是看不懂。
-本文的特点是有十多个带有具体业务场景的例子。从如何接新需求的角度来分析，模块应该怎么拆分。
+本文的特点是有十多个带有具体业务场景的例子。从如何接新需求的角度来分析模块应该怎么拆分。
 
 全文分为四个章节：
 
@@ -16,7 +16,7 @@
 
 ## 公共模块应该稳定
 
-[【阅读该例子】](./common-module-should-be-stable)
+[【阅读该例子】](./criteria-of-modularization/common-module-should-be-stable)
 
 在 [Agile Software Development](https://www.amazon.com/Software-Development-Principles-Patterns-Practices/dp/1292025948) 书中，Robert Martin 讲过了很重要的两个原则
 
@@ -25,7 +25,7 @@
 
 ## 避免超级繁忙的顶层模块
 
-[【阅读该例子】](./avoid-crazy-busy-top-module)
+[【阅读该例子】](./criteria-of-modularization/avoid-crazy-busy-top-module)
 
 模块与模块之间的依赖关系，就是抽象与稳定的关系。但实践中，像“业务编排API”和“BFF”，你很难判断谁比谁更稳定，更抽象。当我们一个业务请求，需要经过一串模块的时候，往往是有问题的。因为当要做修改的时候，你会觉得在哪个环节拦一刀都有道理。David Parnas 在 [The Secret History of Information Hiding](https://www.researchgate.net/profile/David_Parnas/publication/200085877_On_the_Criteria_To_Be_Used_in_Decomposing_Systems_into_Modules/links/55956a7408ae99aa62c72622/On-the-Criteria-To-Be-Used-in-Decomposing-Systems-into-Modules.pdf?origin=publication_detail) 一文中也写道，他认为 Levels of Abstraction 是很难判断的。
 
@@ -38,7 +38,7 @@
 
 ## 通过新增模块来扩展功能
 
-[【阅读该例子】](./extending-by-adding-new-module)
+[【阅读该例子】](./criteria-of-modularization/extending-by-adding-new-module)
 
 从这个例子里我们可以看到如下的规律
 
@@ -49,7 +49,7 @@
 
 ## 要更关注“易变性”而不是“功能切分”
 
-[【阅读该例子】](./more-focus-on-violatility-than-functionality)
+[【阅读该例子】](./criteria-of-modularization/more-focus-on-violatility-than-functionality)
 
 这个例子说明了
 
@@ -71,3 +71,19 @@
 模块划分的静态结构无所谓好坏，只关注新需求如何修改或者新增的问题。
 不用去争辩是应该大前台，还是大中台。代码量不是问题，圈复杂度也不是问题。
 唯一度量的标准就是去看每个新需求都是怎么改出来的。
+
+# 这些经典的解决方案用了也就那样
+
+上一章提出的好坏标准有任何一条是新鲜的么? 一条都没有。
+以前的文章可能例子举得少了一点，但是总结的原则都是差不多的。
+那接下来的追问就是，如果原则一直都在那里，那为什么我们过去看过的代码都没遵守这些原则呢?
+我有三个猜测
+
+* 最容易想到的解决方案未必是最佳的方案
+* 真正松耦合的接口定义形式并没有被大众所熟知
+* 按照这些松耦合的接口去分解模块并不容易落地
+
+我先来分析第一个猜想，列举几个最常见的解决方案。
+
+## 用 interface 代替 class
+
