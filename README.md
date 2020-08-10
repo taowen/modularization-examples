@@ -1,2 +1,22 @@
-# modularization-examples
-various concrete examples on modularization
+# 如何复用一套代码支持多样性的业务？
+
+有太多的文章教你怎么写代码了。但是这些文章大都是系统A，模块B的抽象写意派。本文的目的是通过十余个具体业务的例子来说明，如何组织代码才能实现复用，并且支持多样性的业务。
+全文分为四个章节：
+
+* 模块切分的好坏标准是什么？
+* 这些经典的解决方案用了也就那样
+* 松耦合的接口应该定义成什么样子？
+* 为什么实际的业务代码都没有写成你说的那个样子？
+
+# 模块切分的好坏标准是什么？
+
+复用，以及支持多样性，都是同一个问题的不同表述。其实质问题是如何对系统进行模块分解。需要分成几个模块，模块之间的依赖关系是怎样的？下面通过四个具体的例子来说明。
+
+## 公共模块应该稳定
+
+[【阅读该例子】](./common-module-should-be-stable)
+
+在 [Agile Software Development](https://www.amazon.com/Software-Development-Principles-Patterns-Practices/dp/1292025948) 书中，Robert Martin 讲过了很重要的两个原则
+
+* 越是被很多模块依赖的模块，越应该减少改动。道理很简单，底层模块一改，上层的模块必然受到影响。依赖关系的方向，就是“不稳定”依赖“稳定”的方向。
+* Common Reuse Principle。要复用的模块不要把过多的东西捆绑，要复用就整体复用。
