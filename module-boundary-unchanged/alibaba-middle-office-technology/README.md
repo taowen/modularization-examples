@@ -26,7 +26,7 @@
 
 # 祛魅
 
-Talk is cheap, show me the code。阿里中台技术结构如下
+Talk is cheap, show me the code。阿里中台技术解构如下
 
 * 出发点是业务的能力（Capability）的复用，而不是代码的复用。代码之上的运营流程，人员，组织这些都是 Capability 的一部分。
 * 落地方案由后台开发人员主导，以 Java 为主要实现语言。
