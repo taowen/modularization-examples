@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="331px" height="191px" viewBox="-0.5 -0.5 331 191" content="&lt;mxfile host=&quot;6fdaec12-f201-42f8-bdad-8a7fe7dd6843&quot; modified=&quot;2020-08-09T00:27:48.003Z&quot; agent=&quot;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code-Insiders/1.48.0-insider Chrome/78.0.3904.130 Electron/7.3.2 Safari/537.36&quot; etag=&quot;MfkuWRoLXVnFh4CpajE-&quot; version=&quot;13.1.3&quot;&gt;&lt;diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;&gt;1ZVLj5swEMc/ja8Vj/DIkSTs7qE95dD2aIUpuDIMckyAfvraYVhgSaqqVaMuQsLzn/FjfjZj5u/L7lnxuviEGUjmOVnH/APzPNc85mOVflCiyBmEXImMgibhKH4AiWNYIzI4LwI1otSiXoonrCo46YXGlcJ2GfYN5XLWmuewEo4nLtfqZ5HpYlBjL5r0FxB5Mc7shtvBU/IxmDI5FzzDdib5KfP3ClEPrbLbg7TwRi5Dv6c73teFKaj073TY0DJ0P+YGmUmVTFS6wBwrLtNJ3SlsqgzsAI6xppiPiLURXSN+B6172jfeaDRSoUtJXuiE/mK7fwjI+jrzHDoa+Wr0ZKwTo1zP2KgTrd2js8BVDhTlD5LNataNYDwDlqBVbwIUSK7FZbnBnM5J/ho3oTQNonmbbPi+yL4B9CeogweRpakvXDY0KEsDtovZNrSN5MC2DktDlsQsca2yNUq02o4JtuXTFkLDsebX/FpTtpZg7zK5gNLQ/fJojV6f/nkqemMJaKcK4o5aMaseofP3yPwbyCKWmPfJAopjFof/IbI3xNzggciCG8g2bLezr0WWXEn9C2QrPjco3kXmbR7HzJjTTXX1ze57P/0J&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs/>
+    <g>
+        <path d="M 160 60 L 160 95 L 60 95 L 60 123.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 60 128.88 L 56.5 121.88 L 60 123.63 L 63.5 121.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 160 60 L 160 95 L 270 95 L 270 123.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 270 128.88 L 266.5 121.88 L 270 123.63 L 273.5 121.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="100" y="0" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 30px; margin-left: 101px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                帖子模块
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="160" y="34" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    帖子模块
+                </text>
+            </switch>
+        </g>
+        <rect x="0" y="130" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 160px; margin-left: 1px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                积分模块
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="60" y="164" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    积分模块
+                </text>
+            </switch>
+        </g>
+        <rect x="210" y="130" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 160px; margin-left: 211px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                任务模块
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="270" y="164" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    任务模块
+                </text>
+            </switch>
+        </g>
+    </g>
+    <switch>
+        <g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/>
+        <a transform="translate(0,-5)" xlink:href="https://desk.draw.io/support/solutions/articles/16000042487" target="_blank">
+            <text text-anchor="middle" font-size="10px" x="50%" y="100%">
+                Viewer does not support full SVG 1.1
+            </text>
+        </a>
+    </switch>
+</svg>
