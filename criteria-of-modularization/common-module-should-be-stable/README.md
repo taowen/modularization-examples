@@ -10,7 +10,7 @@
 如果改计费模块，那么大概是这样的
 
 ```
-beginOrder(orderDetails, isPinChe) {
+function beginOrder(orderDetails, isPinChe) {
 }
 ```
 
@@ -21,9 +21,9 @@ beginOrder(orderDetails, isPinChe) {
 那这个时候计费模块就需要维护订单和行程，两个级别的账单。
 
 ```
-beginTrip() {
+function beginTrip() {
 }
-beginOrder(orderDetails, isPinChe) {
+function beginOrder(orderDetails, isPinChe) {
 }
 ```
 
@@ -33,13 +33,13 @@ beginOrder(orderDetails, isPinChe) {
 然后，我们又接着修改计费模块
 
 ```
-beginOrder(orderDetails, isPinChe, isQiYe) {
+function beginOrder(orderDetails, isPinChe, isQiYe) {
 }
 ```
 
 我们可以看到，这个模式的显著缺点：
 
-* 计费模块和其用户之间的接口会越来越复杂，isXXX 的参数越加越多。这些复杂性是大部分用户用不到的，但是被迫接受。
+* 计费模块和其用户之间的接口会越来越复杂，isXXX 的参数越加越多。这些复杂性是大部分模块的使用方用不到的，但是被迫接受。
 * 计费模块被多个业务线复用，其稳定性会影响很大。对计费模块的频繁修改，导致所有业务线的稳定性都受到影响。
 
 如果仅仅根据上面这两个需求，与其把一个计费模块做大做强，把计费模块拆成多个是更合理的

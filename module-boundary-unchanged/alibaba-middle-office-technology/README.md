@@ -3,6 +3,7 @@
 * 如何实现32.5万笔/秒的交易峰值？阿里交易系统TMF2.0技术揭秘 https://mp.weixin.qq.com/s/Pm9L57iSWhjTE2WqJWrQeg
 * 大麦交易融入阿里电商平台之路 https://www.infoq.cn/article/W3Ztwqs9Q4aStbksD0mJ
 * 阿里发布业务平台解决方案 预计3年内将帮助业务提升10倍效率 http://www.cww.net.cn/article?id=432702
+* 2017双11交易系统TMF2.0技术揭秘，实现全链路管理 https://segmentfault.com/a/1190000012541958
 
 # SWAK
 
