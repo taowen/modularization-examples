@@ -40,7 +40,8 @@ React 16 的函数式组件就是一个函数。我们可以认为，整个业�
 
 ```tsx
 function TaxCalculator(props: {
-
+    fields: { shouldShowIsOnlyApartment: boolean, ... },
+    calcTaxRates: () => { qisuiRate: number, zengzhisuiRate: number, ... }
 }) {
     return <div> ... </div>
 }
