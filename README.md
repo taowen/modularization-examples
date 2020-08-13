@@ -230,6 +230,12 @@
 
 [【阅读该模式】](./patterns/how-to-add-field)
 
-经常看见一个表里面有 extra_fields 之类的字段，里面放一个大 JSON。每个需求要加新字段怎么弄?
+经常看见一个表里面有 extra_fields 之类的字段，里面放一个大 JSON。每个需求都要加新字段怎么弄?
+
+## 怎么支持新的订单类型?
+
+[【阅读该模式】](./patterns/how-to-add-new-order-type)
+
+为了支持新的业务，往往需要给 OrderType 这个字段上添加新的订单类型。为了不影响已有的业务，还经常要加 isNewBiz 这样的“Flag”来标识新的业务场景。除了一直加新的Flag，就没别的办法了吗?
 
 【未完待续】
