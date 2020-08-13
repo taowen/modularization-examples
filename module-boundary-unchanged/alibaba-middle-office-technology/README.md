@@ -1,5 +1,6 @@
 # TMF & 星环
 
+* 阿里玄难：面向不确定性的软件设计几点思考 https://mp.weixin.qq.com/s/Uc_wJSVQr7sSz2js2pb3OA
 * 如何实现32.5万笔/秒的交易峰值？阿里交易系统TMF2.0技术揭秘 https://mp.weixin.qq.com/s/Pm9L57iSWhjTE2WqJWrQeg
 * 大麦交易融入阿里电商平台之路 https://www.infoq.cn/article/W3Ztwqs9Q4aStbksD0mJ
 * 阿里发布业务平台解决方案 预计3年内将帮助业务提升10倍效率 http://www.cww.net.cn/article?id=432702
