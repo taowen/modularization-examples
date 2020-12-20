@@ -8,6 +8,6 @@
 
 * [模块化的三个优化目标](./modularization.md)
   * [Autonomy](./autonomy/README.md)
-  * Reuse
+  * Consistency
   * Feedback
 * [Patterns](./patterns/README.md)
