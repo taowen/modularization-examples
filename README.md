@@ -6,6 +6,6 @@
 
 * [组件化的三个目的](./modularization.md)
   * [Autonomy: 减少沟通成本，一个需求改的模块数尽可能的少，一个模块的负责团队需要的知识边界尽可能的小。](./autonomy/README.md)
-  * Consistency: 在保障 Autonomy 的情况下，减少不必要的不一致性。引入额外的不一致性，需要带来足够的业务收益去抵消成本。
+  * Consistency: 在保障 Autonomy 的情况下，通过模块复用，减少不必要的不一致性。
   * Feedback: 降低获得反馈的成本，让新人能够快速上手。最有效的“文档”是可工作的软件本身提供的交互式学习环境。拆成模块之后可能就不需要整体跑起来也可以获得反馈。
 * [Patterns](./patterns/README.md)
