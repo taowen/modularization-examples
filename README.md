@@ -5,7 +5,7 @@
 **主要的内容都在例子里**，请不要直接看结论，相信我，只看结论等于没看。
 
 * [模块化的三个优化目标](./modularization.md)
-  * [Autonomy](./autonomy/README.md)
-  * Consistency
-  * Feedback
+  * [Autonomy: 减少沟通成本，一个需求改的模块数尽可能的少，一个模块的负责团队需要的知识边界尽可能的小。](./autonomy/README.md)
+  * Consistency: 在保障 Autonomy 的情况下，减少不必要的不一致性。引入额外的不一致性，需要带来足够的业务收益去抵消成本。
+  * Feedback: 增加人员流动性，让新人能够快速上手。最有效的“文档”是可工作的软件本身提供的交互式学习环境。
 * [Patterns](./patterns/README.md)
