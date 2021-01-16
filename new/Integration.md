@@ -10,4 +10,4 @@
 
 引入一个 A 仓库，它依赖了 B 和 C。
 
-![orchestration](./integration-1.drawio.svg)
+![orchestration](./Integration-1.drawio.svg)
