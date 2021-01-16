@@ -3,42 +3,42 @@
 
 ## 如何发明底层抽象？
 
-[【阅读该模式】](./patterns/how-to-invent-abstraction)
+[【阅读该模式】](./how-to-invent-abstraction)
 
 如何才能像大师一样，上来就知道抽象的接口应该如何定义? 我为什么总是想不出来该怎么抽象?
 
 ## 分模块之后代码不好读了怎么办？
 
-[【阅读该模式】](./patterns/how-to-maintain-readability)
+[【阅读该模式】](./how-to-maintain-readability)
 
 为了代码复用，拆了很多个模块，导致代码不好阅读了怎么办? 之前代码虽然写的挫，但是 ctrl+f 在一个文件里就可以找到对应的代码，现在找段代码可费劲了。
 
 ## 代码写成活的比写成死的要麻烦多了怎么办?
 
-[【阅读该模式】](./patterns/how-to-lower-plugin-tax-rate)
+[【阅读该模式】](./how-to-lower-plugin-tax-rate)
 
 开槽，开插件，都是为了把代码写得更灵活。但是每一开一个扩展点，就需要写一堆样板代码。如何才能降低“插件税”呢?
 
 ## 怎么扩展额外的字段呢?
 
-[【阅读该模式】](./patterns/how-to-add-field)
+[【阅读该模式】](./how-to-add-field)
 
 经常看见一个表里面有 extra_fields 之类的字段，里面放一个大 JSON。每个需求都要加新字段怎么弄?
 
 ## 怎么支持新的订单类型?
 
-[【阅读该模式】](./patterns/how-to-add-new-order-type)
+[【阅读该模式】](./how-to-add-new-order-type)
 
 为了支持新的业务，往往需要给 OrderType 这个字段上添加新的订单类型。为了不影响已有的业务，还经常要加 isNewBiz 这样的“Flag”来标识新的业务场景。除了一直加新的Flag，就没别的办法了吗?
 
 ## UI组合为何难以落地?
 
-[【阅读该模式】](./patterns/ui-composition-obstacles)
+[【阅读该模式】](./ui-composition-obstacles)
 
 松耦合模块边界的最佳范例就是基于 UI 的组合。但是为什么在过去的历史经验里，这样的模块切分的方式很难落地? 有没有什么具体的技术方案可以借鉴?
 
 ## 事件驱动为何难以有收益?
 
-[【阅读该模式】](./patterns/event-driven-obstacles)
+[【阅读该模式】](./event-driven-obstacles)
 
 事件驱动是大家谈论解耦的时候寄予众望的技术。但是具体到实际的项目中，经常发现事件驱动没有发挥出什么作用。为什么会这样?
