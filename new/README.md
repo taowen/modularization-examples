@@ -3,4 +3,5 @@
 * [为什么值得阅读?](./Why.md)
 * [拆分成什么呢?](./Modules.md)
 * [Autonomy](./Autonomy.md)
-  * [集成](./Integration.md)
+  * [集成](./Integration.md)]
+  * [Autonomy 指标](./AutonomyMetrics.md)
