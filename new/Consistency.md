@@ -6,9 +6,9 @@
 
 Consistency 的愿景是尽量减轻上述的症状，让实现更一致。从而使得需求中的一致性可以很好地被落实到实现代码里，也通过复用减少了工作量。
 
-需要注意的是，我选择的词汇是 Consistency 而非 Reuse。不 Reuse 未必是问题，但是不 Consistent 是问题。
+需要注意的是，我选择的词汇是 Consistency 而非 Reuse。不 Reuse 未必是问题，但是不 Consistent 很有可能是问题。
 当我们从代码出发去追求 Reuse 的时候，容易跑偏方向，为了 Reuse 而 Reuse。
-当我们从需求出发，去审视每一个不 Consistent 的地方，这些 Inconsistence 是必要的吗，创造了独特价值吗？这样的追问更容易让所有人对目标达成一致。
+当我们从需求出发，去审视每一个不 Consistent 的地方，这些 Inconsistence 是必要的吗，创造了独特业务价值吗？这样的追问更容易让所有人对目标达成一致。
 
 那么根据过往经验，常见的 Consistency [场景](./Scenario.md)有哪些呢？
 
