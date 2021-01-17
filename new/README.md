@@ -9,3 +9,4 @@
     * [需求模式：离散型流程](./IntegrationDiscreteProcess/README.md)
     * [需求模式：混合型流程](./IntegrationMixedProcess/README.md)
   * [Autonomy 指标](./AutonomyMetrics.md)
+* [评价拆得好坏的角度2：Consistency](./Consistency.md)
