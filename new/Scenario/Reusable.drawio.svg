@@ -1,0 +1,92 @@
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="772px" height="561px" viewBox="-0.5 -0.5 772 561" content="&lt;mxfile host=&quot;ba9aeaf0-121b-4478-88ba-30176a7926d0&quot; modified=&quot;2021-01-18T02:56:50.767Z&quot; agent=&quot;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code-Insiders/1.53.0-insider Chrome/87.0.4280.141 Electron/11.2.0 Safari/537.36&quot; version=&quot;13.10.0&quot; etag=&quot;ZIrVhSHdn7y_yPiGNdTO&quot; type=&quot;embed&quot;&gt;&lt;diagram id=&quot;6oe265nXEvyN8ZDCSmYI&quot; name=&quot;Page-1&quot;&gt;5VlLc5swEP41unYA8TyCjdNDO9OZHNocNUYxtBh5ZDm2++urRcI8k7qJi4nji7WfVot299sdIRCerQ93nGzSryyhObKM5IDwHFmWKX/yD5CjQjw3UMCKZ4lWqoH77DfVoKHRXZbQbUtRMJaLbNMGl6wo6FK0MMI527fVHlnefuqGrGgPuF+SvI9+zxKRKtS3vBr/TLNVWj3ZrPxbk0pZe7JNScL2DQjHCM84Y0KN1ocZzSF4VVzUusUzs6eNcVqIcxZYWO9DHCvnaCJ91SLjImUrVpA8rtGIs12RULBgSKnW+cLYRoKmBH9SIY46cWQnmIRSsc71LD1k4gcs/+Ro6aExMz9oy6Vw1ILaJ2zuWVc1tGU7vtRalmYH4SuqtZSaDscdZWsq+FHqcJoTkT21zRPNlNVJTy8NOSfHhsKGZYXYNix/A0AqaNJbrs64prztdxLT0ccOfklfDtQOKqnhSg2VyX4m8cr6E8l32uMeEeo0Q2b2aSbo/YaUkd3Lum6nVJujXNDDywnqR74KkdEOkWVreV/XmFkVTtqoryq0Q8lqBOzFeJjubRcC7heC/cY6ODe0eHpUw659PaoN+H9TVLP/Q889N7b29LmGvTHbmv1euCajyY+NRSA+NOfqZaX0No46AxwdiaKm815ScrHQ4pFC60yv+i2/fagx8ZjVb/T8nyjVxq1+t09RZySKutOjqGl2KDomQ82e+xNl6OuY5l2Pad70mNZrhmMy7cZP3f71mOZPj2m2c0Wm3fidWnA9pgXTY5prXZFpZ/R4WiQhXHlLqWAFbfufkG16itW5bOiHouGrM+Bqhf3bDWv/CrVzPWh0Iqg4qhfVQezZ8YK/GFLM7hl6xS2rOdAaYwf5CxQuYBDayJ+j2EOBjUK/HITIl+/sxl0GO0axjaIIBRiUoxAG3fxK5op2UreCs190xnLG66Q/ZnnegUierQopLmV6qcQjqINsSfJQT6yzJCmb01AVtRvWBQrJ6aZl6E0JD9DLukQlDXQWiL2P5JEldlE4Q6EJAymGXiNRHyUbpjNiNiobH7Kv2faF+lrP0OX6WuVkq1w8FM1Q4MJA9jI/QrEPbS6clwNVSQvQ8WeABAHUEJSUbHALGAQz6HG1jgv9DvqjLMQ5zMIjMDREGKhVJ2UP+QEKg7I0DeSrbZhQuKqHRv0PPKO/aHcS5AycFbDtXuSsIMX6K7LKcP0tHsd/AA==&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs/>
+    <g>
+        <path d="M 240 290 L 240 470 L 333 470 L 333 493.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 333 498.88 L 329.5 491.88 L 333 493.63 L 336.5 491.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="180" y="230" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <path d="M 404 290 L 404 353.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 404 358.88 L 400.5 351.88 L 404 353.63 L 407.5 351.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="344" y="230" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <path d="M 404 420 L 404 460 L 343 460 L 343 493.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 343 498.88 L 339.5 491.88 L 343 493.63 L 346.5 491.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="344" y="360" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <path d="M 320 180 L 320 205 L 240 205 L 240 223.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 240 228.88 L 236.5 221.88 L 240 223.63 L 243.5 221.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 320 180 L 320 205 L 404 205 L 404 223.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 404 228.88 L 400.5 221.88 L 404 223.63 L 407.5 221.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="260" y="120" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <path d="M 150 60 L 150 90 L 320 90 L 320 113.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 320 118.88 L 316.5 111.88 L 320 113.63 L 323.5 111.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="90" y="0" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <path d="M 320 60 L 320 113.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 320 118.88 L 316.5 111.88 L 320 113.63 L 323.5 111.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="260" y="0" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <path d="M 490 60 L 490 90 L 320 90 L 320 113.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 320 118.88 L 316.5 111.88 L 320 113.63 L 323.5 111.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="430" y="0" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <path d="M 660 60 L 660 90 L 320 90 L 320 113.63" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 320 118.88 L 316.5 111.88 L 320 113.63 L 323.5 111.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="600" y="0" width="120" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <path d="M 0 190 L 770 190" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-dasharray="3 3" pointer-events="stroke"/>
+        <rect x="570" y="220" width="130" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 128px; height: 1px; padding-top: 230px; margin-left: 571px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                可复用的 Git 仓库
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="635" y="234" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    可复用的 Git 仓库
+                </text>
+            </switch>
+        </g>
+        <rect x="570" y="140" width="130" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 128px; height: 1px; padding-top: 150px; margin-left: 571px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                一次性的
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="635" y="154" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    一次性的
+                </text>
+            </switch>
+        </g>
+        <path d="M 0 430 L 770 430" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-dasharray="3 3" pointer-events="stroke"/>
+        <rect x="170" y="500" width="346" height="60" rx="9" ry="9" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 344px; height: 1px; padding-top: 530px; margin-left: 171px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                编程语言，虚拟机，操作系统，物理硬件
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="343" y="534" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    编程语言，虚拟机，操作系统，物理硬件
+                </text>
+            </switch>
+        </g>
+    </g>
+    <switch>
+        <g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/>
+        <a transform="translate(0,-5)" xlink:href="https://desk.draw.io/support/solutions/articles/16000042487" target="_blank">
+            <text text-anchor="middle" font-size="10px" x="50%" y="100%">
+                Viewer does not support full SVG 1.1
+            </text>
+        </a>
+    </switch>
+</svg>
