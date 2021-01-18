@@ -11,5 +11,7 @@
   * [Autonomy 指标](./AutonomyMetrics.md)
 * [评价拆得好坏的角度2：Consistency](./Consistency.md)
   * [哪些常见场景需要一致性](./Scenario/README.md)
+    * [常见场景：UI布局](./Scenario/UiLayout/README.md)
+    * [常见场景：RPC异常处理](./Scenario/Rpc/README.md)
   * [Consistency 指标](./ConsistencyMetrics.md)
 * [评价拆得好坏的角度3：Feedback](./Feedback.md)
