@@ -10,4 +10,5 @@
     * [需求模式：混合型流程](./Integration/MixedProcess/README.md)
   * [Autonomy 指标](./AutonomyMetrics.md)
 * [评价拆得好坏的角度2：Consistency](./Consistency.md)
+  * [Consistency 指标](./ConsistencyMetrics.md)
 * [评价拆得好坏的角度3：Feedback](./Feedback.md)
