@@ -16,7 +16,7 @@
     * [常见场景：RPC异常处理](./Scenario/Rpc/README.md)
 * [评价拆得好坏的角度3：Feedback](./Feedback.md)
   * [Feedback 指标](./FeedbackMetrics.md)
-  * [降低反馈延迟关键是要做好隔离](./Isolation/README.md)
+  * [拆分无可避免地会降低反馈速度]](./Isolation/README.md)
     * [隔离模式：进程隔离](./Isolation/ProcessIsolation/README.md)
     * [隔离模式：血缘追踪](./Isolation/Tracing/README.md)
     * [隔离模式：租户隔离](./Isolation/TenantIsolation/README.md)
