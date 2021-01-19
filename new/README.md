@@ -11,7 +11,7 @@
     * [需求模式：混合型流程](./Integration/MixedProcess/README.md)
 * [评价拆得好坏的角度2：Consistency](./Consistency.md)
   * [Consistency 指标](./ConsistencyMetrics.md)
-  * [哪些常见场景需要一致性，怎么靠机器而不是靠人盯着去保障这些一致性](./Scenario/README.md)
+  * [哪些常见场景需要一致性，怎么靠机器而不是靠人盯着这些一致性](./Scenario/README.md)
     * [常见场景：UI布局](./Scenario/UiLayout/README.md)
     * [常见场景：RPC异常处理](./Scenario/Rpc/README.md)
 * [评价拆得好坏的角度3：Feedback](./Feedback.md)
