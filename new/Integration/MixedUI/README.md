@@ -154,6 +154,7 @@ export class CalculateCart {
 
 责任链加工界面，其接口是显式定义的 Cart 和 calculateCart。
 每个具体的业务都是直接返回的 Cart，而不依赖于业务 API 的二次翻译。
-所以相对来说，calculateCart 里可以只放必要的规则互斥之类的逻辑，而不需要把什么数据放界面哪个位置太关心。
-这样更容易判断，要改业务逻辑了，应该改哪个 Git 仓库。
+所以相对来说，calculateCart 里可以只放必要的规则互斥之类的逻辑，而不需要太关心什么数据放界面哪个位置这样的事情。
+这样做更容易在改业务逻辑的时候判断应该改哪个 Git 仓库。
+Code Review 也可以把注意力主要放在 Cart 和 calculateCart 的修改是否是必要的上。
 
