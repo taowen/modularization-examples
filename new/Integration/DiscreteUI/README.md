@@ -84,14 +84,14 @@ function getOrderDetail(): Record<string, any> {
 这类 UI 的特点就是集成界面具有规律性。可以抽象成规则性的组件的重复。
 如果有规律性，那显然可以搞个接口进行依赖倒置。
 
-![repeated-ui-dependency](./repeated-ui-dependency.jpeg)
+![repeated-ui-dependency](./repeated-ui-dependency.drawio.svg)
 
 * 从依赖方向上：订单条目的 Git 仓库位于依赖关系的底层。快车，专车，顺风车依赖订单条目的 Git 仓库，实现其接口。订单列表依赖订单条目，负责渲染。
 * 从接口形态上：接口是规范型的数据，订单条目的 Git 仓库定义了这个数据结构的每个字段
 
 读取订单列表的时候用 RPC 聚合。也可以是订单列表提供一个数据库，由每个业务线负责写入。这两种做法不改变 Git 仓库之间的依赖关系，从 Autonomy 的角度来说也是一样的。
 
-![repeated-ui-runtime](./repeated-ui-runtime.jpeg)
+![repeated-ui-runtime](./repeated-ui-runtime.drawio.svg)
 
 ## 小结
 
