@@ -143,7 +143,16 @@ export class CalculateCart {
 * 实现部分：具体的 calcXszkPromotion，calcMemberPromotion 这些界面渲染方法
 
 利用依赖倒置，我们可以把 CalculateCart 定义在依赖关系的底层，由限时折扣，会员优惠这些 Git 仓库去做接口实现。
+
+![client-plugin](./client-plugin.drawio.svg)
+
 相比 HttpServletResponse，Cart 这个接口显然更不稳定。只能在一定范围内的业务修改可以不去改 Cart 的定义。
+但是 Cart 代表了 UI 一致性，在不同的业务逻辑里有一定的复用性，比如：
+
+* 商品下架了，购物车里已加购的商品显示到“失效商品”里
+* 配送模式从快递改为自提，购物车里仅限快递的商品显示到“失效商品”里
+
+虽然商品下架业务逻辑，自提的业务逻辑，完全没有关系，但是在购物车的展示上可以以 UI 一致性的理由去做成一样的。
 
 ## 小结
 
