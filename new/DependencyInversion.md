@@ -26,7 +26,7 @@
 
 要实现依赖倒置有运行时和编译时两种做法
 
-## 运行时：函数指针
+## 运行时：高阶函数
 
 以 TypeScript 示例。
 
@@ -215,6 +215,53 @@ class A {
 }
 ```
 
-然后需要用编译工具，在编译 D 的时候，因为 B/C 中的 ClassA 与 A中的 ClassA 同文件夹且同文件名，所以替换 ClassA 中的函数。
+然后需要用编译工具，在编译 D 的时候，因为 B/C 中的 ClassA 与 A中的 ClassA 同文件夹且同文件名，替换 ClassA 中的函数。
 这样就达到了和 C++ 模板类似的效果。
 
+## 运行时：Vue 插槽
+
+Vue 的插槽和 TypeScript 函数组合是类似的。
+
+我们可以在 A 中写这样的一个接口
+
+```html
+<!-- A.vue -->
+<div class="container">
+  <header>
+    <slot name="header"></slot>
+  </header>
+  <main>
+    <slot></slot>
+  </main>
+  <footer>
+    <slot name="footer"></slot>
+  </footer>
+</div>
+```
+
+然后在 B 和 C 中写两个组件
+
+```html
+<!-- B.vue -->
+<div>b</div>
+```
+
+```html
+<!-- C.vue -->
+<div>c</div>
+```
+
+然后在 D 中组装，添加 A，B，C 三个 Git 仓库做为依赖，调用 A 组件:
+
+```html
+<A>
+    <template #header>
+        <B/>
+    </template>
+    <template #default>
+    </template>
+    <template #header>
+        <C/>
+    </template>
+</A>
+```
