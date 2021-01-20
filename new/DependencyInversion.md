@@ -108,3 +108,53 @@ function functionD() {
     functionA(b, c);
 }
 ```
+
+## 编译时：模板
+
+以 C++ 为例。
+
+我们可以在 A 中写这样的一个接口
+
+```c++
+template<typename TB, typename TC>
+void functionA() {
+    TB::doSomething();
+    TC::doSomething();
+}
+```
+
+然后在 B 和 C 中写两个类
+
+```c++
+#include <iostream>
+
+class ClassB {
+public:
+    static void doSomething() {
+        std::cout << 'b' << std::endl;
+    }
+};
+```
+
+```c++
+#include <iostream>
+
+class ClassC {
+public:
+    static void doSomething() {
+        std::cout << 'c' << std::endl;
+    }
+};
+```
+
+然后在 D 中组装，添加 A，B，C 三个 Git 仓库做为依赖，并调用 functionA：
+
+```ts
+#include "A.hpp"
+#include "B.hpp"
+#include "C.hpp"
+
+void functionD() {
+    functionA<ClassB, ClassC>();
+}
+```
