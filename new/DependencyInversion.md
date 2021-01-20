@@ -10,13 +10,13 @@
 
 引入一个 A 仓库，它依赖了 B 和 C。
 
-![orchestration](./Integration-1.drawio.svg)
+![orchestration](./DependencyInversion-1.drawio.svg)
 
 # 依赖倒置
 
 引入一个 A 仓库，提供接口。由 B 和 C 实现这个接口，插入到 A 上。就像主板和显卡那样，A 就是主板，B 和 C 就是显卡。
 
-![motherboard](./Integration-2.drawio.svg)
+![motherboard](./DependencyInversion-2.drawio.svg)
 
 在 B 和 C 上面还需要一个仓库 D 把大家都包括进去，但是这个仓库里可以没有业务逻辑了。
 与编排的区别在于，编排的方式里，A 是可以依赖任意 B 和 C 的实现细节的，没有必要声明哪些是接口，哪些是实现。
@@ -26,7 +26,7 @@
 
 要实现依赖倒置有运行时和编译时两种做法
 
-# 运行时：函数指针
+## 运行时：函数指针
 
 以 TypeScript 示例。
 
@@ -65,7 +65,7 @@ function functionD() {
 }
 ```
 
-# 运行时：面向对象
+## 运行时：面向对象
 
 以 TypeScript 示例。
 
