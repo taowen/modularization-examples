@@ -28,6 +28,8 @@
 
 # 运行时：函数指针
 
+以 TypeScript 示例。
+
 我们可以在 A 中写这样的一个接口
 
 ```ts
@@ -65,3 +67,44 @@ function functionD() {
 
 # 运行时：面向对象
 
+以 TypeScript 示例。
+
+我们可以在 A 中写这样的一个接口
+
+```ts
+
+function functionA(b: { doSomething(): void; }, c: { doSomething(): void; }) {
+    b.doSomething();
+    c.doSomething();
+}
+```
+
+然后在 B 和 C 中写两个对象
+
+```ts
+const b = {
+    doSomething: function() {
+        console.log('b');
+    }
+}
+```
+
+```ts
+const c = {
+    doSomething: function() {
+        console.log('c');
+    }
+}
+```
+
+然后在 D 中组装，添加 A，B，C 三个 Git 仓库做为依赖，并调用 functionA：
+
+```ts
+const functionA = require('A');
+const b = require('B');
+const c = require('C');
+
+function functionD() {
+    functionA(b, c);
+}
+```
