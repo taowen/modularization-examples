@@ -203,7 +203,7 @@ class A {
 
 然后在 D 中组装，添加 A，B，C 三个 Git 仓库做为依赖:
 
-```ts
+```json
 {
     "name": "@someOrg/D",
     "version": "0.0.1",
@@ -303,7 +303,7 @@ Vue 的插槽和 TypeScript 函数组合是类似的。
 
 然后在 D 中组装，添加 A，B，C 三个 Git 仓库做为依赖:
 
-```ts
+```json
 {
     "name": "@someOrg/D",
     "version": "0.0.1",
@@ -317,3 +317,35 @@ Vue 的插槽和 TypeScript 函数组合是类似的。
 
 然后需要用编译工具，在编译 D 的时候，因为 B/C 中的 A.tm 与 A中的 A.tm 同文件夹且同文件名，替换 A.tm 中的子模板。
 这样就达到了和 C++ 模板类似的效果。
+
+# 显式组合与隐式组合
+
+显式组合需要在代码中定义新的函数或者类，由新定义的函数或者类来组装原有的东西。例如
+
+```ts
+const functionA = require('A');
+const functionB = require('B');
+const functionC = require('C');
+
+function functionD() {
+    functionA(functionB, functionC);
+}
+```
+
+优点是组装非常灵活，可以表达任意复杂的逻辑。缺点是组装非常灵活，导致实际运行时的装配关系很难阅读代码得知。
+
+隐式组合是指：
+
+```json
+{
+    "name": "@someOrg/D",
+    "version": "0.0.1",
+    "dependencies": {
+        "@someOrg/A": "0.0.1",
+        "@someOrg/B": "0.0.1",
+        "@someOrg/C": "0.0.1"
+    }
+}
+```
+
+仅仅声明 Git 仓库之间的依赖关系。由编译工具，根据同文件夹，同文件名做函数和模板替换。这样的隐式组合缺点是依赖特殊编译工具链，好处是搞不出花样，仅仅实现了依赖倒置的目的，而不具有二次动态装配的能力（以及随之而来的理解成本）。
