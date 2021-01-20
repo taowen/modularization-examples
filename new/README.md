@@ -9,6 +9,7 @@
     * [需求模式：混合型UI](./Integration/MixedUI/README.md)
     * [需求模式：离散型流程](./Integration/DiscreteProcess/README.md)
     * [需求模式：混合型流程](./Integration/MixedProcess/README.md)
+  * [很多种拆法里都谈到了依赖倒置，专门来谈谈](./DependencyInversion.md)
 * [评价拆得好坏的角度2：Consistency](./Consistency.md)
   * [Consistency 指标](./ConsistencyMetrics.md)
   * [哪些常见场景需要一致性，怎么靠机器而不是靠人盯着这些一致性](./Scenario/README.md)
