@@ -72,7 +72,6 @@ function functionD() {
 我们可以在 A 中写这样的一个接口
 
 ```ts
-
 function functionA(b: { doSomething(): void; }, c: { doSomething(): void; }) {
     b.doSomething();
     c.doSomething();
@@ -158,3 +157,64 @@ void functionD() {
     functionA<ClassB, ClassC>();
 }
 ```
+
+## 编译时：函数替换
+
+以 TypeScript 为例
+
+我们可以在 A 中写这样的一个接口
+
+```ts
+class A {
+    public a() {
+        this.b();
+        this.c();
+    }
+    public b() {
+        throw new Error('not implemented');
+    }
+    public c() {
+        throw new Error('not implemented');
+    }
+}
+```
+
+然后在 B 和 C 的 Git 仓库中“覆盖” ClassA 的实现
+
+```ts
+// 在同样的文件夹和文件名中定义
+class A {
+    @override
+    public b() {
+        console.log('b');
+    }
+}
+```
+
+```ts
+// 在同样的文件夹和文件名中定义
+class A {
+    @override
+    public c() {
+        console.log('c');
+    }
+}
+```
+
+然后在 D 中组装，添加 A，B，C 三个 Git 仓库做为依赖:
+
+```ts
+{
+    "name": "@someOrg/D",
+    "version": "0.0.1",
+    "dependencies": {
+        "@someOrg/A": "0.0.1",
+        "@someOrg/B": "0.0.1",
+        "@someOrg/C": "0.0.1"
+    }
+}
+```
+
+然后需要用编译工具，在编译 D 的时候，因为 B/C 中的 ClassA 与 A中的 ClassA 同文件夹且同文件名，所以替换 ClassA 中的函数。
+这样就达到了和 C++ 模板类似的效果。
+
