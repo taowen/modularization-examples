@@ -26,7 +26,7 @@
 
 要实现依赖倒置有运行时和编译时两种做法
 
-## 运行时：高阶函数
+## 运行时：组合函数
 
 以 TypeScript 示例。
 
@@ -65,7 +65,7 @@ function functionD() {
 }
 ```
 
-## 运行时：面向对象
+## 运行时：组合对象
 
 以 TypeScript 示例。
 
@@ -230,9 +230,6 @@ Vue 的插槽和 TypeScript 函数组合是类似的。
   <header>
     <slot name="header"></slot>
   </header>
-  <main>
-    <slot></slot>
-  </main>
   <footer>
     <slot name="footer"></slot>
   </footer>
@@ -258,10 +255,65 @@ Vue 的插槽和 TypeScript 函数组合是类似的。
     <template #header>
         <B/>
     </template>
-    <template #default>
-    </template>
     <template #header>
         <C/>
     </template>
 </A>
 ```
+
+## 编译时：页面模板替换
+
+和函数替换一样，也可以对页面模板做替换。
+
+我们可以在 A 中写这样的一个接口
+
+```html
+<!-- A.tm -->
+<template #default>
+    <div class="container">
+    <header>
+        <B/>
+    </header>
+    <footer>
+        <C/>
+    </footer>
+    </div>
+</template>
+<template #B>
+</template>
+<template #C>
+</template>
+```
+
+然后在 B 和 C 中覆盖 A.tm 页面模板中的子模板
+
+```html
+<!-- 在同样的文件夹和文件名中定义 -->
+<override #B>
+    <div>b</div>
+</override>
+```
+
+```html
+<!-- 在同样的文件夹和文件名中定义 -->
+<override #C>
+    <div>c</div>
+</override>
+```
+
+然后在 D 中组装，添加 A，B，C 三个 Git 仓库做为依赖:
+
+```ts
+{
+    "name": "@someOrg/D",
+    "version": "0.0.1",
+    "dependencies": {
+        "@someOrg/A": "0.0.1",
+        "@someOrg/B": "0.0.1",
+        "@someOrg/C": "0.0.1"
+    }
+}
+```
+
+然后需要用编译工具，在编译 D 的时候，因为 B/C 中的 A.tm 与 A中的 A.tm 同文件夹且同文件名，替换 A.tm 中的子模板。
+这样就达到了和 C++ 模板类似的效果。
