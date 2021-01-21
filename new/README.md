@@ -4,7 +4,7 @@
 * [拆分成什么呢?](./Modules.md)
 * [评价拆得好坏的角度1：Autonomy](./Autonomy.md)
   * [Autonomy 指标](./AutonomyMetrics.md)
-  * [不同类型的需求对集成都有什么要求，各种需求下都有哪些常规拆法](./Integration/README.md)
+  * [各种需求下都有哪些常规拆法](./Integration/README.md)
     * [需求模式：离散型UI](./Integration/DiscreteUI/README.md)
     * [需求模式：混合型UI](./Integration/MixedUI/README.md)
     * [需求模式：离散型流程](./Integration/DiscreteProcess/README.md)
