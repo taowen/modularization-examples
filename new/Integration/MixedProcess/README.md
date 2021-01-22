@@ -47,7 +47,7 @@
 
 似乎每一种策略都是可行的。
 
-我们换一个角度来看这个问题。所有流程代码都需要数据库里有个 status 字段。我们希望提供
+我们换一个角度来看这个问题。所有流程代码都需要数据库里有个 status 字段。
 
 ```ts
 function updateStatus(newStatus: string) {
