@@ -33,11 +33,12 @@
 
 ## 每个 Git 仓库定义自己的“合同”
 
-除了多字段之外，还可以通过多表来实现组合。比如除了 Order，我们可以定义 OrderShipment 表，代表快递。定义 OrderSelfPickup 表，代表自提。
+除了多字段之外，还可以通过多表来实现组合。比如对于 Order，我们可以定义另外一个 OrderShipment 表，代表快递。定义 OrderSelfPickup 表，代表自提。
 通过查找这个 order 是否在 OrderShipment 中，得知这个订单是否走快递配送，以及配送的目的地。
 这种做法，相当于加 feature flag，每个新的变种，都是一个新的独立 bit。
 也就是压根没有 xxxType 一说，只有一堆 isXXX 这样的 feature flag。
 加字段，或者加表就是麻烦，单纯从 Autonomy 的角度来说，肯定是一堆独立的 Feature Flag 更独立自主。
+实际工程实践中，占主导性的考虑往往是从IO效率和稳定性出发。或者说是为了迁就落后的基础架构。
 
 多表可以理解为每个 Git 仓库定义了自己的“合同”，自己的业务记录在自己的合同内部，而不是都由“order”来夹带。
 实践中，order经常变成 `Map<string, any>` 这样的玩意，就是所有新的业务，都要往 order 上夹带新私货。
