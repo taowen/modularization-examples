@@ -23,3 +23,4 @@
     * [隔离模式：血缘追踪](./Isolation/Tracing/README.md)
     * [隔离模式：租户隔离](./Isolation/TenantIsolation/README.md)
     * [隔离模式：部分集成](./Isolation/UnitIsolation/README.md)
+* [真的不需要一点提前设计吗？](./Consensus.md)
