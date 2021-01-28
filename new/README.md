@@ -14,7 +14,7 @@
   * [如何依赖倒置？意义是什么？](./DependencyInversion.md)
 * [评价拆得好坏的角度2：Feedback](./Feedback.md)
   * [Feedback 指标](./FeedbackMetrics.md)
-  * [为了让锅能甩得出去，要强制给运行时添加什么样的隔离措施？](./Isolation/README.md)
+  * [为了让锅能甩得出去，要给运行时添加什么样的隔离措施？](./Isolation/README.md)
     * [隔离模式：进程隔离](./Isolation/ProcessIsolation/README.md)
     * [隔离模式：血缘追踪](./Isolation/Tracing/README.md)
     * [隔离模式：租户隔离](./Isolation/TenantIsolation/README.md)
