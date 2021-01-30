@@ -23,6 +23,7 @@
       * [隔离模式：函数边界](./new/Isolation/FunctionBoundary/README.md)
       * [隔离模式：插件边界](./new/Isolation/PluginBoundary/README.md)
     * [控制变更](./new/Isolation/ControlChange.md)
+      * [隔离模式：多进程](./new/Isolation/MultiProcess/README.md)
       * [隔离模式：多租户](./new/Isolation/MultiTenancy/README.md)
       * [隔离模式：多变种](./new/Isolation/MultiVariant/README.md)
 * [评价拆得好坏的角度3：Consistency](./new/Consistency.md)
