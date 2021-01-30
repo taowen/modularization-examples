@@ -12,6 +12,7 @@
     * [需求模式：混合型流程](./Integration/MixedProcess/README.md)
     * [需求模式：产品族](./Integration/ProductFamily/README.md)
   * [如何依赖倒置？意义是什么？](./DependencyInversion.md)
+  * [中台](./CentralPlatform.md)
 * [评价拆得好坏的角度2：Feedback](./Feedback.md)
   * [Feedback 指标](./FeedbackMetrics.md)
   * [为了让锅能甩得出去，要给运行时添加什么样的隔离措施？](./Isolation/README.md)
