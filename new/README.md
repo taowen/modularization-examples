@@ -23,6 +23,7 @@
       * [隔离模式：多进程](./Isolation/MultiProcess/README.md)
       * [隔离模式：多租户](./Isolation/MultiTenancy/README.md)
       * [隔离模式：多变种](./Isolation/MultiVariant/README.md)
+  * [Autonomy 优先](./Isolation/AutonomyFirst.md)
 * [评价拆得好坏的角度3：Consistency](./Consistency.md)
   * [Consistency 指标](./ConsistencyMetrics.md)
   * [哪些常见场景需要一致性？怎么靠机器而不是靠人盯着？](./Scenario/README.md)
