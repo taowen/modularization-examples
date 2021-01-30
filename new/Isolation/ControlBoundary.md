@@ -15,7 +15,7 @@
 
 边界从大到小，我们可以分为
 
-* [进程边界](./ProcessBounary/README.md)
+* [进程边界](./ProcessBoundary/README.md)
 * [函数边界](./FunnctionBoundary/README.md)
 * [插件边界](./PluginBoundary/README.md)
 
