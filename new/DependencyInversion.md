@@ -447,7 +447,7 @@ function functionD() {
 以这个[虚构故事](https://zhuanlan.zhihu.com/p/82586450)自省：
 
 ```
-中台部门自称自己是 Software Product Line，支持装配预制件的 DSL，能加速新业务的快速上线与试错。
+中台部门自称自己是 Software Product Line，提供了一堆预制件以及装配用的 DSL，能加速新业务的快速上线与试错。
 CTO 希望中台是 Central Platform 削平内部的山头，打通数据和权限的利器。
 实际不小心落地成了 Middle Office（Middle 衙门），只要从此过，留下买路财的官僚机构。
 ```
