@@ -18,6 +18,6 @@
 
 * [离散型 UI](./DiscreteUI/README.md)
 * [混合型 UI](./MixedUI/README.md)
-* [离散型流程](./DiscreteUI/README.md)
+* [离散型流程](./DiscreteProcess/README.md)
 * [混合型流程](./MixedProcess/README.md)
 * [产品族](./ProductFamily/README.md)
