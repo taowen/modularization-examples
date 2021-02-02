@@ -85,7 +85,7 @@ function getOrderDetail(): Record<string, any> {
 
 ![order-list](./order-list.jpeg)
 
-似乎可以抽象成规则性的组件的重复。那我们可以把规范的条目数据定义成接口，然后使用依赖倒置。统一由订单列表来把规范的条目数据读取出来，渲染到界面上。
+似乎可以抽象成规则性组件的重复。那我们可以把规范的条目数据定义成接口，然后使用依赖倒置。统一由订单列表来把规范的条目数据读取出来，渲染到界面上。
 
 ![repeated-ui-dependency](./repeated-ui-dependency.drawio.svg)
 
