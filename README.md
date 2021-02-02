@@ -1,8 +1,3 @@
-飞书群：
-![qrcode](./Lark20210131-101023.png)
-
-# 业务逻辑拆分模式
-
 * [为什么值得阅读?](./new/Why.md)
 * [拆分成什么呢?](./new/Modules.md)
 * [Git仓库的组合关系](./new/Composition.md)
@@ -35,3 +30,7 @@
     * [常见场景：布局](./new/Scenario/Layout/README.md)
     * [常见场景：跨进程调用](./new/Scenario/IPC/README.md)
 * [真的一点提前设计都不需要吗？](./new/Consensus.md)
+
+飞书群：
+
+![qrcode](./Lark20210131-101023.png)
