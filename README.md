@@ -26,9 +26,9 @@
 * [评价拆得好坏的角度3：Consistency](./new/Consistency.md)
   * [Consistency 指标](./new/ConsistencyMetrics.md)
   * [哪些常见场景需要一致性？怎么靠机器而不是靠人盯着？](./new/Scenario/README.md)
-    * [常见场景：字体和颜色](./new/Scenario/FontColor/README.md)
-    * [常见场景：布局](./new/Scenario/Layout/README.md)
-    * [常见场景：跨进程调用](./new/Scenario/IPC/README.md)
+    * [常见场景：用户可见的一致性](./new/Scenario/UserInterface/README.md)
+    * [常见场景：优化 Autonomy](./new/Scenario/AutonomyOptimization/README.md)
+    * [常见场景：优化 Feedback](./new/Scenario/FeedbackOptimization/README.md)
 * [真的一点提前设计都不需要吗？](./new/Consensus.md)
 
 飞书群：

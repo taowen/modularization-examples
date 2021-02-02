@@ -1,5 +1,5 @@
-值得保持一致的场景不会很多。没必要搞一大堆要求出来，那样也落地不了。
 这里根据有限的经验，列举几个常见的场景。
 
-* 对于每个场景我们要如何说服其他人，让他们相信这个东西值得保持一致，从而达成共识。
-* 另外就是具体看一下在这些场景下，如何做“接入率”，“阻断率”的计算，以确保我们达成的共识能被持续保持。
+* [用户可见的一致性](./UserInterface/README.md)
+* [优化 Autonomy](./AutonomyOptimization/README.md)
+* [优化 Feedback](./FeedbackOptimization/README.md)
