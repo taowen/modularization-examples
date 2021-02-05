@@ -1,3 +1,5 @@
+[https://autonomy.design](https://autonomy.design)
+
 # 症状
 
 如果没有做好业务逻辑拆分，可能在项目晚期造成以下三种问题：
