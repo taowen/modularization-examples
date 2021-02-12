@@ -296,7 +296,7 @@ Vue 的插槽和 TypeScript 函数组合是类似的。
     <template #header>
         <B/>
     </template>
-    <template #header>
+    <template #footer>
         <C/>
     </template>
 </A>
