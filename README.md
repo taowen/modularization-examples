@@ -38,6 +38,7 @@
     * [需求模式：离散型流程](./docs/Integration/DiscreteProcess/README.md)
     * [需求模式：混合型流程](./docs/Integration/MixedProcess/README.md)
     * [需求模式：产品族](./docs/Integration/ProductFamily/README.md)
+    * [需求模式：领先技术](./docs/Integration/Library/README.md)
   * [亚马逊的下单流程](./docs/Integration/AmazonExample/README.md)
   * [如何依赖倒置？意义是什么？](./docs/DependencyInversion.md)
 * [评价拆得好坏的角度2：Feedback](./docs/Feedback.md)
