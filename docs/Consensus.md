@@ -13,8 +13,8 @@
 我们可以有一些习惯做法，这些 bias 让我们可以快速开始
 
 * 大厂的商业那么成功，那复制他们的技术方案也会使我们商业成功
-* things executed in same time, write in same repo
-* things executed in same os process, write in same repo
+* things executed in same time, write in same git repository
+* things executed in same os process, write in same git repository
 * 招人那么难，相同技能的人放一起才能招募更多优秀的人
 
 但这些 bias 不应该是盲从的终点，而是思考和试错的起点。如果选择某个切分的策略，需要想想
