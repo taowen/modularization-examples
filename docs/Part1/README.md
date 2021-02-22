@@ -19,7 +19,7 @@
 虽然很多人醉心于遗留代码改造之道。笔者也从事铲屎业务很多年，仍未掌握此项技术。
 还是让代码一直保持在未腐化的状态更简单一些。那么代码如何防腐呢？不靠 Code Review 又靠什么呢？
 
-* [对策1：信息隐藏](./InformationHiding.md)
+* [对策1：信息隐藏](./InformationHiding/README.md)
   * [依赖倒置的各种实现方式](./DependencyInversion/README.md)
   * [各种需求下都有哪些常规拆法？](./Integration/README.md)
     * [需求模式：离散型UI](./Integration/DiscreteUI/README.md)
@@ -28,5 +28,5 @@
     * [需求模式：混合型流程](./Integration/MixedProcess/README.md)
     * [需求模式：产品族](./Integration/ProductFamily/README.md)
     * [需求模式：领先技术](./Integration/Library/README.md)
-  * [亚马逊的下单流程](./Integration/AmazonExample/README.md)
+  * [亚马逊的下单流程](./AmazonExample/README.md)
 * [对策2：持续改进](./Consensus.md)
