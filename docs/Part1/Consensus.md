@@ -15,6 +15,8 @@
 * 大厂的商业那么成功，那复制他们的技术方案也会使我们商业成功
 * things executed in same time, write in same git repository
 * things executed in same os process, write in same git repository
+* 微服务，devops，每个人都有一个自己的进程
+* 共享数据库是邪恶的，每个 CRUD 得包个微服务
 * 招人那么难，相同技能的人放一起才能招募更多优秀的人
 
 但这些 bias 不应该是盲从的终点，而是思考和试错的起点。如果选择某个切分的策略，需要想想
