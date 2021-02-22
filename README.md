@@ -40,7 +40,7 @@
     * [需求模式：产品族](./docs/Integration/ProductFamily/README.md)
     * [需求模式：领先技术](./docs/Integration/Library/README.md)
   * [亚马逊的下单流程](./docs/Integration/AmazonExample/README.md)
-  * [如何依赖倒置？意义是什么？](./docs/DependencyInversion.md)
+  * [如何依赖倒置？意义是什么？](./docs/DependencyInversion/README.md)
 * [评价拆得好坏的角度2：Feedback](./docs/Feedback.md)
   * [Feedback 指标](./docs/FeedbackMetrics.md)
   * [为了让锅能甩得出去，要给运行时添加什么样的隔离措施？](./docs/Isolation/README.md)
