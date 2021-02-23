@@ -32,18 +32,18 @@
 
 ## 发布变更，告警定位该如何做？
 
-* [发布变更](./Isolation/ControlChange.md)：外部输入没变化，变更运行时。变更之前可以工作，变更之后不工作了，那就是变更引起的问题。
-* [告警定位](./Isolation/ControlBoundary.md)：运行时没变更，外部输入发生变化时出问题了。不需要知道边界里面是什么逻辑，所有人都使用统一的方式来定义边界。出了问题可以快速排除不是自己的问题。
+* [发布变更](./ControlChange.md)：外部输入没变化，变更运行时。变更之前可以工作，变更之后不工作了，那就是变更引起的问题。
+* [告警定位](./ControlBoundary.md)：运行时没变更，外部输入发生变化时出问题了。不需要知道边界里面是什么逻辑，所有人都使用统一的方式来定义边界。出了问题可以快速排除不是自己的问题。
 
 ## Autonomy 优先
 
 回到微服务应该怎么拆分，多少个进程是合理的。
-相比 [ProcessBoundary](./Isolation/ProcessBoundary/README.md)，我认为控制好 [FunctionBoundary](./Isolation/FunctionBoundary/README.md) 和 [PluginBoundary](./Isolation/PluginBoundary/README.md) 更有利于 Feedback。
-相比 [MultiProcess](./Isolation/MultiProcess/README.md)，我认为一开始就设计好 [MultiTenancy](./Isolation/MultiTenancy/README.md) 和 [MultiVariant](./Isolation/MultiVariant/README.md) 更有利于 Feedback。
+相比 [ProcessBoundary](./ProcessBoundary/README.md)，我认为控制好 [FunctionBoundary](./FunctionBoundary/README.md) 和 [PluginBoundary](./PluginBoundary/README.md) 更有利于 Feedback。
+相比 [MultiProcess](./MultiProcess/README.md)，我认为一开始就设计好 [MultiTenancy](./MultiTenancy/README.md) 和 [MultiVariant](./MultiVariant/README.md) 更有利于 Feedback。
 进程之所以好用是因为开源社区提供了很完善的基础设施。所以我们习惯了迁就于已有的技术设施，来切分进程以利用上这些现成的设施。
 从而因为进程的切分来影响我们对Git仓库和团队的切分。
 
-如果能够做好 [FunctionBoundary](./Isolation/FunctionBoundary/README.md)，[PluginBoundary](./Isolation/PluginBoundary/README.md)，[MultiTenancy](./Isolation/MultiTenancy/README.md) 以及 [MultiVariant](./MultiVariant/README.md)，怎么分进程根本就不是一个问题。
+如果能够做好 [FunctionBoundary](./FunctionBoundary/README.md)，[PluginBoundary](./PluginBoundary/README.md)，[MultiTenancy](./MultiTenancy/README.md) 以及 [MultiVariant](./MultiVariant/README.md)，怎么分进程根本就不是一个问题。
 所有的代码都跑在一个进程内，一样可以把 Feedback 做得很好。
 那微服务的拆分，其实就等价于Git仓库的拆分，也就是 Autonomy 章节中讨论的问题，怎么拆团队拆Git仓库的问题。
 其主旨原则就一条：拆分之后，接口的定义要稳定，不要天天修改，导致频繁的跨团队强协作。我们也对怎么量化这个原则给出了指标计算的方法。
