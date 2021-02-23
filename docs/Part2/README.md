@@ -32,10 +32,18 @@
 
 ## 发布变更，告警定位该如何做？
 
-* [发布变更](./ControlChange.md)：外部输入没变化，变更运行时。变更之前可以工作，变更之后不工作了，那就是变更引起的问题。
-* [告警定位](./ControlBoundary.md)：运行时没变更，外部输入发生变化时出问题了。不需要知道边界里面是什么逻辑，所有人都使用统一的方式来定义边界。出了问题可以快速排除不是自己的问题。
+要只对自己写的代码负责要体现在发布变更，告警定位这两个环节里。
 
-## Autonomy 优先
+* [发布变更](./ControlChange.md)：变更之前可以工作，加入了我的变更之后不工作了，那就是我的变更引起的问题。如果不能有效地隔离自己的变更，就要被迫去处理别人写的代码。
+    * [多进程](./MultiProcess/README.md)：把单体进程切分成多进程。一次只变更其中的一个。
+    * [多租户](./MultiTenancy/README.md)：把所有的业务数据分成租户。一次只升级一个租户的数据和代码。
+    * [多变种](./MultiVariant/README.md)：分租户还是粒度太粗了，比如说挂掉一个城市也是不可接受的。那么可以在线上同时运行多个版本的代码，然后逐步的切流量。
+* [告警定位](./ControlBoundary.md)：接到告警了如何能快速定位到问题。其核心就是需要在你的代码和别人的代码之间有统一方式定义的边界。不需要知道边界里面的代码是怎么写的，只要看一眼边界上的监控数据就能快速排除不是自己的问题。然后把锅甩出去。
+    * [进程边界](./ProcessBoundary/README.md)
+    * [函数边界](./FunctionBoundary/README.md)
+    * [插件边界](./PluginBoundary/README.md)
+
+## 拆进程不是唯一选择，应该 Autonomy 优先
 
 回到微服务应该怎么拆分，多少个进程是合理的。
 相比 [ProcessBoundary](./ProcessBoundary/README.md)，我认为控制好 [FunctionBoundary](./FunctionBoundary/README.md) 和 [PluginBoundary](./PluginBoundary/README.md) 更有利于 Feedback。
