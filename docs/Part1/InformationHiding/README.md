@@ -91,7 +91,7 @@ Class 有封装和依赖关系。Git 仓库也有封装和依赖关系。
 
 理论上看起来很美好，然而有两个问题
 
-* [主板+插件的技术方案](../DependencyInversion/README.md)
+* [主板+插件的技术方案有哪些选择？](../DependencyInversion/README.md)
 * [对应具体的业务需求，怎么拆分出主板和插件来？](../Integration/README.md)
     * [离散型 UI](../Integration/DiscreteUI/README.md)
     * [混合型 UI](../Integration/MixedUI/README.md)
