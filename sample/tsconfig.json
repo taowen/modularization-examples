@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "incremental": true,
+        "target": "es2018",
+        "strict": true,
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "module": "commonjs",
+        "sourceMap": true,
+        "declaration": true,
+        "strictPropertyInitialization": false,
+        "outDir": "lib",
+        "types": ["node"]
+    },
+    "include": ["./*.ts"]
+}
