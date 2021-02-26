@@ -5,4 +5,8 @@ export class ProductDetailsPage extends Widget {
     public render() {
         return <div></div>;
     }
+
+    public renderProductBasics() {
+        return <></>;
+    }
 }

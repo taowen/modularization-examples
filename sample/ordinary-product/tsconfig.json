@@ -14,8 +14,8 @@
         "types": ["node"],
         "jsx": "react",
         "paths": {
-            "@inf/*": ["motherboard/src/*"]
+            "@motherboard/*": ["../motherboard/src/*"]
         }
     },
-    "include": ["./*.ts"]
+    "include": ["./src/**/*"]
 }
