@@ -2,6 +2,7 @@
     "version": "0.0.1",
     "private": true,
     "name": "@autonomy-design-sample/ordinary-product",
-    "devDependencies": {
+    "dependencies": {
+        "@autonomy-design-sample/entity-archetype": "0.0.1"
     }
 }
