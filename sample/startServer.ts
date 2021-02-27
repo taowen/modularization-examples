@@ -23,8 +23,8 @@ export function main(){
     const server = http.createServer((req, resp) => {
         resp.end('hello');
     });
-    server.listen(8080);
-    console.log('@8080');
+    server.listen(3000);
+    console.log(`${project} server started @3000`);
 }
 
 main();

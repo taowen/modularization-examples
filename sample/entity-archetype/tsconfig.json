@@ -6,13 +6,12 @@
         "strict": true,
         "moduleResolution": "node",
         "experimentalDecorators": true,
-        "module": "commonjs",
+        "module": "ES2015",
         "sourceMap": true,
         "declaration": true,
         "strictPropertyInitialization": false,
-        "outDir": "lib",
-        "types": ["node"],
+        "outDir": "esm",
         "jsx": "react"
     },
-    "include": ["./*.ts"]
+    "include": ["./src/**/*"]
 }

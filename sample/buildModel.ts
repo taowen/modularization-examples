@@ -43,6 +43,7 @@ export function buildModel(
     plugins: [
       "@babel/plugin-transform-typescript",
       "@babel/plugin-transform-modules-commonjs",
+      "@babel/plugin-transform-react-jsx",
     ],
   });
   if (!result || !result.code) {
@@ -55,7 +56,7 @@ export function buildModel(
 
 function getOutputPath(projectDir: string, qualifiedName: string) {
   if (qualifiedName.includes("/Ui/")) {
-    return path.join(projectDir, "client", `${qualifiedName}.jsx`);
+    return path.join(projectDir, "client", `${qualifiedName}.js`);
   } else {
     return path.join(projectDir, "server", `${qualifiedName}.js`);
   }

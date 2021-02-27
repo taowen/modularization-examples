@@ -26,18 +26,15 @@ class ProductDetailsPage extends _entityArchetype.Widget {
   render(a) {
     const ProductBasics = this.renderProductBasics.bind(this);
     const Xszk = this.renderXszk.bind(this);
-    return <div>
-        <ProductBasics />
-        <Xszk />
-      </div>;
+    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(ProductBasics, null), /*#__PURE__*/React.createElement(Xszk, null));
   }
 
   renderProductBasics() {
-    return <div>{this.theProduct.name}</div>;
+    return /*#__PURE__*/React.createElement("div", null, this.theProduct.name);
   }
 
   renderXszk() {
-    return <div>限时折扣</div>;
+    return /*#__PURE__*/React.createElement("div", null, "\u9650\u65F6\u6298\u6263");
   }
 
 }

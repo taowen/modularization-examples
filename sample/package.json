@@ -10,11 +10,18 @@
         "@babel/preset-typescript": "^7.13.0",
         "@babel/plugin-syntax-decorators": "^7.12.13",
         "@babel/plugin-transform-modules-commonjs": "^7.13.8",
+        "@babel/plugin-transform-react-jsx": "^7.12.17",
         "@babel/core": "^7.13.0",
-        "@types/babel__core": "^7.1.12"
+        "@types/babel__core": "^7.1.12",
+        "webpack": "^5.24.2",
+        "webpack-cli": "^4.5.0",
+        "@webpack-cli/serve": "^1.3.0",
+        "webpack-dev-server": "^3.11.2",
+        "html-webpack-plugin": "^5.2.0"
     },
     "scripts": {
-        "build": "ts-node build.ts @merchandise/project",
+        "build-entity-archetype": "cd entity-archetype && yarn tsc",
+        "build": "yarn build-entity-archetype && ts-node build.ts @merchandise/project",
         "start": "ts-node start.ts @merchandise/project"
     }
 }
