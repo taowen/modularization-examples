@@ -13,13 +13,13 @@ export function main() {
 function startServer(project: string) {
     const logFile = `log/${project.replace('/', '-')}.server.log`;
     fs.writeFileSync(logFile, '');
-    childProcess.exec(`ts-node ./startServer.ts ${project} > ${logFile}`);
+    childProcess.exec(`ts-node ./startServer.ts ${project} > ${logFile} 2>&1`);
 }
 
 function startClient(project: string) {
     const logFile = `log/${project.replace('/', '-')}.client.log`;
     fs.writeFileSync(logFile, '');
-    childProcess.exec(`PROJECT=${project} webpack-cli serve --config startClient.js > ${logFile}`);
+    childProcess.exec(`PROJECT=${project} webpack-cli serve --config startClient.js > ${logFile} 2>&1`);
 }
 
 main();

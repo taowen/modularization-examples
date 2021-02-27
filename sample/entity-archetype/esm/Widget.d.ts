@@ -1,6 +1,7 @@
 /// <reference types="react" />
 export declare class Widget {
-    constructor(props?: Record<string, any>);
+    props?: Record<string, any> | undefined;
+    constructor(props?: Record<string, any> | undefined);
     render(): JSX.Element;
 }
 export declare type WidgetClass = Function & {

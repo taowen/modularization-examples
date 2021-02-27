@@ -11,7 +11,10 @@ var _Product = require("./Product");
 
 class ProductGateway extends _entityArchetype.Gateway {
   async getProduct(id) {
-    return new _Product.Product();
+    const product = new _Product.Product();
+    product.id = id;
+    product.name = "hello";
+    return product;
   }
 
 }

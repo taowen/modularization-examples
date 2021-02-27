@@ -11,5 +11,10 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(projectDir, 'index.html'),
         }),
-    ]
+    ],
+    devServer: {
+        proxy: {
+            '/call': `http://127.0.0.1:3000`,
+        }
+    }
 }

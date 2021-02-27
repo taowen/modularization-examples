@@ -44,6 +44,7 @@ export function buildModel(
       "@babel/plugin-transform-typescript",
       "@babel/plugin-transform-modules-commonjs",
       "@babel/plugin-transform-react-jsx",
+      "@babel/plugin-proposal-class-properties"
     ],
   });
   if (!result || !result.code) {
