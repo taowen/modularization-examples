@@ -3,7 +3,7 @@ import { Product } from "./Product";
 
 export class ProductGateway extends Gateway {
 
-    public getProduct(id: string) {
+    public async getProduct(id: string) {
         return new Product();
     }
 }

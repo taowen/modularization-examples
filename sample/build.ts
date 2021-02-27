@@ -1,9 +1,6 @@
+import { buildModel } from './buildModel';
 import * as fs from 'fs';
 import * as path from 'path';
-
-const BASE = process.cwd();
-
-type Archetype = 'Gateway' | 'ActiveRecord' | 'Widget';
 
 class Model {
     public qualifiedName: string;
@@ -23,12 +20,13 @@ function main() {
         const packageJsonPath = require.resolve(`${pkg}/package.json`);
         scanPackage(path.dirname(packageJsonPath));
     }
-    // build();
+    build();
 }
 
 function build() {
     for (const [qualifiedName, model] of models.entries()) {
-        console.log(qualifiedName);
+        buildModel(model.qualifiedName, model.srcFiles);
+        break;
     }
 }
 
@@ -66,7 +64,7 @@ function* walk(filePath: string): Generator<string> {
             yield* walk(path.join(filePath, dirent));
         }
     } catch (e) {
-        return;
+        yield filePath;
     }
 }
 

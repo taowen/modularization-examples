@@ -2,7 +2,12 @@ import { Widget } from "@autonomy-design-sample/entity-archetype";
 import * as React from "react";
 
 export class ProductDetailsPage extends Widget {
-  public render() {
+
+  constructor(public props: { productId: string}) {
+    super();
+  }
+
+  public render(a: string) {
     const ProductBasics = this.renderProductBasics.bind(this);
     const Xszk = this.renderXszk.bind(this);
     return (
