@@ -3,6 +3,11 @@
 * 服务端使用 typescript + node + http json
 * 客户端使用 typescript + web + react
 
+```
+yarn install
+yarn build && yarn start
+```
+
 # TODO
 
 * 演示混合型 UI
