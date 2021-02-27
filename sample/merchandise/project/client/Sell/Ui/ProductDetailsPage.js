@@ -20,6 +20,7 @@ const xszkPromotionGateway = (0, _entityArchetype.use)();
 
 class ProductDetailsPage extends _entityArchetype.Widget {
   // 每个 Widget 片段自己通过 rpc 去拿自己要的数据
+  // 缓存所有的折扣活动
   constructor(props) {
     super(props);
 
