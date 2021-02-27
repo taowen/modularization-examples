@@ -5,5 +5,5 @@ declare type MethodsOf<T> = {
 export declare function use<T>(project?: string): {
     [P in MethodsOf<T>]: (...a: Parameters<T[P]>) => Await<ReturnType<T[P]>>;
 };
-export declare function withRpc<T extends object>(createObject: () => T): Promise<T>;
+export declare function awaitRpc(obj: object): Promise<void>;
 export {};

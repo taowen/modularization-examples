@@ -7,10 +7,11 @@ const productGateway = use<ProductGateway>();
 
 export class ProductDetailsPage extends INF {
     
+    // 每个 Widget 片段自己通过 rpc 去拿自己要的数据
     private theProduct = productGateway.getProduct(this.props.productId);
     
     @override
     public renderProductBasics() {
-        return <div>{this.theProduct.name}</div>;
+        return <div>product name: {this.theProduct.name}</div>;
     }
 }

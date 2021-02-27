@@ -1,18 +1,27 @@
 import * as React from 'react';
-import { withRpc } from "./use";
+import { awaitRpc } from "./use";
 export function renderWidget(widgetClass, props) {
-    const widgetPromise = withRpc(() => new widgetClass(props));
+    const widget = new widgetClass(props);
+    const promise = awaitRpc(widget);
     function Wrapper() {
-        const [widget, setWidget] = React.useState();
-        if (!widget) {
-            widgetPromise.then((widget) => {
-                setWidget(widget);
-            }).catch((reason) => {
-                console.error('failure', reason);
-            });
-            return React.createElement(React.Fragment, null);
+        React.useEffect(() => {
+            return () => {
+                widget.unmounted = true;
+            };
+        });
+        const rendered = widget.render();
+        const [isReady, setReady] = React.useState(false);
+        if (isReady) {
+            return rendered;
         }
-        return widget.render();
+        promise.then(() => {
+            if (!widget.unmounted) {
+                setReady(true);
+            }
+        }).catch((reason) => {
+            console.error('failure', reason);
+        });
+        return React.createElement(React.Fragment, null);
     }
     return React.createElement(Wrapper, null);
 }

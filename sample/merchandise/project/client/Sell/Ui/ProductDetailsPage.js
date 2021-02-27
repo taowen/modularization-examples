@@ -16,28 +16,40 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 const productGateway = (0, _entityArchetype.use)();
+const xszkPromotionGateway = (0, _entityArchetype.use)();
 
 class ProductDetailsPage extends _entityArchetype.Widget {
+  // 每个 Widget 片段自己通过 rpc 去拿自己要的数据
   constructor(props) {
-    super();
+    super(props);
 
     _defineProperty(this, "theProduct", productGateway.getProduct(this.props.productId));
 
-    this.props = props;
-  }
+    _defineProperty(this, "activeXszkPromotions", xszkPromotionGateway.listActiveXszkPromotions());
 
-  render(a) {
+    this.props = props;
+  } // 把商品详情页拆分成两个片段
+
+
+  render() {
     const ProductBasics = this.renderProductBasics.bind(this);
     const Xszk = this.renderXszk.bind(this);
-    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(ProductBasics, null), /*#__PURE__*/React.createElement(Xszk, null));
-  }
+    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(ProductBasics, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(Xszk, null));
+  } // 留给 ordinary-product 去实现
+
 
   renderProductBasics() {
-    return /*#__PURE__*/React.createElement("div", null, this.theProduct.name);
+    return /*#__PURE__*/React.createElement("div", null, "product name: ", this.theProduct.name);
   }
 
   renderXszk() {
-    return /*#__PURE__*/React.createElement("div", null, "\u9650\u65F6\u6298\u6263");
+    for (const promotion of this.activeXszkPromotions) {
+      if (promotion.targetProductId === this.props.productId) {
+        return /*#__PURE__*/React.createElement("div", null, "\u9650\u65F6\u6298\u6263");
+      }
+    }
+
+    return /*#__PURE__*/React.createElement("div", null, "\u65E0\u6298\u6263");
   }
 
 }

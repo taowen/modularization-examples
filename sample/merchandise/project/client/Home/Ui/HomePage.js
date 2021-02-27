@@ -7,6 +7,8 @@ exports.HomePage = void 0;
 
 var _entityArchetype = require("@autonomy-design-sample/entity-archetype");
 
+var _ProductDetailsPage = require("../../Sell/Ui/ProductDetailsPage");
+
 var React = _interopRequireWildcard(require("react"));
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
@@ -18,14 +20,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 const greetingWordsGateway = (0, _entityArchetype.use)();
 
 class HomePage extends _entityArchetype.Widget {
-  constructor(props) {
-    super(props);
+  constructor(...args) {
+    super(...args);
 
     _defineProperty(this, "words", greetingWordsGateway.getGreetingWords());
   }
 
   render() {
-    return /*#__PURE__*/React.createElement("div", null, this.words);
+    const [, updateState] = React.useState({});
+    const forceUpdate = React.useCallback(() => updateState({}), []);
+    React.useEffect(() => {
+      window.addEventListener("hashchange", forceUpdate);
+    });
+
+    if (window.location.hash === "#discrete-ui") {
+      return (0, _entityArchetype.renderWidget)(_ProductDetailsPage.ProductDetailsPage, {
+        productId: "123"
+      });
+    }
+
+    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, this.words), /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
+      href: "#discrete-ui"
+    }, "\u79BB\u6563\u578B UI"))));
   }
 
 }

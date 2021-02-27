@@ -33,7 +33,7 @@ export function buildModel(
   const outputPath = getOutputPath(projectDir, qualifiedName);
   const merged = babel.file(
     babel.program(
-      [...mergeImports(imports), ...others, mergeClassDecls(classDecls)],
+      [...mergeImports(qualifiedName, imports), ...others, mergeClassDecls(classDecls)],
       undefined,
       "module"
     )
@@ -108,10 +108,14 @@ function hasOverrideDecorator(method: babel.ClassMethod) {
   return false;
 }
 
-function mergeImports(imports: babel.ImportDeclaration[]) {
+function mergeImports(qualifiedName: string, imports: babel.ImportDeclaration[]) {
   const symbols = new Set<string>();
   const merged = [];
   for (const stmt of imports) {
+    if (stmt.source.value.startsWith('@motherboard/')) {
+      const importFrom = stmt.source.value.substr('@motherboard/'.length);
+      stmt.source.value = path.relative(path.dirname(qualifiedName), importFrom);
+    }
     const specifiers = [];
     for (const specifier of stmt.specifiers) {
       if (symbols.has(specifier.local.name)) {

@@ -8,14 +8,12 @@ export function use(project) {
     });
 }
 // @internal
-export async function withRpc(createObject) {
-    const obj = createObject();
+export async function awaitRpc(obj) {
     for (const [k, v] of Object.entries(obj)) {
         if (v && v["then"]) {
             Reflect.set(obj, k, await v);
         }
     }
-    return obj;
 }
 async function rpcMethod(project, command, args) {
     const result = await fetch("/call", {

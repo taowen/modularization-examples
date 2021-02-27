@@ -22,16 +22,12 @@ export function use<T>(
 }
 
 // @internal
-export async function withRpc<T extends object>(
-  createObject: () => T
-): Promise<T> {
-  const obj = createObject();
+export async function awaitRpc(obj: object) {
   for (const [k, v] of Object.entries(obj)) {
     if (v && v["then"]) {
       Reflect.set(obj, k, await v);
     }
   }
-  return obj;
 }
 
 async function rpcMethod(project: string, command: string, args: any[]) {
