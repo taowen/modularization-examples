@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { ProductDetailsPage } from '@inf/Sell/Ui/ProductDetailsPage.inf';
 
 const BASE = process.cwd();
 
@@ -18,6 +17,12 @@ function main() {
     scanPackage('ordinary-product');
     scanPackage('xszk-promotion');
     build();
+}
+
+function build() {
+    for (const [qualifiedName, model] of models.entries()) {
+        console.log(qualifiedName);
+    }
 }
 
 function scanPackage(pkg: string) {
@@ -55,12 +60,6 @@ function* walk(filePath: string): Generator<string> {
         }
     } catch (e) {
         yield filePath;
-    }
-}
-
-function build() {
-    for (const [qualifiedName, model] of models.entries()) {
-        console.log(qualifiedName);
     }
 }
 

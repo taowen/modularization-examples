@@ -1,0 +1,10 @@
+{
+    "version": "0.0.1",
+    "private": true,
+    "name": "@wms/ordinary-project",
+    "dependencies": {
+        "@autonomy-design-sample/entity-archetype": "0.0.1",
+        "@wms/motherboard": "0.0.1",
+        "@wms/ordinary-fulfilment": "0.0.1"
+    }
+}

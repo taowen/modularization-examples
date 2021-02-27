@@ -1,0 +1,8 @@
+{
+    "version": "0.0.1",
+    "private": true,
+    "name": "@wms/motherboard",
+    "dependencies": {
+        "@autonomy-design-sample/entity-archetype": "0.0.1"
+    }
+}

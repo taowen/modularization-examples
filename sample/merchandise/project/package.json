@@ -1,0 +1,11 @@
+{
+    "version": "0.0.1",
+    "private": true,
+    "name": "@merchandise/project",
+    "dependencies": {
+        "@autonomy-design-sample/entity-archetype": "0.0.1",
+        "@merchandise/motherboard": "0.0.1",
+        "@merchandise/ordinary-product": "0.0.1",
+        "@merchandise/xszk-promotion": "0.0.1"
+    }
+}
