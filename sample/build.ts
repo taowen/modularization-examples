@@ -13,10 +13,17 @@ class Model {
 const models = new Map<string, Model>();
 
 function main() {
-    scanPackage('motherboard');
-    scanPackage('ordinary-product');
-    scanPackage('xszk-promotion');
-    build();
+    const project = process.argv[2];
+    if (!project) {
+        console.error('must specify project to build');
+        return;
+    }
+    const projectPackageJson = require(`${project}/package.json`);
+    for (const pkg of Object.keys(projectPackageJson.dependencies)) {
+        const packageJsonPath = require.resolve(`${pkg}/package.json`);
+        scanPackage(path.dirname(packageJsonPath));
+    }
+    // build();
 }
 
 function build() {
@@ -25,8 +32,8 @@ function build() {
     }
 }
 
-function scanPackage(pkg: string) {
-    const srcDir = path.join(BASE, pkg, 'src');
+function scanPackage(pkgDir: string) {
+    const srcDir = path.join(pkgDir, 'src');
     for (const srcFile of walk(srcDir)) {
         const ext = path.extname(srcFile);
         if (!ext) {
@@ -59,7 +66,7 @@ function* walk(filePath: string): Generator<string> {
             yield* walk(path.join(filePath, dirent));
         }
     } catch (e) {
-        yield filePath;
+        return;
     }
 }
 
