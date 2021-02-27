@@ -9,12 +9,13 @@ class Model {
 
 const models = new Map<string, Model>();
 
+const project = process.argv[2];
+if (!project) {
+    console.error('must specify project to build');
+    process.exit(1);
+}
+
 function main() {
-    const project = process.argv[2];
-    if (!project) {
-        console.error('must specify project to build');
-        return;
-    }
     const projectPackageJson = require(`${project}/package.json`);
     for (const pkg of Object.keys(projectPackageJson.dependencies)) {
         const packageJsonPath = require.resolve(`${pkg}/package.json`);
@@ -24,10 +25,18 @@ function main() {
 }
 
 function build() {
-    for (const [qualifiedName, model] of models.entries()) {
-        buildModel(model.qualifiedName, model.srcFiles);
-        break;
+    const projectDir = path.dirname(require.resolve(`${project}/package.json`));
+    const gateways = [];
+    for (const model of models.values()) {
+        const archetype = buildModel(projectDir, model.qualifiedName, model.srcFiles);
+        if (archetype === 'Gateway') {
+            gateways.push(model.qualifiedName);
+        }
     }
+    const gatewayArray = gateways.map(gateway => `require('./${gateway}').${path.basename(gateway)}`).join(',\n');
+    fs.writeFileSync(path.join(projectDir, 'server', 'gateways.js'), `
+        exports.gateways = [${gatewayArray}];
+    `);
 }
 
 function scanPackage(pkgDir: string) {

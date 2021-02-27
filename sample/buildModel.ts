@@ -2,10 +2,13 @@ import * as babel from "@babel/types";
 import { parse } from "@babel/parser";
 import { transformFromAstSync } from "@babel/core";
 import * as fs from "fs";
+import * as path from "path";
 
-type Archetype = "Gateway" | "ActiveRecord" | "Widget";
-
-export function buildModel(qualifiedName: string, srcFiles: string[]) {
+export function buildModel(
+  projectDir: string,
+  qualifiedName: string,
+  srcFiles: string[]
+) {
   const imports: babel.ImportDeclaration[] = [];
   const others: babel.Statement[] = [];
   const classDecls: babel.ClassDeclaration[] = [];
@@ -23,24 +26,39 @@ export function buildModel(qualifiedName: string, srcFiles: string[]) {
     });
     extractStatements(ast as babel.File, { imports, others, classDecls });
   }
-  const result = transformFromAstSync(
-    babel.file(
-      babel.program([
-        ...mergeImports(imports),
-        ...others,
-        mergeClassDecls(classDecls),
-      ])
-    ),
-    undefined,
-    {
-      plugins: ["@babel/plugin-transform-typescript"],
-    }
+  const superClass = classDecls[0].superClass;
+  if (!babel.isIdentifier(superClass)) {
+    throw new Error("archetype not specified");
+  }
+  const outputPath = getOutputPath(projectDir, qualifiedName);
+  const merged = babel.file(
+    babel.program(
+      [...mergeImports(imports), ...others, mergeClassDecls(classDecls)],
+      undefined,
+      "module"
+    )
   );
-  if (!result) {
+  const result = transformFromAstSync(merged, undefined, {
+    filename: outputPath,
+    plugins: [
+      "@babel/plugin-transform-typescript",
+      "@babel/plugin-transform-modules-commonjs",
+    ],
+  });
+  if (!result || !result.code) {
     throw new Error(`failed to buildModel: ${qualifiedName}`);
   }
-  const { code } = result;
-  console.log(code);
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, result.code);
+  return superClass.name as "Gateway" | "ActiveRecord" | "Widget";
+}
+
+function getOutputPath(projectDir: string, qualifiedName: string) {
+  if (qualifiedName.includes("/Ui/")) {
+    return path.join(projectDir, "client", `${qualifiedName}.jsx`);
+  } else {
+    return path.join(projectDir, "server", `${qualifiedName}.js`);
+  }
 }
 
 function mergeClassDecls(classDecls: babel.ClassDeclaration[]) {
@@ -51,9 +69,11 @@ function mergeClassDecls(classDecls: babel.ClassDeclaration[]) {
       if (babel.isClassMethod(member)) {
         if (babel.isIdentifier(member.key)) {
           if (methods.has(member.key.name) && !hasOverrideDecorator(member)) {
-              throw new Error('must decorate method with @override to implement interface');
+            throw new Error(
+              "must decorate method with @override to implement interface"
+            );
           }
-          methods.set(member.key.name, member);
+          methods.set(member.key.name, { ...member, decorators: [] });
         } else {
           others.push(member);
         }
@@ -62,10 +82,13 @@ function mergeClassDecls(classDecls: babel.ClassDeclaration[]) {
       }
     }
   }
-  return {
-    ...classDecls[0],
-    body: { ...classDecls[0].body, body: [...others, ...methods.values()] },
-  };
+  return babel.exportNamedDeclaration(
+    {
+      ...classDecls[0],
+      body: { ...classDecls[0].body, body: [...others, ...methods.values()] },
+    },
+    []
+  );
 }
 
 function hasOverrideDecorator(method: babel.ClassMethod) {

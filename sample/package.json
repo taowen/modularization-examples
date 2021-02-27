@@ -9,10 +9,12 @@
         "@types/node": "^14.14.31",
         "@babel/preset-typescript": "^7.13.0",
         "@babel/plugin-syntax-decorators": "^7.12.13",
+        "@babel/plugin-transform-modules-commonjs": "^7.13.8",
         "@babel/core": "^7.13.0",
         "@types/babel__core": "^7.1.12"
     },
     "scripts": {
-        "build": "ts-node build.ts @merchandise/project"
+        "build": "ts-node build.ts @merchandise/project",
+        "start": "ts-node start.ts @merchandise/project"
     }
 }
