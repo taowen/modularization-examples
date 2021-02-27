@@ -8,6 +8,10 @@ yarn install
 yarn build && yarn start
 ```
 
+# 各 Git 仓库
+
+因为是例子，所以下面是用目录模拟的，实际开发中会使用独立 Git 仓库来保存主板和插件的代码
+
 * merchandise 面向购物者的商城项目
     * motherboard 主板
     * ordinary-product 常规商品插件
@@ -25,6 +29,28 @@ yarn build && yarn start
 * project/server node 服务端，启动在 3000 端口
 
 client 默认会去连自己的 server
+
+# 目录结构
+
+* src/** 代码都在 src 下
+* src/**/Public/ 服务端代码，例如 src/Sell/Public/ProductGateway.ts
+* src/**/Ui/ 客户端代码，例如 src/Sell/Ui/ProductDetailsPage.tsx
+* package.json Git 仓库之间的依赖关系
+* tsconfig.json 提供 @motherboard 这个 import 时的别名
+
+多个 Git 仓库之间通过相对路径来聚合代码，例如
+
+* motherboard 中定义了 src/Sell/Ui/ProductDetailsPage.tsx
+* ordinary-product 中定义了 src/Sell/Ui/ProductDetailsPage.impl.tsx
+* xszk-promotion 中定义了 src/Sell/Ui/ProductDetailsPage.impl.tsx
+
+这三份代码会被 buildModel.ts 聚合之后，输出到
+
+merchandise/project/client/Sell/Ui/ProductDetailsPage.js
+
+* client：是客户端代码，因为 src/Sell/Ui 是在 Ui 下
+* merchandise/project/package.json：这里了定义了 merchandise 项目的所有插件，聚合之后的代码也会写出到这个目录下
+* ProductDetailsPage.js：typescript 代码的后缀是 .ts 或者 .tsx，实际执行的代码需要转换成 .js 文件
 
 # TODO
 
