@@ -1,18 +1,18 @@
 import { use, Widget } from "@autonomy-design-sample/entity-archetype";
 import * as React from 'react';
-import type { ProductGateway } from "../../Sell/Public/ProductGateway";
+import type { GreetingWordsGateway } from "../Public/GreetingWordsGateway";
 
-const productGateway = use<ProductGateway>();
+const greetingWordsGateway = use<GreetingWordsGateway>();
 
 export class HomePage extends Widget {
     
-    private product = productGateway.getProduct('123');
+    private words = greetingWordsGateway.getGreetingWords();
 
     constructor(props: {}) {
         super(props);
     }
 
     public render() {
-        return <div>{this.product.name}</div>;
+        return <div>{this.words}</div>;
     }
 }

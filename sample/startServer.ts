@@ -37,9 +37,10 @@ export function main() {
           const result = await Reflect.get(
             new gatewayClass(),
             command
-          )(...args);
+          )(...args || []);
           resp.end(JSON.stringify({ data: result }));
         } catch (e) {
+            console.error(`failed to handle: ${reqBody}\n`, e);
           resp.end(JSON.stringify({ error: new String(e) }));
         }
       })();

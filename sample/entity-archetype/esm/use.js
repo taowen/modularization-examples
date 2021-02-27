@@ -1,8 +1,8 @@
 // default to call current project server
 export function use(project) {
-    project = project || window.PROJECT;
     return new Proxy({}, {
         get(target, propertyKey, receiver) {
+            project = project || window.PROJECT;
             return rpcMethod.bind(undefined, project, propertyKey);
         },
     });
@@ -11,7 +11,7 @@ export function use(project) {
 export async function withRpc(createObject) {
     const obj = createObject();
     for (const [k, v] of Object.entries(obj)) {
-        if (v && v['then']) {
+        if (v && v["then"]) {
             Reflect.set(obj, k, await v);
         }
     }
@@ -20,8 +20,10 @@ export async function withRpc(createObject) {
 async function rpcMethod(project, command, args) {
     const result = await fetch("/call", {
         method: "POST",
+        headers: {
+            "X-Project": project,
+        },
         body: JSON.stringify({
-            project,
             command,
             args,
         }),

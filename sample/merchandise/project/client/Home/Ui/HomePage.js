@@ -15,17 +15,17 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-const productGateway = (0, _entityArchetype.use)();
+const greetingWordsGateway = (0, _entityArchetype.use)();
 
 class HomePage extends _entityArchetype.Widget {
   constructor(props) {
     super(props);
 
-    _defineProperty(this, "product", productGateway.getProduct('123'));
+    _defineProperty(this, "words", greetingWordsGateway.getGreetingWords());
   }
 
   render() {
-    return /*#__PURE__*/React.createElement("div", null, this.product.name);
+    return /*#__PURE__*/React.createElement("div", null, this.words);
   }
 
 }

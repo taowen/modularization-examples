@@ -5,9 +5,7 @@
 
 # TODO
 
-* use babel to merge .ts and .impl.ts
-* startup server
-* startup client
+* url 路由
 * 演示离散型 UI
 * 演示混合型 UI
 * 演示离散型流程

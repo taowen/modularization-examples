@@ -1,3 +1,4 @@
 
-        exports.gateways = [require('./Sell/Public/ProductGateway').ProductGateway];
+        exports.gateways = [require('./Home/Public/GreetingWordsGateway').GreetingWordsGateway,
+require('./Sell/Public/ProductGateway').ProductGateway];
     

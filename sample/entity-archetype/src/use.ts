@@ -10,11 +10,11 @@ export function use<T>(
 ): {
   [P in MethodsOf<T>]: (...a: Parameters<T[P]>) => Await<ReturnType<T[P]>>;
 } {
-  project = project || (window as any).PROJECT;
   return new Proxy(
     {},
     {
       get(target: object, propertyKey: string, receiver?: any): any {
+        project = project || (window as any).PROJECT;
         return rpcMethod.bind(undefined, project!, propertyKey);
       },
     }
@@ -27,7 +27,7 @@ export async function withRpc<T extends object>(
 ): Promise<T> {
   const obj = createObject();
   for (const [k, v] of Object.entries(obj)) {
-    if (v && v['then']) {
+    if (v && v["then"]) {
       Reflect.set(obj, k, await v);
     }
   }
@@ -37,8 +37,10 @@ export async function withRpc<T extends object>(
 async function rpcMethod(project: string, command: string, args: any[]) {
   const result = await fetch("/call", {
     method: "POST",
+    headers: {
+      "X-Project": project,
+    },
     body: JSON.stringify({
-      project,
       command,
       args,
     }),
