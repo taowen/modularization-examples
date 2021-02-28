@@ -9,12 +9,13 @@ var _entityArchetype = require("@autonomy-design-sample/entity-archetype");
 
 var _Product = require("./Product");
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 class ProductGateway extends _entityArchetype.Gateway {
-  async getProduct(id) {
-    const product = new _Product.Product();
-    product.id = id;
-    product.name = "hello";
-    return product;
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "getProduct", _Product.Product.toGet(_Product.Product));
   }
 
 }

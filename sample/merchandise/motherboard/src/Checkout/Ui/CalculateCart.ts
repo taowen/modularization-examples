@@ -6,4 +6,4 @@ export class CalculateCart extends Command {
   }
 }
 
-export const calculateCart = Command.of(CalculateCart);
+export const calculateCart = Command.toRun(CalculateCart);

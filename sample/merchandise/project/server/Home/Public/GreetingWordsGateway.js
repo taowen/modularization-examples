@@ -8,7 +8,7 @@ exports.GreetingWordsGateway = void 0;
 var _entityArchetype = require("@autonomy-design-sample/entity-archetype");
 
 class GreetingWordsGateway extends _entityArchetype.Gateway {
-  async getGreetingWords() {
+  async getGreetingWords(scene) {
     return 'hello';
   }
 

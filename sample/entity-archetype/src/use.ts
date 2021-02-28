@@ -4,11 +4,13 @@ type MethodsOf<T> = {
   [P in keyof T]: T[P] extends (...a: any) => any ? P : never;
 }[keyof T];
 
+type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;
+
 // default to call current project server
 export function use<T>(
   project?: string
 ): {
-  [P in MethodsOf<T>]: (...a: Parameters<T[P]>) => Await<ReturnType<T[P]>>;
+  [P in MethodsOf<T>]: (...a: Parameters<OmitFirstArg<T[P]>>) => Await<ReturnType<T[P]>>;
 } {
   return new Proxy(
     {},
