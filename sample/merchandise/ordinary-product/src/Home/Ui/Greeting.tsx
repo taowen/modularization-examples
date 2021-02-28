@@ -1,9 +1,14 @@
 import { Widget } from "@autonomy/reactive-widget";
 import { ProductDetailsPage } from "@motherboard/Sell/Ui/ProductDetailsPage";
 import * as React from "react";
-import { Greeting } from "./Greeting";
+import type { GreetingWordsGateway } from "../Public/GreetingWordsGateway";
 
-export class HomePage extends Widget {
+export class Greeting extends Widget {
+  private get greetingWordsGateway() {
+    return this.scene.useSync<GreetingWordsGateway>();
+  }
+  private words = this.greetingWordsGateway.getGreetingWords();
+
   public render() {
     const [, updateState] = React.useState({});
     const forceUpdate = React.useCallback(() => updateState({}), []);
@@ -13,15 +18,6 @@ export class HomePage extends Widget {
     if (window.location.hash === "#discrete-ui") {
       return this.renderWidget(ProductDetailsPage, { productName: "apple" });
     }
-    return (
-      <div>
-        {this.renderWidget(Greeting)}
-        <ul>
-          <li>
-            <a href="#discrete-ui">离散型 UI</a>
-          </li>
-        </ul>
-      </div>
-    );
+    return <h1>{this.words}</h1>;
   }
 }

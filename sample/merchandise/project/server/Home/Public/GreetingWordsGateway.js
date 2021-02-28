@@ -9,6 +9,7 @@ var _entityArchetype = require("@autonomy/entity-archetype");
 
 class GreetingWordsGateway extends _entityArchetype.Gateway {
   async getGreetingWords(scene) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
     return 'hello';
   }
 
