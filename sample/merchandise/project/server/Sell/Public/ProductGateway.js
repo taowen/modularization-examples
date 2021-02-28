@@ -9,13 +9,21 @@ var _entityArchetype = require("@autonomy-design-sample/entity-archetype");
 
 var _Product = require("./Product");
 
+var _UnpublishProducts = require("./UnpublishProducts");
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 class ProductGateway extends _entityArchetype.Gateway {
   constructor(...args) {
     super(...args);
 
-    _defineProperty(this, "getProduct", _Product.Product.toGet(_Product.Product));
+    _defineProperty(this, "getProduct", (0, _entityArchetype.toGet)(_Product.Product));
+
+    _defineProperty(this, "unpublishProduct", (0, _entityArchetype.toRunMethod)(_Product.Product, "unpublish"));
+
+    _defineProperty(this, "unpublishProducts", (0, _entityArchetype.toRun)(_UnpublishProducts.UnpublishProducts));
+
+    _defineProperty(this, "draftProductCountOfCategory", _Product.Product.draftProductCountOfCategory);
   }
 
 }

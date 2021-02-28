@@ -10,4 +10,4 @@ type AllowedNames<Base, Type> = FlagExcludedType<Base, Type>[keyof Base];
 type OmitType<Base, Type> = Pick<Base, AllowedNames<Base, Type>>;
     
 // 4 Exclude the Function type to only get properties
-export type ConstructorType<T> = OmitType<T, Function>;
+export type ConstructorType<T> = Omit<OmitType<T, Function>, 'scene'>;
