@@ -12,9 +12,7 @@ export interface Database {
     executeSql(scene: Scene, sql: string, sqlVars: Record<string, any>): Promise<any[]>;
 }
 export interface RemoteService {
-    useGateway<T extends Gateway>(scene: Scene, project?: string): {
-        [P in MethodsOf<T>]: (...a: Parameters<OmitFirstArg<T[P]>>) => Await<ReturnType<T[P]>>;
-    };
+    useGateway(scene: Scene, project?: string): any;
 }
 export interface Operation {
     traceId: string;
@@ -31,7 +29,9 @@ export declare class Scene {
         remoteService: RemoteService;
         operation: Partial<Operation>;
     });
-    useGateway: OmitFirstArg<RemoteService["useGateway"]>;
+    useSync<T extends Gateway>(project?: string): {
+        [P in MethodsOf<T>]: (...a: Parameters<OmitFirstArg<T[P]>>) => Await<ReturnType<T[P]>>;
+    };
     insert: OmitFirstArg<Database["insert"]>;
     update: OmitFirstArg<Database["update"]>;
     delete: OmitFirstArg<Database["delete"]>;

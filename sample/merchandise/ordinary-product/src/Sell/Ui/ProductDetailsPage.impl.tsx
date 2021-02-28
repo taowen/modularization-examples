@@ -5,7 +5,7 @@ import type { ProductGateway } from "../Public/ProductGateway";
 
 export class ProductDetailsPage extends INF {
   private get productGateway() {
-    return this.scene.useGateway<ProductGateway>();
+    return this.scene.useSync<ProductGateway>();
   }
 
   // 每个 Widget 片段自己通过 rpc 去拿自己要的数据

@@ -25,7 +25,7 @@ class HomePage extends _reactiveWidget.Widget {
   }
 
   get greetingWordsGateway() {
-    return this.scene.useGateway();
+    return this.scene.useSync();
   }
 
   render() {

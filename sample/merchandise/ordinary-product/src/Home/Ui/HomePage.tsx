@@ -5,7 +5,7 @@ import type { GreetingWordsGateway } from "../Public/GreetingWordsGateway";
 
 export class HomePage extends Widget {
   private get greetingWordsGateway() {
-    return this.scene.useGateway<GreetingWordsGateway>();
+    return this.scene.useSync<GreetingWordsGateway>();
   }
   private words = this.greetingWordsGateway.getGreetingWords();
 

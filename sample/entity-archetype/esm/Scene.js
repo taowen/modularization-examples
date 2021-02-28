@@ -1,9 +1,6 @@
 // 同时每个异步执行流程会创建一个独立的 scene，例如 handle 一个 http 请求，处理一次鼠标点击
 export class Scene {
     constructor(options) {
-        this.useGateway = (project) => {
-            return this.remoteService.useGateway(this, project);
-        };
         this.insert = (activeRecordClass, props) => {
             return this.database.insert(this, activeRecordClass, props);
         };
@@ -25,6 +22,9 @@ export class Scene {
             props: {},
             ...options.operation,
         };
+    }
+    useSync(project) {
+        return this.remoteService.useGateway(this, project);
     }
     query(arg1, arg2) {
         if (arg1.IS_ACTIVE_RECORD) {

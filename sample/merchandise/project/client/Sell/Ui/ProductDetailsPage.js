@@ -40,7 +40,7 @@ class ProductDetailsPage extends _reactiveWidget.Widget {
 
   renderXszk() {
     for (const promotion of this.activeXszkPromotions) {
-      if (promotion.targetProductId === this.props.productId) {
+      if (promotion.targetProductName === this.props.productName) {
         return /*#__PURE__*/React.createElement("div", null, "\u9650\u65F6\u6298\u6263");
       }
     }
@@ -49,12 +49,12 @@ class ProductDetailsPage extends _reactiveWidget.Widget {
   }
 
   get productGateway() {
-    return this.scene.useGateway();
+    return this.scene.useSync();
   } // 每个 Widget 片段自己通过 rpc 去拿自己要的数据
 
 
   get xszkPromotionGateway() {
-    return this.scene.useGateway();
+    return this.scene.useSync();
   } // 缓存所有的折扣活动
 
 

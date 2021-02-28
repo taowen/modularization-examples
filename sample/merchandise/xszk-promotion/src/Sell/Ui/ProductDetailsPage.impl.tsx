@@ -6,7 +6,7 @@ import { XszkPromotionGateway } from "../Public/XszkPromotionGateway";
 export class ProductDetailsPage extends INF {
 
   private get xszkPromotionGateway() {
-    return this.scene.useGateway<XszkPromotionGateway>();
+    return this.scene.useSync<XszkPromotionGateway>();
   }
   // 缓存所有的折扣活动
   public activeXszkPromotions = this.xszkPromotionGateway.listActiveXszkPromotions();
@@ -14,7 +14,7 @@ export class ProductDetailsPage extends INF {
   @override
   public renderXszk() {
     for (const promotion of this.activeXszkPromotions) {
-      if (promotion.targetProductId === this.props.productId) {
+      if (promotion.targetProductName === this.props.productName) {
         return <div>限时折扣</div>;
       }
     }

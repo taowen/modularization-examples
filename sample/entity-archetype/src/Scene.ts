@@ -34,14 +34,7 @@ export interface Database {
 
 // 提供 RPC
 export interface RemoteService {
-  useGateway<T extends Gateway>(
-    scene: Scene,
-    project?: string
-  ): {
-    [P in MethodsOf<T>]: (
-      ...a: Parameters<OmitFirstArg<T[P]>>
-    ) => Await<ReturnType<T[P]>>;
-  };
+  useGateway(scene: Scene, project?: string): any;
 }
 
 export interface Operation {
@@ -73,9 +66,17 @@ export class Scene {
       ...options.operation,
     };
   }
-  public useGateway: OmitFirstArg<RemoteService["useGateway"]> = (project) => {
+
+  public useSync<T extends Gateway>(
+    project?: string
+  ): {
+    [P in MethodsOf<T>]: (
+      ...a: Parameters<OmitFirstArg<T[P]>>
+    ) => Await<ReturnType<T[P]>>;
+  } {
     return this.remoteService.useGateway(this, project);
-  };
+  }
+
   public insert: OmitFirstArg<Database["insert"]> = (
     activeRecordClass,
     props
