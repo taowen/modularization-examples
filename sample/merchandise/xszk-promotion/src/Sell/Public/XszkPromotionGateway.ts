@@ -1,8 +1,6 @@
-import { Gateway } from "@autonomy-design-sample/entity-archetype";
+import { Gateway, toQuery } from "@autonomy/entity-archetype";
 import { XszkPromotion } from "./XszkPromotion";
 
 export class XszkPromotionGateway extends Gateway {
-    public listActiveXszkPromotions(): XszkPromotion[] {
-        return [];
-    }
+    public listActiveXszkPromotions =  toQuery(XszkPromotion);
 }

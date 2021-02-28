@@ -1,14 +1,14 @@
 import {
   Gateway,
-  toGet,
+  toLoad,
   toRun,
   toRunMethod,
-} from "@autonomy-design-sample/entity-archetype";
+} from "@autonomy/entity-archetype";
 import { Product } from "./Product";
 import { UnpublishProducts } from "./UnpublishProducts";
 
 export class ProductGateway extends Gateway {
-  public getProduct = toGet(Product);
+  public loadProduct = toLoad(Product);
   public unpublishProduct = toRunMethod(Product, "unpublish");
   public unpublishProducts = toRun(UnpublishProducts);
   public draftProductCountOfCategory = Product.draftProductCountOfCategory;

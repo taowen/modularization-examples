@@ -1,16 +1,13 @@
-import {
-  renderWidget,
-  use,
-  Widget,
-} from "@autonomy-design-sample/entity-archetype";
+import { Widget } from "@autonomy/reactive-widget";
 import { ProductDetailsPage } from "@motherboard/Sell/Ui/ProductDetailsPage";
 import * as React from "react";
 import type { GreetingWordsGateway } from "../Public/GreetingWordsGateway";
 
-const greetingWordsGateway = use<GreetingWordsGateway>();
-
 export class HomePage extends Widget {
-  private words = greetingWordsGateway.getGreetingWords();
+  private get greetingWordsGateway() {
+    return this.scene.useGateway<GreetingWordsGateway>();
+  }
+  private words = this.greetingWordsGateway.getGreetingWords();
 
   public render() {
     const [, updateState] = React.useState({});
@@ -19,7 +16,7 @@ export class HomePage extends Widget {
       window.addEventListener("hashchange", forceUpdate);
     });
     if (window.location.hash === "#discrete-ui") {
-      return renderWidget(ProductDetailsPage, { productId: "123" });
+      return this.renderWidget(ProductDetailsPage, { productName: "apple" });
     }
     return (
       <div>

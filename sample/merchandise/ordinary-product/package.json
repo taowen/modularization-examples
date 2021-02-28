@@ -3,7 +3,7 @@
     "private": true,
     "name": "@merchandise/ordinary-product",
     "dependencies": {
-        "@autonomy-design-sample/entity-archetype": "0.0.1",
+        "@autonomy/entity-archetype": "0.0.1",
         "@merchandise/motherboard": "0.0.1"
     }
 }

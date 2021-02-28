@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.UnpublishProducts = void 0;
 
-var _entityArchetype = require("@autonomy-design-sample/entity-archetype");
+var _entityArchetype = require("@autonomy/entity-archetype");
 
 var _Product = require("./Product");
 

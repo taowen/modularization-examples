@@ -5,7 +5,7 @@ const projectDir = path.dirname(require.resolve(`${process.env.PROJECT}/package.
 
 module.exports = {
     context: projectDir,
-    entry: './entry.js',
+    entry: './client.js',
     mode: 'development',
     plugins: [
         new HtmlWebpackPlugin({

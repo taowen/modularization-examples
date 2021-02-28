@@ -1,4 +1,4 @@
-import { Command } from "@autonomy-design-sample/entity-archetype";
+import { Command } from "@autonomy/entity-archetype";
 import { Product } from "./Product";
 
 export class UnpublishProducts extends Command {

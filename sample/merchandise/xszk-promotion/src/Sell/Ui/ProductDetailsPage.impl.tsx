@@ -1,13 +1,15 @@
-import { override, use } from "@autonomy-design-sample/entity-archetype";
+import { override } from "@autonomy/entity-archetype";
 import * as React from "react";
 import { ProductDetailsPage as INF } from "@motherboard/Sell/Ui/ProductDetailsPage";
 import { XszkPromotionGateway } from "../Public/XszkPromotionGateway";
 
-const xszkPromotionGateway = use<XszkPromotionGateway>();
-
 export class ProductDetailsPage extends INF {
+
+  private get xszkPromotionGateway() {
+    return this.scene.useGateway<XszkPromotionGateway>();
+  }
   // 缓存所有的折扣活动
-  public activeXszkPromotions = xszkPromotionGateway.listActiveXszkPromotions();
+  public activeXszkPromotions = this.xszkPromotionGateway.listActiveXszkPromotions();
 
   @override
   public renderXszk() {

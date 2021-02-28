@@ -5,6 +5,7 @@ import type { Scene } from "./Scene";
 
 // 数据库表
 export class ActiveRecord {
+  public static IS_ACTIVE_RECORD = true as true;
   constructor(public readonly scene: Scene) {}
   public beforeInsert?: () => Promise<void>;
   public beforeDelete?: () => Promise<void>;
@@ -25,10 +26,15 @@ export class ActiveRecord {
   ): ReturnType<C["run"]> {
     return call(this.scene, commandClass, props);
   }
+
+  public get class() {
+    return this.constructor as ActiveRecordClass<this>;
+  }
 }
 
 export type ActiveRecordClass<T extends ActiveRecord = any> = {
   new (scene: Scene): T;
+  IS_ACTIVE_RECORD: true;
   tableName?: string;
 };
 
@@ -43,8 +49,20 @@ export function toInsert<T extends ActiveRecord>(
 export function toQuery<T extends ActiveRecord>(
   activeRecordClass: ActiveRecordClass<T>
 ) {
-  return (scene: Scene, props: Partial<T>) => {
-    return scene.query(activeRecordClass, props);
+  return (scene: Scene, props?: Partial<T>) => {
+    return scene.query(activeRecordClass, props || {});
+  };
+}
+
+export function toLoad<T extends ActiveRecord & { id: any }>(
+  activeRecordClass: ActiveRecordClass<T>
+) {
+  return async (scene: Scene, props: Partial<T>) => {
+    const records = await scene.query(activeRecordClass, props);
+    if (records.length !== 1) {
+      throw new Error('unexpected');
+    }
+    return records[0];
   };
 }
 
@@ -52,7 +70,14 @@ export function toGet<T extends ActiveRecord & { id: any }>(
   activeRecordClass: ActiveRecordClass<T>
 ) {
   return async (scene: Scene, id: T["id"]) => {
-    return (await scene.query(activeRecordClass, { id } as any))[0];
+    const records = await scene.query(activeRecordClass, { id } as any);
+    if (records.length === 0) {
+      throw new Error(`${ActiveRecord.getTableName(activeRecordClass)} ${id} not found`);
+    }
+    if (records.length !== 1) {
+      throw new Error('unexpected');
+    }
+    return records[0];
   };
 }
 

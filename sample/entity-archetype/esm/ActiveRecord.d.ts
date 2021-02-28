@@ -4,19 +4,25 @@ import type { MethodsOf } from "./MethodsOf";
 import type { Scene } from "./Scene";
 export declare class ActiveRecord {
     readonly scene: Scene;
+    static IS_ACTIVE_RECORD: true;
     constructor(scene: Scene);
     beforeInsert?: () => Promise<void>;
     beforeDelete?: () => Promise<void>;
     static getTableName<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): string;
     protected update(): Promise<void>;
     protected call<C extends Command>(commandClass: new (scene: Scene, props: Record<string, any>) => C, props: {} extends ConstructorType<C> ? void : ConstructorType<C>): ReturnType<C["run"]>;
+    get class(): ActiveRecordClass<this>;
 }
 export declare type ActiveRecordClass<T extends ActiveRecord = any> = {
     new (scene: Scene): T;
+    IS_ACTIVE_RECORD: true;
     tableName?: string;
 };
-export declare function toInsert<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): (scene: Scene, props: ConstructorType<T>) => Promise<T>;
-export declare function toQuery<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): (scene: Scene, props: Partial<T>) => Promise<T[]>;
+export declare function toInsert<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): (scene: Scene, props: ConstructorType<T>) => Promise<ActiveRecord>;
+export declare function toQuery<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): (scene: Scene, props?: Partial<T> | undefined) => Promise<T[]>;
+export declare function toLoad<T extends ActiveRecord & {
+    id: any;
+}>(activeRecordClass: ActiveRecordClass<T>): (scene: Scene, props: Partial<T>) => Promise<T>;
 export declare function toGet<T extends ActiveRecord & {
     id: any;
 }>(activeRecordClass: ActiveRecordClass<T>): (scene: Scene, id: T["id"]) => Promise<T>;

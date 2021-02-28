@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProductGateway = void 0;
 
-var _entityArchetype = require("@autonomy-design-sample/entity-archetype");
+var _entityArchetype = require("@autonomy/entity-archetype");
 
 var _Product = require("./Product");
 
@@ -17,7 +17,7 @@ class ProductGateway extends _entityArchetype.Gateway {
   constructor(...args) {
     super(...args);
 
-    _defineProperty(this, "getProduct", (0, _entityArchetype.toGet)(_Product.Product));
+    _defineProperty(this, "loadProduct", (0, _entityArchetype.toLoad)(_Product.Product));
 
     _defineProperty(this, "unpublishProduct", (0, _entityArchetype.toRunMethod)(_Product.Product, "unpublish"));
 

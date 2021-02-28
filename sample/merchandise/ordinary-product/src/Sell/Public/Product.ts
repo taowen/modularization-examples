@@ -2,7 +2,7 @@ import {
   ActiveRecord,
   sqlView,
   subsetOf,
-} from "@autonomy-design-sample/entity-archetype";
+} from "@autonomy/entity-archetype";
 
 export class Product extends ActiveRecord {
   public static subset = subsetOf(Product);

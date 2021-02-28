@@ -13,7 +13,11 @@ export class ActiveRecord {
     call(commandClass, props) {
         return call(this.scene, commandClass, props);
     }
+    get class() {
+        return this.constructor;
+    }
 }
+ActiveRecord.IS_ACTIVE_RECORD = true;
 export function toInsert(activeRecordClass) {
     return (scene, props) => {
         return scene.insert(activeRecordClass, props);
@@ -21,12 +25,28 @@ export function toInsert(activeRecordClass) {
 }
 export function toQuery(activeRecordClass) {
     return (scene, props) => {
-        return scene.query(activeRecordClass, props);
+        return scene.query(activeRecordClass, props || {});
+    };
+}
+export function toLoad(activeRecordClass) {
+    return async (scene, props) => {
+        const records = await scene.query(activeRecordClass, props);
+        if (records.length !== 1) {
+            throw new Error('unexpected');
+        }
+        return records[0];
     };
 }
 export function toGet(activeRecordClass) {
     return async (scene, id) => {
-        return (await scene.query(activeRecordClass, { id }))[0];
+        const records = await scene.query(activeRecordClass, { id });
+        if (records.length === 0) {
+            throw new Error(`${ActiveRecord.getTableName(activeRecordClass)} ${id} not found`);
+        }
+        if (records.length !== 1) {
+            throw new Error('unexpected');
+        }
+        return records[0];
     };
 }
 export function toRunMethod(activeRecordClass, method) {
@@ -51,8 +71,7 @@ export function sqlView(sqlFragments, ...activeRecordClasses) {
             merged.push(ActiveRecord.getTableName(activeRecordClass));
         }
     }
-    const sql = merged.join('');
-    console.log(sql);
+    const sql = merged.join("");
     return (scene, sqlVars) => {
         return scene.executeSql(sql, sqlVars);
     };

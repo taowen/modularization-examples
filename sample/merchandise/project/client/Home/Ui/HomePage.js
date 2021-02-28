@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.HomePage = void 0;
 
-var _entityArchetype = require("@autonomy-design-sample/entity-archetype");
+var _reactiveWidget = require("@autonomy/reactive-widget");
 
 var _ProductDetailsPage = require("../../Sell/Ui/ProductDetailsPage");
 
@@ -17,13 +17,15 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-const greetingWordsGateway = (0, _entityArchetype.use)();
-
-class HomePage extends _entityArchetype.Widget {
+class HomePage extends _reactiveWidget.Widget {
   constructor(...args) {
     super(...args);
 
-    _defineProperty(this, "words", greetingWordsGateway.getGreetingWords());
+    _defineProperty(this, "words", this.greetingWordsGateway.getGreetingWords());
+  }
+
+  get greetingWordsGateway() {
+    return this.scene.useGateway();
   }
 
   render() {
@@ -34,8 +36,8 @@ class HomePage extends _entityArchetype.Widget {
     });
 
     if (window.location.hash === "#discrete-ui") {
-      return (0, _entityArchetype.renderWidget)(_ProductDetailsPage.ProductDetailsPage, {
-        productId: "123"
+      return this.renderWidget(_ProductDetailsPage.ProductDetailsPage, {
+        productName: "apple"
       });
     }
 

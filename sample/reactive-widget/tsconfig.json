@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "incremental": true,
+        "target": "es2018",
+        "strict": true,
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "module": "ES2015",
+        "sourceMap": true,
+        "declaration": true,
+        "strictPropertyInitialization": false,
+        "outDir": "esm",
+        "jsx": "react"
+    },
+    "include": ["./src/**/*"]
+}

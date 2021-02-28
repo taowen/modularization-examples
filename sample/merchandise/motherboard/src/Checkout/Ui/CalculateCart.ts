@@ -1,4 +1,4 @@
-import { Command } from "@autonomy-design-sample/entity-archetype";
+import { Command } from "@autonomy/entity-archetype";
 
 export class CalculateCart extends Command {
   public run() {

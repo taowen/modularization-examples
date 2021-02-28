@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProductDetailsPage = void 0;
 
-var _entityArchetype = require("@autonomy-design-sample/entity-archetype");
+var _reactiveWidget = require("@autonomy/reactive-widget");
 
 var React = _interopRequireWildcard(require("react"));
 
@@ -15,23 +15,18 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-const productGateway = (0, _entityArchetype.use)();
-const xszkPromotionGateway = (0, _entityArchetype.use)();
+class ProductDetailsPage extends _reactiveWidget.Widget {
+  constructor(...args) {
+    super(...args);
 
-class ProductDetailsPage extends _entityArchetype.Widget {
-  // 每个 Widget 片段自己通过 rpc 去拿自己要的数据
-  // 缓存所有的折扣活动
-  constructor(props) {
-    super(props);
+    _defineProperty(this, "theProduct", this.productGateway.loadProduct({
+      name: this.props.productName
+    }));
 
-    _defineProperty(this, "theProduct", productGateway.getProduct(this.props.productId));
+    _defineProperty(this, "activeXszkPromotions", this.xszkPromotionGateway.listActiveXszkPromotions());
+  }
 
-    _defineProperty(this, "activeXszkPromotions", xszkPromotionGateway.listActiveXszkPromotions());
-
-    this.props = props;
-  } // 把商品详情页拆分成两个片段
-
-
+  // 把商品详情页拆分成两个片段
   render() {
     const ProductBasics = this.renderProductBasics.bind(this);
     const Xszk = this.renderXszk.bind(this);
@@ -52,6 +47,16 @@ class ProductDetailsPage extends _entityArchetype.Widget {
 
     return /*#__PURE__*/React.createElement("div", null, "\u65E0\u6298\u6263");
   }
+
+  get productGateway() {
+    return this.scene.useGateway();
+  } // 每个 Widget 片段自己通过 rpc 去拿自己要的数据
+
+
+  get xszkPromotionGateway() {
+    return this.scene.useGateway();
+  } // 缓存所有的折扣活动
+
 
 }
 

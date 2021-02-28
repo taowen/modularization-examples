@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.XszkPromotion = void 0;
 
-var _entityArchetype = require("@autonomy-design-sample/entity-archetype");
+var _entityArchetype = require("@autonomy/entity-archetype");
 
 class XszkPromotion extends _entityArchetype.ActiveRecord {}
 

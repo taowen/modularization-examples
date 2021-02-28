@@ -1,6 +1,6 @@
 import * as http from "http";
 import * as path from "path";
-import { GatewayClass } from "@autonomy-design-sample/entity-archetype";
+import type { Gateway } from "@autonomy/entity-archetype";
 
 const project = process.argv[2];
 if (!project) {
@@ -8,42 +8,53 @@ if (!project) {
   process.exit(1);
 }
 
-export function main() {
+export async function main() {
   const projectDir = path.dirname(require.resolve(`${project}/package.json`));
-  const { gateways } = require(path.join(projectDir, "server", "gateways.js"));
-  const commands = new Map<string, GatewayClass>();
-  for (const gatewayClass of gateways) {
+  const { gateways: gatewayClasses } = require(path.join(
+    projectDir,
+    "server",
+    "gateways.js"
+  ));
+  const commands = new Map<string, Gateway>();
+  for (const gatewayClass of gatewayClasses) {
+    const gateway = new gatewayClass();
     for (const command of Object.getOwnPropertyNames(gatewayClass.prototype)) {
       if (command === "constructor") {
         continue;
       }
-      commands.set(command, gatewayClass);
+      commands.set(command, gateway);
+    }
+    for (const command of Object.keys(gateway)) {
+      commands.set(command, gateway);
     }
   }
+  const { start } = require(path.join(projectDir, "server.js"));
+  const handle = await start();
   const server = http.createServer((req, resp) => {
     let reqBody = "";
     req.on("data", (chunk) => {
       reqBody += chunk;
     });
-    req.on("end", () => {
+    req.on("end", async () => {
       const { command, args } = JSON.parse(reqBody) || {};
-      const gatewayClass = commands.get(command);
-      if (!gatewayClass) {
+      const gateway = commands.get(command);
+      if (!gateway) {
         console.error("can not find handler", reqBody);
+        resp.end(JSON.stringify({ error: "handler not found" }));
         return;
       }
-      (async () => {
-        try {
-          const result = await Reflect.get(
-            new gatewayClass(),
-            command
-          )(...args || []);
-          resp.end(JSON.stringify({ data: result }));
-        } catch (e) {
-            console.error(`failed to handle: ${reqBody}\n`, e);
-          resp.end(JSON.stringify({ error: new String(e) }));
-        }
-      })();
+      const operation = {};
+      try {
+        const result = await handle(
+          operation,
+          Reflect.get(gateway, command),
+          args
+        );
+        resp.end(JSON.stringify({ data: result }));
+      } catch (e) {
+        console.error(`failed to handle: ${reqBody}\n`, e);
+        resp.end(JSON.stringify({ error: new String(e) }));
+      }
     });
   });
   server.listen(3000);

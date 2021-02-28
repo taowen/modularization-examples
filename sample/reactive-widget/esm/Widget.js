@@ -2,20 +2,24 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 // 展示界面
 export class Widget {
-    constructor(props) {
+    constructor(scene, props) {
+        this.scene = scene;
         this.props = props;
     }
+    renderWidget(widgetClass, props) {
+        return renderWidget(this.scene, widgetClass, props);
+    }
 }
-export function renderRootWidget(widgetClass) {
+export function renderRootWidget(scene, widgetClass) {
     const elem = document.getElementById("RootWidget");
     if (!elem) {
         console.error("missing element #RootWidget");
         return;
     }
-    ReactDOM.render(renderWidget(widgetClass), elem);
+    ReactDOM.render(renderWidget(scene, widgetClass), elem);
 }
-export function renderWidget(widgetClass, props) {
-    const widget = new widgetClass(props);
+export function renderWidget(scene, widgetClass, props) {
+    const widget = new widgetClass(scene, props);
     const promise = awaitRpc(widget);
     function Wrapper() {
         React.useEffect(() => {
