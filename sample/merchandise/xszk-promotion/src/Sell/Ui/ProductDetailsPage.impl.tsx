@@ -4,12 +4,11 @@ import { ProductDetailsPage as INF } from "@motherboard/Sell/Ui/ProductDetailsPa
 import { XszkPromotionGateway } from "../Public/XszkPromotionGateway";
 
 export class ProductDetailsPage extends INF {
-
-  private get xszkPromotionGateway() {
-    return this.scene.useSync<XszkPromotionGateway>();
-  }
   // 缓存所有的折扣活动
-  public activeXszkPromotions = this.xszkPromotionGateway.listActiveXszkPromotions();
+  public activeXszkPromotions = this.future(async (scene) => {
+    const gateway = scene.useGateway<XszkPromotionGateway>();
+    return await gateway.listActiveXszkPromotions();
+  });
 
   @override
   public renderXszk() {

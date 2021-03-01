@@ -7,8 +7,6 @@ exports.Greeting = void 0;
 
 var _reactiveWidget = require("@autonomy/reactive-widget");
 
-var _ProductDetailsPage = require("../../Sell/Ui/ProductDetailsPage");
-
 var React = _interopRequireWildcard(require("react"));
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
@@ -21,26 +19,13 @@ class Greeting extends _reactiveWidget.Widget {
   constructor(...args) {
     super(...args);
 
-    _defineProperty(this, "words", this.greetingWordsGateway.getGreetingWords());
-  }
-
-  get greetingWordsGateway() {
-    return this.scene.useSync();
+    _defineProperty(this, "words", this.future(async scene => {
+      const gateway = scene.useGateway();
+      return await gateway.getGreetingWords();
+    }));
   }
 
   render() {
-    const [, updateState] = React.useState({});
-    const forceUpdate = React.useCallback(() => updateState({}), []);
-    React.useEffect(() => {
-      window.addEventListener("hashchange", forceUpdate);
-    });
-
-    if (window.location.hash === "#discrete-ui") {
-      return this.renderWidget(_ProductDetailsPage.ProductDetailsPage, {
-        productName: "apple"
-      });
-    }
-
     return /*#__PURE__*/React.createElement("h1", null, this.words);
   }
 

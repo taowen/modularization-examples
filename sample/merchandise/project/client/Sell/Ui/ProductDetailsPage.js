@@ -19,11 +19,17 @@ class ProductDetailsPage extends _reactiveWidget.Widget {
   constructor(...args) {
     super(...args);
 
-    _defineProperty(this, "theProduct", this.productGateway.loadProduct({
-      name: this.props.productName
+    _defineProperty(this, "theProduct", this.future(async scene => {
+      const gateway = scene.useGateway();
+      return await gateway.loadProduct({
+        name: this.props.productName
+      });
     }));
 
-    _defineProperty(this, "activeXszkPromotions", this.xszkPromotionGateway.listActiveXszkPromotions());
+    _defineProperty(this, "activeXszkPromotions", this.future(async scene => {
+      const gateway = scene.useGateway();
+      return await gateway.listActiveXszkPromotions();
+    }));
   }
 
   // 把商品详情页拆分成两个片段
@@ -47,16 +53,6 @@ class ProductDetailsPage extends _reactiveWidget.Widget {
 
     return /*#__PURE__*/React.createElement("div", null, "\u65E0\u6298\u6263");
   }
-
-  get productGateway() {
-    return this.scene.useSync();
-  } // 每个 Widget 片段自己通过 rpc 去拿自己要的数据
-
-
-  get xszkPromotionGateway() {
-    return this.scene.useSync();
-  } // 缓存所有的折扣活动
-
 
 }
 

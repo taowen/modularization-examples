@@ -4,13 +4,12 @@ import { ProductDetailsPage as INF } from "@motherboard/Sell/Ui/ProductDetailsPa
 import type { ProductGateway } from "../Public/ProductGateway";
 
 export class ProductDetailsPage extends INF {
-  private get productGateway() {
-    return this.scene.useSync<ProductGateway>();
-  }
-
   // 每个 Widget 片段自己通过 rpc 去拿自己要的数据
-  private theProduct = this.productGateway.loadProduct({
-    name: this.props.productName,
+  private theProduct = this.future(async (scene) => {
+    const gateway = scene.useGateway<ProductGateway>();
+    return await gateway.loadProduct({
+      name: this.props.productName,
+    });
   });
 
   @override

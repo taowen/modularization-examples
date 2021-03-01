@@ -1,19 +1,12 @@
 const {
-  Scene,
-  DUMMY_DATABASE,
   HttpRemoteService,
+  InMemDatabase,
 } = require("@autonomy/entity-archetype");
 const { renderRootWidget } = require("@autonomy/reactive-widget");
 const { HomePage } = require("./client/Home/Ui/HomePage");
 
-const scene = new Scene({
-  database: DUMMY_DATABASE,
+renderRootWidget(HomePage, {
+  project: "@merchandise/project",
   remoteService: new HttpRemoteService(),
-  operation: {
-    traceOp: `initial render ${window.location.href}`,
-    props: {
-      project: "@merchandise/project",
-    },
-  },
+  database: new InMemDatabase(),
 });
-renderRootWidget(scene, HomePage);

@@ -1,6 +1,11 @@
-// 同时每个异步执行流程会创建一个独立的 scene，例如 handle 一个 http 请求，处理一次鼠标点击
+// 同时每个异步执行流程会创建一个独立的 scene，用来跟踪异步操作与I/O的订阅关系
+// 后端 handle 一个 http 请求，后端不开启订阅
+// 前端计算每个 future 的值（读操作），捕捉订阅关系
+// 前端处理一次鼠标点击（写操作），触发订阅者
 export class Scene {
     constructor(options) {
+        this.notifyChange = (tableName) => { };
+        this.subscribers = new Set();
         this.insert = (activeRecordClass, props) => {
             return this.database.insert(this, activeRecordClass, props);
         };
@@ -23,7 +28,7 @@ export class Scene {
             ...options.operation,
         };
     }
-    useSync(project) {
+    useGateway(project) {
         return this.remoteService.useGateway(this, project);
     }
     query(arg1, arg2) {
@@ -36,22 +41,4 @@ export class Scene {
         return undefined;
     }
 }
-// 前端浏览器等场景里没有数据库
-export const DUMMY_DATABASE = {
-    insert: () => {
-        throw new Error("unsupported");
-    },
-    update: () => {
-        throw new Error("unsupported");
-    },
-    delete: () => {
-        throw new Error("unsupported");
-    },
-    queryByExample: () => {
-        throw new Error("unsupported");
-    },
-    executeSql: () => {
-        throw new Error("unsupported");
-    },
-};
 //# sourceMappingURL=Scene.js.map

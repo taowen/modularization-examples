@@ -4,12 +4,14 @@ import * as React from "react";
 import { Greeting } from "./Greeting";
 
 export class HomePage extends Widget {
-  public render() {
+  public setup() {
     const [, updateState] = React.useState({});
     const forceUpdate = React.useCallback(() => updateState({}), []);
     React.useEffect(() => {
       window.addEventListener("hashchange", forceUpdate);
     });
+  }
+  public render() {
     if (window.location.hash === "#discrete-ui") {
       return this.renderWidget(ProductDetailsPage, { productName: "apple" });
     }

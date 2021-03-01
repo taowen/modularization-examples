@@ -3,8 +3,6 @@ import type { ConstructorType } from "./ConstructorType";
 import type { MethodsOf } from "./MethodsOf";
 import type { Gateway } from "./Gateway";
 
-type Await<T> = T extends Promise<infer U> ? U : T;
-
 type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
   ? (...args: P) => R
   : never;
@@ -37,6 +35,12 @@ export interface RemoteService {
   useGateway(scene: Scene, project?: string): any;
 }
 
+// trace -> operation -> scene
+// 一个 trace 会有多个进程被多次执行，每次执行是一个 operation
+// 一个 operation 会包含一个或者多个 scene
+// 浏览器进入首次渲染，是一个 operation
+// 每次鼠标点击，触发重渲染，也是一个 operation。此时因为可能触发多处重渲染，所以会触发多个 scene
+// 后端 handle 一个 http 请求也是一个 operation（但是和前端的 operation 共享 trace 信息）
 export interface Operation {
   // traceId, traceOp, baggage 会 RPC 透传
   traceId: string;
@@ -46,11 +50,18 @@ export interface Operation {
   props: Record<string, any>;
 }
 
-// 同时每个异步执行流程会创建一个独立的 scene，例如 handle 一个 http 请求，处理一次鼠标点击
+// 同时每个异步执行流程会创建一个独立的 scene，用来跟踪异步操作与I/O的订阅关系
+// 后端 handle 一个 http 请求，后端不开启订阅
+// 前端计算每个 future 的值（读操作），捕捉订阅关系
+// 前端处理一次鼠标点击（写操作），触发订阅者
 export class Scene {
+  public notifyChange = (tableName: string) => {};
   public readonly operation: Operation;
   public readonly database: Database;
   public readonly remoteService: RemoteService;
+  public readonly subscribers = new Set<{
+    subscribe(tableName: string): void;
+  }>();
   constructor(options: {
     database: Database;
     remoteService: RemoteService;
@@ -67,12 +78,12 @@ export class Scene {
     };
   }
 
-  public useSync<T extends Gateway>(
+  public useGateway<T extends Gateway>(
     project?: string
   ): {
     [P in MethodsOf<T>]: (
       ...a: Parameters<OmitFirstArg<T[P]>>
-    ) => Await<ReturnType<T[P]>>;
+    ) => ReturnType<T[P]>;
   } {
     return this.remoteService.useGateway(this, project);
   }
@@ -113,22 +124,3 @@ export class Scene {
     return undefined;
   }
 }
-
-// 前端浏览器等场景里没有数据库
-export const DUMMY_DATABASE: Database = {
-  insert: () => {
-    throw new Error("unsupported");
-  },
-  update: () => {
-    throw new Error("unsupported");
-  },
-  delete: () => {
-    throw new Error("unsupported");
-  },
-  queryByExample: () => {
-    throw new Error("unsupported");
-  },
-  executeSql: () => {
-    throw new Error("unsupported");
-  },
-};

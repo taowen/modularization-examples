@@ -2,7 +2,7 @@ export class HttpRemoteService {
     useGateway(scene, project) {
         return new Proxy({}, {
             get: (target, propertyKey, receiver) => {
-                project = project || scene.operation.props.project;
+                project = project || HttpRemoteService.project;
                 return callViaHttp.bind(undefined, project, propertyKey);
             },
         });
