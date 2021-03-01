@@ -34,9 +34,7 @@ class ProductDetailsPage extends _reactiveWidget.Widget {
 
   // 把商品详情页拆分成两个片段
   render() {
-    const ProductBasics = this.renderProductBasics.bind(this);
-    const Xszk = this.renderXszk.bind(this);
-    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(ProductBasics, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(Xszk, null));
+    return /*#__PURE__*/React.createElement("div", null, this.renderProductBasics(), /*#__PURE__*/React.createElement("hr", null), this.renderXszk());
   } // 留给 ordinary-product 去实现
 
 

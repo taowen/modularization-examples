@@ -5,5 +5,3 @@ export class CalculateCart extends Command {
     return "hello";
   }
 }
-
-export const calculateCart = Command.toRun(CalculateCart);

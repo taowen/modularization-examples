@@ -7,13 +7,11 @@ export class ProductDetailsPage extends Widget {
 
   // 把商品详情页拆分成两个片段
   public render() {
-    const ProductBasics = this.renderProductBasics.bind(this);
-    const Xszk = this.renderXszk.bind(this);
     return (
       <div>
-        <ProductBasics />
+        {this.renderProductBasics()}
         <hr/>
-        <Xszk />
+        {this.renderXszk()}
       </div>
     );
   }

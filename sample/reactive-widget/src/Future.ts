@@ -3,6 +3,7 @@ import { Widget } from "./Widget";
 
 let tables: Map<string, Table> | undefined;
 
+// Future 是一个 async 计算流程，通过 scene 访问 I/O，从而对所访问的 table 进行订阅
 export class Future<T = any> {
   private subscriptions = new Set<Table>();
   private loading?: Promise<any>;

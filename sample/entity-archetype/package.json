@@ -3,5 +3,5 @@
     "private": true,
     "name": "@autonomy/entity-archetype",
     "main": "lib/index.js",
-    "typings": "lib/index.d.ts"
+    "typings": "src/index.ts"
 }
