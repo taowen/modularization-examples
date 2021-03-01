@@ -6,11 +6,11 @@
         "strict": true,
         "moduleResolution": "node",
         "experimentalDecorators": true,
-        "module": "ES2015",
+        "module": "CommonJs",
         "sourceMap": true,
         "declaration": true,
         "strictPropertyInitialization": false,
-        "outDir": "esm",
+        "outDir": "lib",
         "jsx": "react"
     },
     "include": ["./src/**/*"]

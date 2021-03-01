@@ -2,8 +2,8 @@
   "version": "0.0.1",
   "private": true,
   "name": "@autonomy/reactive-widget",
-  "main": "src/index.ts",
-  "module": "esm/index.js",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "dependencies": {
     "@autonomy/entity-archetype": "0.0.1",
     "react": "^17.0.1",

@@ -13,7 +13,7 @@ export function main() {
 function startServer(project: string) {
     const logFile = `log/${project.replace('/', '-')}.server.log`;
     fs.writeFileSync(logFile, '');
-    childProcess.exec(`ts-node ./startServer.ts ${project} > ${logFile} 2>&1`);
+    childProcess.exec(`nodemon ./startServer.js ${project} > ${logFile} 2>&1`);
 }
 
 function startClient(project: string) {

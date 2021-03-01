@@ -2,6 +2,6 @@
     "version": "0.0.1",
     "private": true,
     "name": "@autonomy/entity-archetype",
-    "main": "src/index.ts",
-    "module": "esm/index.js"
+    "main": "lib/index.js",
+    "typings": "lib/index.d.ts"
 }

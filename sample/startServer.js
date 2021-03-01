@@ -1,6 +1,5 @@
-import * as http from "http";
-import * as path from "path";
-import type { Gateway } from "@autonomy/entity-archetype";
+const http = require('http');
+const path = require('path');
 
 const project = process.argv[2];
 if (!project) {
@@ -8,14 +7,14 @@ if (!project) {
   process.exit(1);
 }
 
-export async function main() {
+async function main() {
   const projectDir = path.dirname(require.resolve(`${project}/package.json`));
   const { gateways: gatewayClasses } = require(path.join(
     projectDir,
     "server",
     "gateways.js"
   ));
-  const commands = new Map<string, Gateway>();
+  const commands = new Map();
   for (const gatewayClass of gatewayClasses) {
     const gateway = new gatewayClass();
     for (const command of Object.getOwnPropertyNames(gatewayClass.prototype)) {

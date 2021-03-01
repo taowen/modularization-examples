@@ -1,5 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.call = exports.toRun = exports.Command = void 0;
 // 封装写操作，进行业务规则校验
-export class Command {
+class Command {
     constructor(scene, props) {
         this.scene = scene;
         Object.assign(this, props);
@@ -8,12 +11,15 @@ export class Command {
         return call(this.scene, commandClass, props);
     }
 }
-export function toRun(commandClass) {
+exports.Command = Command;
+function toRun(commandClass) {
     return (scene, props) => {
         return new commandClass(scene, props).run();
     };
 }
-export function call(scene, commandClass, props) {
+exports.toRun = toRun;
+function call(scene, commandClass, props) {
     return new commandClass(scene, props).run();
 }
+exports.call = call;
 //# sourceMappingURL=Command.js.map

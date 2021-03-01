@@ -1,4 +1,7 @@
-export class HttpRemoteService {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.HttpRemoteService = void 0;
+class HttpRemoteService {
     useGateway(scene, project) {
         return new Proxy({}, {
             get: (target, propertyKey, receiver) => {
@@ -8,6 +11,7 @@ export class HttpRemoteService {
         });
     }
 }
+exports.HttpRemoteService = HttpRemoteService;
 async function callViaHttp(project, command, ...args) {
     const result = await fetch("/call", {
         method: "POST",

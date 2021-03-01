@@ -1,5 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.InMemDatabase = void 0;
 // 用内存模拟数据库
-export class InMemDatabase {
+class InMemDatabase {
     constructor() {
         this.tables = new Map();
     }
@@ -48,6 +51,7 @@ export class InMemDatabase {
         return table;
     }
 }
+exports.InMemDatabase = InMemDatabase;
 let currentId = 1000;
 function nextId() {
     return `~${currentId++}`;
