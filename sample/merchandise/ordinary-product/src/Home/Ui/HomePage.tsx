@@ -1,7 +1,8 @@
+import * as React from 'react';
+import { Suspense} from 'react';
 import { Scene } from '@autonomy/entity-archetype';
 import { renderWidget, Widget } from '@autonomy/reactive-widget';
 import { ProductDetailsPage } from '@motherboard/Sell/Ui/ProductDetailsPage';
-import * as React from 'react';
 import { BrowserLocation } from './BrowserLocation';
 import { CounterDemo } from './CounterDemo';
 import { Greeting } from './Greeting';
@@ -28,7 +29,7 @@ export class HomePage extends Widget {
         }
         return (
             <div>
-                {renderWidget(Greeting)}
+                <Suspense fallback={<span>loading...</span>}>{renderWidget(Greeting)}</Suspense>
                 <ul>
                     <li>
                         <a href="#discrete-ui">离散型 UI</a>

@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { Database, Operation, ServiceProtocol, Scene } from '@autonomy/entity-archetype';
-import { Future } from './Future';
+import { Database, ServiceProtocol, Scene } from '@autonomy/entity-archetype';
 export declare abstract class Widget {
     props?: Record<string, any> | undefined;
     static database: Database;
     static serviceProtocol: ServiceProtocol;
-    unmounted?: boolean;
-    subscriptions: Map<string, Future>;
+    private unmounted?;
+    private subscriptions;
     constructor(props?: Record<string, any> | undefined);
     onMount(scene: Scene): Promise<void>;
     onUnmount(scene: Scene): Promise<void>;
@@ -14,13 +13,13 @@ export declare abstract class Widget {
     abstract render(hooks: ReturnType<this['setupHooks']>): React.ReactElement;
     protected subscribe<T>(compute: (scene: Scene) => Promise<T>): T;
     notifyChange: () => void;
-    mount(op: Operation): Promise<void>;
-    refreshSubscriptions(op: Operation): Promise<void>;
-    private computeFuture;
-    unmount(): void;
+    private mount;
+    private refreshSubscriptions;
+    private unmount;
     protected callback<M extends keyof this>(methodName: M): OmitOneArg<this[M]>;
     protected callback<M extends keyof this>(methodName: M, boundArg1: any): OmitTwoArg<this[M]>;
     protected callback<M extends keyof this>(methodName: M, boundArg1: any, boundArg2: any): OmitThreeArg<this[M]>;
+    static reactComponent(widgetClass: WidgetClass, props?: Record<string, any>): JSX.Element;
 }
 export declare type WidgetClass<T extends Widget = any> = Function & {
     new (scene: Scene, props?: Record<string, any>): T;

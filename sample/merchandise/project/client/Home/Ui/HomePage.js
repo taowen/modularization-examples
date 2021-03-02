@@ -5,11 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.HomePage = void 0;
 
+var React = _interopRequireWildcard(require("react"));
+
 var _reactiveWidget = require("@autonomy/reactive-widget");
 
 var _ProductDetailsPage = require("../../Sell/Ui/ProductDetailsPage");
-
-var React = _interopRequireWildcard(require("react"));
 
 var _BrowserLocation = require("./BrowserLocation");
 
@@ -56,7 +56,9 @@ class HomePage extends _reactiveWidget.Widget {
         return (0, _reactiveWidget.renderWidget)(_CounterDemo.CounterDemo);
     }
 
-    return /*#__PURE__*/React.createElement("div", null, (0, _reactiveWidget.renderWidget)(_Greeting.Greeting), /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
+    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(React.Suspense, {
+      fallback: /*#__PURE__*/React.createElement("span", null, "loading...")
+    }, (0, _reactiveWidget.renderWidget)(_Greeting.Greeting)), /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
       href: "#discrete-ui"
     }, "\u79BB\u6563\u578B UI")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
       href: "#counter-demo"
