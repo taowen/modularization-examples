@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.enableChangeNotification = exports.enableDependencyTracking = exports.Future = void 0;
+exports.ensureReadonly = exports.enableChangeNotification = exports.enableDependencyTracking = exports.Future = void 0;
 const Operation_1 = require("./Operation");
 let tables;
 // Future 是一个 async 计算流程，通过 scene 访问 I/O，从而对所访问的 table 进行订阅
@@ -77,11 +77,13 @@ class Future {
 }
 exports.Future = Future;
 // 浏览器进入时设置一次
+// @internal
 function enableDependencyTracking() {
     tables = new Map();
 }
 exports.enableDependencyTracking = enableDependencyTracking;
 // 对每个写操作的 scene 都打开改动通知
+// @internal
 function enableChangeNotification(scene) {
     scene.notifyChange = (tableName) => {
         const table = tables && tables.get(tableName);
@@ -92,6 +94,15 @@ function enableChangeNotification(scene) {
     return scene;
 }
 exports.enableChangeNotification = enableChangeNotification;
+// 读操作应该是只读的
+// @internal
+function ensureReadonly(scene) {
+    scene.notifyChange = (tableName) => {
+        throw new Error(`detected readonly scene ${scene} changed ${tableName}`);
+    };
+    return scene;
+}
+exports.ensureReadonly = ensureReadonly;
 class Table {
     constructor(name) {
         this.name = name;

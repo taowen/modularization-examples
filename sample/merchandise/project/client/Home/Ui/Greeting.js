@@ -15,13 +15,16 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function $(scene) {
+  return scene.useServices();
+}
+
 class Greeting extends _reactiveWidget.Widget {
   constructor(...args) {
     super(...args);
 
     _defineProperty(this, "words", this.subscribe(async scene => {
-      const s = scene.useServices();
-      return await s.getGreetingWords();
+      return await $(scene).getGreetingWords();
     }));
   }
 

@@ -44,7 +44,7 @@ class Widget {
         const promises = new Map();
         // 并发计算
         for (const [k, future] of this.subscriptions.entries()) {
-            promises.set(k, future.get(newScene(op)));
+            promises.set(k, future.get(Future_1.ensureReadonly(newScene(op))));
         }
         let dirty = false;
         for (const [k, promise] of promises.entries()) {
@@ -67,9 +67,10 @@ class Widget {
         this.onUnmount(Future_1.enableChangeNotification(newScene(`unMount ${this.constructor.name}`)));
     }
     callback(methodName, ...boundArgs) {
+        const method = Reflect.get(this, methodName);
         return (...args) => {
             const scene = Future_1.enableChangeNotification(newScene(`callback ${this.constructor.name}.${methodName}`));
-            return Reflect.get(this, methodName)(scene, ...boundArgs, ...args);
+            return method(scene, ...boundArgs, ...args);
         };
     }
     // 以下是 react 的黑魔法，看不懂是正常的
@@ -78,6 +79,7 @@ class Widget {
     static reactComponent(widgetClass, props) {
         // 我们没有把状态存在 react 的体系内，而是完全外置的状态
         // 并不打算支持 react concurrent，也绝对会有 tearing 的问题，don't care
+        // 目标就是业务代码中完全没有 useState 和 useContext，全部用 scene 获取的状态代替
         // 外部状态改变的时候，触发 forceRender，重新渲染一遍 UI
         const [isForceRender, forceRender] = React.useState(0);
         // 创建 widget，仅会在首次渲染时执行一次
@@ -117,16 +119,22 @@ class Widget {
         }, []); // [] 表示该 Effect 仅执行一次，也就是 mount/unmount
         // 无论是否要渲染，setupHooks 都必须执行，react 要求 hooks 数量永远不变
         const hooks = widget.setupHooks();
+        // react 组件处于 false => 初始化中 => true 三种状态之一
         if (isReady === true) {
             if (isForceRender) {
+                // isReady 了之后，后续的重渲染都是因为外部状态改变而触发的，所以要刷一下
                 widget.refreshSubscriptions(Operation_1.currentOperation());
+                // 刷新是异步的，刷新完成了之后会再次重渲染 react 组件重新走到这里
+                // refreshSubscriptions 内部会判重，不会死循环
             }
             return widget.render(hooks);
         }
         else if (isReady === false) {
+            // 第一次不能直接 throw promise，否则 react 会把所有 state 给扔了，只能渲染个空白出去
             return React.createElement(React.Fragment, null);
         }
         else {
+            // 把 loading 或者 loadFailed 往父组件抛，被 <Suspense> 或者 <ErrorBoundary> 给抓住
             throw isReady;
         }
     }

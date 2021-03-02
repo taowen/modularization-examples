@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Suspense } from 'react';
 import { Database, Operation, ServiceProtocol, Scene } from '@autonomy/entity-archetype';
-import { enableChangeNotification, enableDependencyTracking, Future } from './Future';
+import { enableChangeNotification, enableDependencyTracking, ensureReadonly, Future } from './Future';
 import { currentOperation, newOperation, runInOperation } from './Operation';
 
 // 展示界面，其数据来自两部分
@@ -53,7 +53,7 @@ export abstract class Widget {
         const promises = new Map<string, Promise<any>>();
         // 并发计算
         for (const [k, future] of this.subscriptions.entries()) {
-            promises.set(k, future.get(newScene(op)));
+            promises.set(k, future.get(ensureReadonly(newScene(op))));
         }
         let dirty = false;
         for (const [k, promise] of promises.entries()) {
@@ -85,11 +85,12 @@ export abstract class Widget {
         boundArg2: any,
     ): OmitThreeArg<this[M]>;
     protected callback<M extends keyof this>(methodName: M, ...boundArgs: any[]): any {
+        const method = Reflect.get(this, methodName);
         return (...args: any[]) => {
             const scene = enableChangeNotification(
                 newScene(`callback ${this.constructor.name}.${methodName}`),
             );
-            return Reflect.get(this, methodName)(scene, ...boundArgs, ...args);
+            return method(scene, ...boundArgs, ...args);
         };
     }
 

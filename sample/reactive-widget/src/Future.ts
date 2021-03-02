@@ -85,17 +85,28 @@ export class Future<T = any> {
 }
 
 // 浏览器进入时设置一次
+// @internal
 export function enableDependencyTracking() {
     tables = new Map();
 }
 
 // 对每个写操作的 scene 都打开改动通知
+// @internal
 export function enableChangeNotification(scene: Scene) {
     scene.notifyChange = (tableName) => {
         const table = tables && tables.get(tableName);
         if (table) {
             table.notifyChange(scene.operation);
         }
+    };
+    return scene;
+}
+
+// 读操作应该是只读的
+// @internal
+export function ensureReadonly(scene: Scene) {
+    scene.notifyChange = (tableName) => {
+        throw new Error(`detected readonly scene ${scene} changed ${tableName}`)
     };
     return scene;
 }

@@ -32,6 +32,7 @@ class HomePage extends _reactiveWidget.Widget {
     }));
   }
 
+  // 把 window.location 同步到内存数据库中
   async onMount(scene) {
     await scene.insert(_BrowserLocation.BrowserLocation, {
       hash: window.location.hash
@@ -43,7 +44,9 @@ class HomePage extends _reactiveWidget.Widget {
     const browserLocation = await scene.get(_BrowserLocation.BrowserLocation);
     browserLocation.hash = window.location.hash;
     await scene.update(browserLocation);
-  }
+  } // 从内存数据库读取到最新的 window.location 达到间接订阅 window hashchange 的目的
+  // 当用户点了链接之后，因为这里的订阅会重新渲染
+
 
   render() {
     switch (this.locationHash) {
@@ -54,7 +57,8 @@ class HomePage extends _reactiveWidget.Widget {
 
       case '#counter-demo':
         return (0, _reactiveWidget.renderWidget)(_CounterDemo.CounterDemo);
-    }
+    } // 未知 URL，显示默认的首页内容
+
 
     return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(React.Suspense, {
       fallback: /*#__PURE__*/React.createElement("span", null, "loading...")

@@ -16,3 +16,4 @@ export declare class Future<T = any> {
 }
 export declare function enableDependencyTracking(): void;
 export declare function enableChangeNotification(scene: Scene): Scene;
+export declare function ensureReadonly(scene: Scene): Scene;
