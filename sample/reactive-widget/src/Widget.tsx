@@ -139,14 +139,20 @@ export abstract class Widget {
         }, []); // [] 表示该 Effect 仅执行一次，也就是 mount/unmount
         // 无论是否要渲染，setupHooks 都必须执行，react 要求 hooks 数量永远不变
         const hooks = widget.setupHooks();
+        // react 组件处于 false => 初始化中 => true 三种状态之一
         if (isReady === true) {
             if (isForceRender) {
+                // isReady 了之后，后续的重渲染都是因为外部状态改变而触发的，所以要刷一下
                 widget.refreshSubscriptions(currentOperation());
+                // 刷新是异步的，刷新完成了之后会再次重渲染 react 组件重新走到这里
+                // refreshSubscriptions 内部会判重，不会死循环
             }
             return widget.render(hooks);
         } else if (isReady === false) {
+            // 第一次不能直接 throw promise，否则 react 会把所有 state 给扔了，只能渲染个空白出去
             return <></>;
         } else {
+            // 把 loading 或者 loadFailed 往父组件抛，被 <Suspense> 或者 <ErrorBoundary> 给抓住
             throw isReady;
         }
     }
