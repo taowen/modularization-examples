@@ -15,7 +15,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function s(scene) {
+function $(scene) {
   return scene.useServices();
 }
 
@@ -23,13 +23,17 @@ class CounterDemo extends _reactiveWidget.Widget {
   constructor(...args) {
     super(...args);
 
+    _defineProperty(this, "greetingWords", this.subscribe(async scene => {
+      return await $(scene).getGreetingWords();
+    }));
+
     _defineProperty(this, "counters", this.subscribe(async scene => {
-      return await s(scene).queryCounters({});
+      return await $(scene).queryCounters({});
     }));
   }
 
   render() {
-    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("ul", null, this.counters.map(c => /*#__PURE__*/React.createElement("li", {
+    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", null, this.greetingWords), /*#__PURE__*/React.createElement("ul", null, this.counters.map(c => /*#__PURE__*/React.createElement("li", {
       key: c.id
     }, /*#__PURE__*/React.createElement("button", {
       onClick: this.callback('decrement', c)
@@ -41,15 +45,15 @@ class CounterDemo extends _reactiveWidget.Widget {
   }
 
   async increment(scene, counter) {
-    await s(scene).incrementCounter(counter.id);
+    await $(scene).incrementCounter(counter.id);
   }
 
   async decrement(scene, counter) {
-    await s(scene).decrementCounter(counter.id);
+    await $(scene).decrementCounter(counter.id);
   }
 
   async addCounter(scene) {
-    await s(scene).insertCounter({});
+    await $(scene).insertCounter({});
   }
 
 }

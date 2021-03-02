@@ -2,15 +2,20 @@ import * as React from 'react';
 import { Widget } from '@autonomy/reactive-widget';
 import type { Counter } from '../Private/Counter';
 import { Scene } from '@autonomy/entity-archetype';
+import { GreetingWordsGateway } from '../Private/GreetingWordsGateway';
 
 export class CounterDemo extends Widget {
+    public greetingWords = this.subscribe(async (scene) => {
+        return await $(scene).getGreetingWords();
+    });
     public counters = this.subscribe(async (scene) => {
-        return await s(scene).queryCounters({});
+        return await $(scene).queryCounters({});
     });
 
     public render() {
         return (
             <div>
+                <h3>{this.greetingWords}</h3>
                 <ul>
                     {this.counters.map((c) => (
                         <li key={c.id}>
@@ -26,18 +31,18 @@ export class CounterDemo extends Widget {
     }
 
     public async increment(scene: Scene, counter: Counter) {
-        await s(scene).incrementCounter(counter.id);
+        await $(scene).incrementCounter(counter.id);
     }
 
     public async decrement(scene: Scene, counter: Counter) {
-        await s(scene).decrementCounter(counter.id);
+        await $(scene).decrementCounter(counter.id);
     }
 
     public async addCounter(scene: Scene) {
-        await s(scene).insertCounter({});
+        await $(scene).insertCounter({});
     }
 }
 
-function s(scene: Scene) {
-    return scene.useServices<typeof Counter>();
+function $(scene: Scene) {
+    return scene.useServices<typeof Counter & typeof GreetingWordsGateway>();
 }
