@@ -16,5 +16,6 @@ __exportStar(require("./Command"), exports);
 __exportStar(require("./Scene"), exports);
 __exportStar(require("./InMemDatabase"), exports);
 __exportStar(require("./override"), exports);
-__exportStar(require("./HttpServiceProtocol"), exports);
+__exportStar(require("./HttpX/HttpXClient"), exports);
+__exportStar(require("./HttpX/HttpXServer"), exports);
 //# sourceMappingURL=index.js.map

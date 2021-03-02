@@ -24,7 +24,6 @@ export declare type WidgetClass<T extends Widget = any> = Function & {
     new (scene: Scene, props?: Record<string, any>): T;
 };
 export declare function renderRootWidget(widgetClass: WidgetClass, options: {
-    project: string;
     database: Database;
     serviceProtocol: ServiceProtocol;
 }): void;

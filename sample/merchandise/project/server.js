@@ -1,22 +1,15 @@
 const {
   InMemDatabase,
   Scene,
-  HttpServiceProtocol,
+  HttpXClient,
 } = require("@autonomy/entity-archetype");
 const { Product } = require("./server/Sell/Private/Product");
 
-exports.start = async () => {
-  const serviceProtocol = new HttpServiceProtocol();
+exports.start = async (options) => {
+  const serviceProtocol = new HttpXClient();
   const database = new InMemDatabase();
   await insertTestData(serviceProtocol, database);
-  return async (operation, handler, args) => {
-    const scene = new Scene({
-      database,
-      serviceProtocol,
-      operation,
-    });
-    return await handler(scene, ...(args || []));
-  };
+  return { ...options, database, serviceProtocol };
 };
 
 async function insertTestData(serviceProtocol, database) {

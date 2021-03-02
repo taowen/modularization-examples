@@ -19,15 +19,7 @@ class Scene {
         this.executeSql = (sql, sqlVars) => {
             return this.database.executeSql(this, sql, sqlVars);
         };
-        this.database = options.database;
-        this.serviceProtocol = options.serviceProtocol;
-        this.operation = {
-            traceId: '',
-            traceOp: '',
-            baggage: {},
-            props: {},
-            ...options.operation,
-        };
+        Object.assign(this, options);
     }
     useServices(project) {
         return this.serviceProtocol.useServices(this, project);

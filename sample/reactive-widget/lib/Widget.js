@@ -83,7 +83,6 @@ function newScene(op) {
     });
 }
 function renderRootWidget(widgetClass, options) {
-    entity_archetype_1.HttpServiceProtocol.project = options.project;
     Widget.database = options.database;
     Widget.serviceProtocol = options.serviceProtocol;
     Future_1.enableDependencyTracking();

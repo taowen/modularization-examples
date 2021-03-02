@@ -32,7 +32,7 @@ export declare class Scene {
     constructor(options: {
         database: Database;
         serviceProtocol: ServiceProtocol;
-        operation: Partial<Operation>;
+        operation: Operation;
     });
     useServices<T extends GatewayClass | ActiveRecordClass>(project?: string): {
         [P in MethodsOf<T>]: (...a: Parameters<OmitFirstArg<T[P]>>) => ReturnType<T[P]>;

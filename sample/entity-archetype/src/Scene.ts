@@ -67,17 +67,9 @@ export class Scene {
     constructor(options: {
         database: Database;
         serviceProtocol: ServiceProtocol;
-        operation: Partial<Operation>;
+        operation: Operation;
     }) {
-        this.database = options.database;
-        this.serviceProtocol = options.serviceProtocol;
-        this.operation = {
-            traceId: '',
-            traceOp: '',
-            baggage: {},
-            props: {},
-            ...options.operation,
-        };
+        Object.assign(this, options);
     }
 
     public useServices<T extends GatewayClass | ActiveRecordClass>(

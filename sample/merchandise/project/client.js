@@ -1,12 +1,12 @@
 const {
-  HttpServiceProtocol,
+  HttpXClient,
   InMemDatabase,
 } = require("@autonomy/entity-archetype");
 const { renderRootWidget } = require("@autonomy/reactive-widget");
 const { HomePage } = require("./client/Home/Ui/HomePage");
 
+HttpXClient.project = "@merchandise/project";
 renderRootWidget(HomePage, {
-  project: "@merchandise/project",
-  serviceProtocol: new HttpServiceProtocol(),
+  serviceProtocol: new HttpXClient(),
   database: new InMemDatabase(),
 });

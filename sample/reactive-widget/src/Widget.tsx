@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {
     Database,
-    HttpServiceProtocol,
+    HttpXClient,
     Operation,
     ServiceProtocol,
     Scene,
@@ -108,9 +108,8 @@ function newScene(op: string | Operation) {
 
 export function renderRootWidget(
     widgetClass: WidgetClass,
-    options: { project: string; database: Database; serviceProtocol: ServiceProtocol },
+    options: { database: Database; serviceProtocol: ServiceProtocol },
 ) {
-    HttpServiceProtocol.project = options.project;
     Widget.database = options.database;
     Widget.serviceProtocol = options.serviceProtocol;
     enableDependencyTracking();

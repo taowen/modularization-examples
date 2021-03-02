@@ -1,13 +1,13 @@
-import { Scene, ServiceProtocol } from "./Scene";
+import { Scene, ServiceProtocol } from "../Scene";
 
-export class HttpServiceProtocol implements ServiceProtocol {
+export class HttpXClient implements ServiceProtocol {
   public static project: string;
   public useServices(scene: Scene, project?: string) {
     return new Proxy(
       {},
       {
         get: (target: object, propertyKey: string, receiver?: any) => {
-          project = project || HttpServiceProtocol.project;
+          project = project || HttpXClient.project;
           return callViaHttp.bind(undefined, project!, propertyKey);
         },
       }
