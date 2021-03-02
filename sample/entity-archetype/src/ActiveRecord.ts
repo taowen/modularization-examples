@@ -7,8 +7,6 @@ import type { Scene } from './Scene';
 export class ActiveRecord {
     public static IS_ACTIVE_RECORD = true as true;
     constructor(public readonly scene: Scene) {}
-    public beforeInsert?: () => Promise<void>;
-    public beforeDelete?: () => Promise<void>;
 
     protected async update() {
         await this.scene.update(this);
