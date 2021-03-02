@@ -3,7 +3,7 @@ import * as React from "react";
 import type { GreetingWordsGateway } from "../Public/GreetingWordsGateway";
 
 export class Greeting extends Widget {
-  private words = this.future(async (scene) => {
+  private words = this.subscribe(async (scene) => {
     const gateway = scene.useGateway<GreetingWordsGateway>();
     return await gateway.getGreetingWords();
   });

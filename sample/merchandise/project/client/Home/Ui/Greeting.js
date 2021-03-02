@@ -19,7 +19,7 @@ class Greeting extends _reactiveWidget.Widget {
   constructor(...args) {
     super(...args);
 
-    _defineProperty(this, "words", this.future(async scene => {
+    _defineProperty(this, "words", this.subscribe(async scene => {
       const gateway = scene.useGateway();
       return await gateway.getGreetingWords();
     }));
