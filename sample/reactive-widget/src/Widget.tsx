@@ -99,6 +99,7 @@ export abstract class Widget {
     public static reactComponent(widgetClass: WidgetClass, props?: Record<string, any>) {
         // 我们没有把状态存在 react 的体系内，而是完全外置的状态
         // 并不打算支持 react concurrent，也绝对会有 tearing 的问题，don't care
+        // 目标就是业务代码中完全没有 useState 和 useContext，全部用 scene 获取的状态代替
         // 外部状态改变的时候，触发 forceRender，重新渲染一遍 UI
         const [isForceRender, forceRender] = React.useState(0);
         // 创建 widget，仅会在首次渲染时执行一次
