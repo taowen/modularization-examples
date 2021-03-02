@@ -68,7 +68,7 @@ export function toRunMethod<T extends ActiveRecord & { id: any }, M extends Meth
 ) {
     return async (scene: Scene, id: T['id'], ...args: Parameters<T[M]>) => {
         const entity = (await scene.query(activeRecordClass, { id } as any))[0];
-        return await Reflect.get(entity, method)(...args);
+        return await Reflect.get(entity, method).apply(entity, args);
     };
 }
 

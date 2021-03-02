@@ -67,10 +67,10 @@ class Widget {
         this.subscriptions.clear();
         this.onUnmount(Future_1.enableChangeNotification(newScene(`unMount ${this.constructor.name}`)));
     }
-    callback(methodName) {
+    callback(methodName, ...boundArgs) {
         return ((...args) => {
             const scene = Future_1.enableChangeNotification(newScene(`callback ${this.constructor.name}.${methodName}`));
-            return Reflect.get(this, methodName)(scene, ...args);
+            return Reflect.get(this, methodName)(scene, ...boundArgs, ...args);
         });
     }
 }

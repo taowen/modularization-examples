@@ -18,7 +18,9 @@ export declare abstract class Widget {
     refreshSubscriptions(op: Operation): Promise<void>;
     private computeFuture;
     unmount(): void;
-    protected callback<M extends keyof this>(methodName: M): OmitFirstArg<this[M]>;
+    protected callback<M extends keyof this>(methodName: M): OmitOneArg<this[M]>;
+    protected callback<M extends keyof this>(methodName: M, boundArg1: any): OmitTwoArg<this[M]>;
+    protected callback<M extends keyof this>(methodName: M, boundArg1: any, boundArg2: any): OmitThreeArg<this[M]>;
 }
 export declare type WidgetClass<T extends Widget = any> = Function & {
     new (scene: Scene, props?: Record<string, any>): T;
@@ -28,5 +30,7 @@ export declare function renderRootWidget(widgetClass: WidgetClass, options: {
     serviceProtocol: ServiceProtocol;
 }): void;
 export declare function renderWidget<T extends Widget>(widgetClass: WidgetClass<T>, props?: T['props']): JSX.Element;
-declare type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;
+declare type OmitOneArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;
+declare type OmitTwoArg<F> = F extends (x1: any, x2: any, ...args: infer P) => infer R ? (...args: P) => R : never;
+declare type OmitThreeArg<F> = F extends (x1: any, x2: any, x3: any, ...args: infer P) => infer R ? (...args: P) => R : never;
 export {};

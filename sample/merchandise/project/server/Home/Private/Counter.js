@@ -16,6 +16,16 @@ class Counter extends _entityArchetype.ActiveRecord {
     _defineProperty(this, "count", 100);
   }
 
+  increment() {
+    this.count++;
+    this.update();
+  }
+
+  decrement() {
+    this.count--;
+    this.update();
+  }
+
 }
 
 exports.Counter = Counter;
@@ -23,3 +33,7 @@ exports.Counter = Counter;
 _defineProperty(Counter, "queryCounters", (0, _entityArchetype.toQuery)(Counter));
 
 _defineProperty(Counter, "insertCounter", (0, _entityArchetype.toInsert)(Counter));
+
+_defineProperty(Counter, "incrementCounter", (0, _entityArchetype.toRunMethod)(Counter, 'increment'));
+
+_defineProperty(Counter, "decrementCounter", (0, _entityArchetype.toRunMethod)(Counter, 'decrement'));

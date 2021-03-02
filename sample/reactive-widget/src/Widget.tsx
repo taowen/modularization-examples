@@ -84,13 +84,16 @@ export abstract class Widget {
         this.onUnmount(enableChangeNotification(newScene(`unMount ${this.constructor.name}`)));
     }
 
-    protected callback<M extends keyof this>(methodName: M): OmitFirstArg<this[M]> {
+    protected callback<M extends keyof this>(methodName: M): OmitOneArg<this[M]>;
+    protected callback<M extends keyof this>(methodName: M, boundArg1: any): OmitTwoArg<this[M]>;
+    protected callback<M extends keyof this>(methodName: M, boundArg1: any, boundArg2: any): OmitThreeArg<this[M]>;
+    protected callback<M extends keyof this>(methodName: M, ...boundArgs: any[]): any {
         return ((...args: any[]) => {
             const scene = enableChangeNotification(
                 newScene(`callback ${this.constructor.name}.${methodName}`),
             );
-            return Reflect.get(this, methodName)(scene, ...args);
-        }) as any;
+            return Reflect.get(this, methodName)(scene, ...boundArgs, ...args);
+        });
     }
 }
 
@@ -163,4 +166,6 @@ export function renderWidget<T extends Widget>(widgetClass: WidgetClass<T>, prop
     return <Wrapper />;
 }
 
-type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;
+type OmitOneArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;
+type OmitTwoArg<F> = F extends (x1: any, x2: any, ...args: infer P) => infer R ? (...args: P) => R : never;
+type OmitThreeArg<F> = F extends (x1: any, x2: any, x3: any, ...args: infer P) => infer R ? (...args: P) => R : never;

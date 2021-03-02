@@ -5,8 +5,7 @@ import { Scene } from '@autonomy/entity-archetype';
 
 export class CounterDemo extends Widget {
     public counters = this.subscribe(async (scene) => {
-        const s = scene.useServices<typeof Counter>();
-        return await s.queryCounters({});
+        return await s(scene).queryCounters({});
     });
 
     public render() {
@@ -14,7 +13,11 @@ export class CounterDemo extends Widget {
             <div>
                 <ul>
                     {this.counters.map((c) => (
-                        <li key={c.id}>{c.count}</li>
+                        <li key={c.id}>
+                            <button onClick={this.callback('decrement', c)}>-</button>
+                            {c.count}
+                            <button onClick={this.callback('increment', c)}>+</button>
+                        </li>
                     ))}
                 </ul>
                 <button onClick={this.callback('addCounter')}>新建 counter</button>
@@ -22,7 +25,19 @@ export class CounterDemo extends Widget {
         );
     }
 
-    public async addCounter(scene: Scene) {
-        await scene.useServices<typeof Counter>().insertCounter({});
+    public async increment(scene: Scene, counter: Counter) {
+        await s(scene).incrementCounter(counter.id);
     }
+
+    public async decrement(scene: Scene, counter: Counter) {
+        await s(scene).decrementCounter(counter.id);
+    }
+
+    public async addCounter(scene: Scene) {
+        await s(scene).insertCounter({});
+    }
+}
+
+function s(scene: Scene) {
+    return scene.useServices<typeof Counter>();
 }

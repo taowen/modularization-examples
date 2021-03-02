@@ -18,12 +18,12 @@ class InMemDatabase {
     }
     async update(scene, activeRecord) {
         const table = this.getTable(activeRecord.class);
-        table.set(Reflect.get(activeRecord, "id"), JSON.parse(JSON.stringify(activeRecord)));
+        table.set(Reflect.get(activeRecord, 'id'), JSON.parse(JSON.stringify(activeRecord)));
         scene.notifyChange(ActiveRecord_1.getTableName(activeRecord.class));
     }
     async delete(scene, activeRecord) {
         const table = this.getTable(activeRecord.class);
-        table.delete(Reflect.get(activeRecord, "id"));
+        table.delete(Reflect.get(activeRecord, 'id'));
         scene.notifyChange(ActiveRecord_1.getTableName(activeRecord.class));
     }
     async queryByExample(scene, activeRecordClass, criteria) {
@@ -49,7 +49,7 @@ class InMemDatabase {
         return filtered;
     }
     executeSql(scene, sql, sqlVars) {
-        throw new Error("unsupported");
+        throw new Error('unsupported');
     }
     getTable(activeRecordClass) {
         let table = this.tables.get(activeRecordClass);

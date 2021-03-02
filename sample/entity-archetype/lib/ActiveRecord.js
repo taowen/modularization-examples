@@ -50,7 +50,7 @@ exports.toGet = toGet;
 function toRunMethod(activeRecordClass, method) {
     return async (scene, id, ...args) => {
         const entity = (await scene.query(activeRecordClass, { id }))[0];
-        return await Reflect.get(entity, method)(...args);
+        return await Reflect.get(entity, method).apply(entity, args);
     };
 }
 exports.toRunMethod = toRunMethod;

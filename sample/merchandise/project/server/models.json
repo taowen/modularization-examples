@@ -12,7 +12,9 @@
     "qualifiedName": "Home/Private/Counter",
     "services": [
       "queryCounters",
-      "insertCounter"
+      "insertCounter",
+      "incrementCounter",
+      "decrementCounter"
     ]
   },
   {

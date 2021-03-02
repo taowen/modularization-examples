@@ -6,13 +6,13 @@ class HttpXClient {
         return new Proxy({}, {
             get: (target, propertyKey, receiver) => {
                 project = project || HttpXClient.project;
-                return callViaHttp.bind(undefined, project, propertyKey);
+                return callViaHttp.bind(undefined, scene, project, propertyKey);
             },
         });
     }
 }
 exports.HttpXClient = HttpXClient;
-async function callViaHttp(project, service, ...args) {
+async function callViaHttp(scene, project, service, ...args) {
     const result = await fetch("/call", {
         method: "POST",
         headers: {
@@ -26,6 +26,14 @@ async function callViaHttp(project, service, ...args) {
     const resultJson = await result.json();
     if (resultJson.error) {
         throw resultJson.error;
+    }
+    for (const table of resultJson.subscribed) {
+        for (const subscriber of scene.subscribers) {
+            subscriber.subscribe(table);
+        }
+    }
+    for (const table of resultJson.changed) {
+        scene.notifyChange(table);
     }
     return resultJson.data;
 }
