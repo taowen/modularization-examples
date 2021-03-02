@@ -31,7 +31,7 @@ export class HomePage extends Widget {
             case '#counter-demo':
                 return renderWidget(CounterDemo);
             case '#task-list':
-                return renderWidget(TaskList);
+                return <div>{renderWidget(TaskList)}<hr/>{renderWidget(TaskList)}</div>;
         }
         // 未知 URL，显示默认的首页内容
         return (

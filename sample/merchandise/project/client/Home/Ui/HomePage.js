@@ -61,7 +61,7 @@ class HomePage extends _reactiveWidget.Widget {
         return (0, _reactiveWidget.renderWidget)(_CounterDemo.CounterDemo);
 
       case '#task-list':
-        return (0, _reactiveWidget.renderWidget)(_TaskList.TaskList);
+        return /*#__PURE__*/React.createElement("div", null, (0, _reactiveWidget.renderWidget)(_TaskList.TaskList), /*#__PURE__*/React.createElement("hr", null), (0, _reactiveWidget.renderWidget)(_TaskList.TaskList));
     } // 未知 URL，显示默认的首页内容
 
 

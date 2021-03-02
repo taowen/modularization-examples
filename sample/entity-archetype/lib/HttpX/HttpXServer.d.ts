@@ -11,6 +11,7 @@ export declare class HttpXServer {
         middleware?: (scene: Scene, handler: Function, args: any[]) => Promise<any>;
     });
     handleRequest(req: IncomingMessage, resp: ServerResponse): void;
+    private execute;
     private createScene;
     private runService;
 }
