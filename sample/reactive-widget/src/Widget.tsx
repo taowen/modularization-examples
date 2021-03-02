@@ -30,7 +30,9 @@ export abstract class Widget {
     // @internal
     public abstract render(hooks: ReturnType<this['setupHooks']>): React.ReactElement;
 
-    // 声明一份对外部状态的依赖
+    // 声明一份对外部状态的依赖，async 计算过程中的所有读到的表（含RPC服务端读的表）都会被收集到依赖关系里
+    // 不同于 vue 和 mobx 的细粒度状态订阅，这里实现的订阅是表级别的，而不是行级别的
+    // 也就是一张表中的任意新增删除修改，都会触发所有订阅者的刷新
     protected subscribe<T>(compute: (scene: Scene) => Promise<T>): T {
         return new Future(compute, this) as any;
     }

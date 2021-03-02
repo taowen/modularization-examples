@@ -2,6 +2,7 @@ import { Operation, Scene } from '@autonomy/entity-archetype';
 import { runInOperation } from './Operation';
 import { Widget } from './Widget';
 
+// 对表的订阅关系是全局变量，整个浏览器只有一份
 let tables: Map<string, Table> | undefined;
 
 // Future 是一个 async 计算流程，通过 scene 访问 I/O，从而对所访问的 table 进行订阅
