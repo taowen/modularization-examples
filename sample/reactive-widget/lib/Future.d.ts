@@ -7,9 +7,9 @@ export declare class Future<T = any> {
     private loading?;
     private cache;
     constructor(compute: (scene: Scene) => Promise<T>, widget?: Widget | undefined);
-    get(scene: Scene): Promise<any>;
-    copySubscriptions(scene: Scene): void;
-    awaitLoading(existingPromise: Promise<any>): Promise<any>;
+    get(scene: Scene): Promise<T>;
+    private copySubscriptions;
+    private awaitLoading;
     notifyChange(op: Operation): void;
     subscribe(tableName: string): void;
     dispose(): void;

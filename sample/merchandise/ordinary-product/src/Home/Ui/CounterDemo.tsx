@@ -1,23 +1,28 @@
 import * as React from 'react';
 import { Widget } from '@autonomy/reactive-widget';
-import type { Counter } from '../Private/Counter';
 import { Scene } from '@autonomy/entity-archetype';
 import { GreetingWordsGateway } from '../Private/GreetingWordsGateway';
+import { bigCounters } from './bigCounters';
+import type { Counter } from '../Private/Counter';
 
 export class CounterDemo extends Widget {
     public greetingWords = this.subscribe(async (scene) => {
         return await $(scene).getGreetingWords();
     });
-    public counters = this.subscribe(async (scene) => {
-        return await $(scene).queryCounters({});
+    public remoteData = this.subscribe(async (scene) => {
+        return {
+            counters: await $(scene).queryCounters({}),
+            bigCounters: await bigCounters.get(scene),
+        };
     });
 
     public render() {
         return (
             <div>
                 <h3>{this.greetingWords}</h3>
+                <span>大 counter 数量: {this.remoteData.bigCounters.length}</span>
                 <ul>
-                    {this.counters.map((c) => (
+                    {this.remoteData.counters.map((c) => (
                         <li key={c.id}>
                             <button onClick={this.callback('decrement', c)}>-</button>
                             {c.count}

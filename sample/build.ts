@@ -27,7 +27,9 @@ function build() {
     const builtModels = [];
     for (const { qualifiedName, srcFiles } of models.values()) {
         const model = buildModel(projectDir, qualifiedName, srcFiles);
-        builtModels.push(model);
+        if (model) {
+            builtModels.push(model);
+        }
     }
     fs.writeFileSync(
         path.join(projectDir, 'server', 'models.json'),

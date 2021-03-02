@@ -9,6 +9,8 @@ var React = _interopRequireWildcard(require("react"));
 
 var _reactiveWidget = require("@autonomy/reactive-widget");
 
+var _bigCounters = require("./bigCounters");
+
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -27,13 +29,16 @@ class CounterDemo extends _reactiveWidget.Widget {
       return await $(scene).getGreetingWords();
     }));
 
-    _defineProperty(this, "counters", this.subscribe(async scene => {
-      return await $(scene).queryCounters({});
+    _defineProperty(this, "remoteData", this.subscribe(async scene => {
+      return {
+        counters: await $(scene).queryCounters({}),
+        bigCounters: await _bigCounters.bigCounters.get(scene)
+      };
     }));
   }
 
   render() {
-    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", null, this.greetingWords), /*#__PURE__*/React.createElement("ul", null, this.counters.map(c => /*#__PURE__*/React.createElement("li", {
+    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", null, this.greetingWords), /*#__PURE__*/React.createElement("span", null, "\u5927 counter \u6570\u91CF: ", this.remoteData.bigCounters.length), /*#__PURE__*/React.createElement("ul", null, this.remoteData.counters.map(c => /*#__PURE__*/React.createElement("li", {
       key: c.id
     }, /*#__PURE__*/React.createElement("button", {
       onClick: this.callback('decrement', c)

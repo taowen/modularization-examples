@@ -11,13 +11,15 @@ export interface Model {
     services?: string[];
 }
 
-export function buildModel(projectDir: string, qualifiedName: string, srcFiles: string[]): Model {
+export function buildModel(projectDir: string, qualifiedName: string, srcFiles: string[]): Model | undefined {
     const imports: babel.ImportDeclaration[] = [];
     const others: babel.Statement[] = [];
     const classDecls: babel.ClassDeclaration[] = [];
+    const className = path.basename(qualifiedName);
+    let ast: babel.File;
     for (const srcFile of srcFiles) {
         const content = fs.readFileSync(srcFile).toString();
-        const ast = parse(content, {
+        ast = parse(content, {
             plugins: [
                 'typescript',
                 'jsx',
@@ -27,13 +29,17 @@ export function buildModel(projectDir: string, qualifiedName: string, srcFiles: 
             sourceType: 'module',
             sourceFilename: srcFile,
         });
-        extractStatements(ast as babel.File, { imports, others, classDecls });
+        extractStatements(className, ast as babel.File, { imports, others, classDecls });
+    }
+    const outputPath = getOutputPath(projectDir, qualifiedName);
+    if (classDecls.length === 0) {
+        compileToJs(ast!, outputPath);
+        return undefined;
     }
     const superClass = classDecls[0].superClass;
     if (!babel.isIdentifier(superClass)) {
         throw new Error('archetype not specified');
     }
-    const outputPath = getOutputPath(projectDir, qualifiedName);
     const mergedClassDecl = mergeClassDecls(classDecls);
     const merged = babel.file(
         babel.program(
@@ -46,7 +52,20 @@ export function buildModel(projectDir: string, qualifiedName: string, srcFiles: 
             'module',
         ),
     );
-    const result = transformFromAstSync(merged, undefined, {
+    compileToJs(merged, outputPath);
+    const archetype = superClass.name as Archetype;
+    if (archetype !== 'Gateway' && qualifiedName.includes('/Public/')) {
+        throw new Error(`only Gateway can be put in /Public/: ${qualifiedName}`);
+    }
+    return {
+        archetype,
+        qualifiedName,
+        services: listServices(archetype, mergedClassDecl),
+    };
+}
+
+function compileToJs(ast: babel.File, outputPath: string) {
+    const result = transformFromAstSync(ast, undefined, {
         filename: outputPath,
         plugins: [
             '@babel/plugin-transform-typescript',
@@ -56,19 +75,10 @@ export function buildModel(projectDir: string, qualifiedName: string, srcFiles: 
         ],
     });
     if (!result || !result.code) {
-        throw new Error(`failed to buildModel: ${qualifiedName}`);
+        throw new Error(`failed to buildModel: ${outputPath}`);
     }
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, result.code);
-    const archetype = superClass.name as 'Gateway' | 'ActiveRecord' | 'Widget' | 'Command';
-    if (archetype !== 'Gateway' && qualifiedName.includes('/Public/')) {
-        throw new Error(`only Gateway can be put in /Public/: ${qualifiedName}`);
-    }
-    return {
-        archetype,
-        qualifiedName,
-        services: listServices(archetype, mergedClassDecl),
-    };
 }
 
 function listServices(archetype: Archetype, classDecl: babel.ClassDeclaration) {
@@ -169,6 +179,7 @@ function mergeImports(qualifiedName: string, imports: babel.ImportDeclaration[])
 }
 
 function extractStatements(
+    className: string,
     ast: babel.File,
     extractTo: {
         imports: babel.ImportDeclaration[];
@@ -176,13 +187,12 @@ function extractStatements(
         classDecls: babel.ClassDeclaration[];
     },
 ) {
-    const classDecls = [];
     for (const stmt of ast.program.body) {
         if (babel.isImportDeclaration(stmt)) {
             extractTo.imports.push(stmt);
         } else if (babel.isExportNamedDeclaration(stmt)) {
-            if (babel.isClassDeclaration(stmt.declaration)) {
-                classDecls.push(stmt.declaration);
+            if (babel.isClassDeclaration(stmt.declaration) && stmt.declaration.id.name === className) {
+                extractTo.classDecls.push(stmt.declaration);
             } else {
                 extractTo.others.push(stmt);
             }
@@ -190,8 +200,4 @@ function extractStatements(
             extractTo.others.push(stmt);
         }
     }
-    if (classDecls.length !== 1) {
-        throw new Error('must export 1 and only 1 class declaration');
-    }
-    extractTo.classDecls.push(classDecls[0]);
 }

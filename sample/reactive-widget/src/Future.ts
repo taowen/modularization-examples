@@ -15,7 +15,7 @@ export class Future<T = any> {
         private readonly widget?: Widget,
     ) {}
 
-    public async get(scene: Scene) {
+    public async get(scene: Scene): Promise<T> {
         if (this.cache) {
             this.copySubscriptions(scene);
             return this.cache;
@@ -35,7 +35,7 @@ export class Future<T = any> {
         }
     }
 
-    public copySubscriptions(scene: Scene) {
+    private copySubscriptions(scene: Scene) {
         for (const subscriber of scene.subscribers) {
             for (const subscription of this.subscriptions) {
                 subscriber.subscribe(subscription.name);
@@ -43,7 +43,7 @@ export class Future<T = any> {
         }
     }
 
-    public async awaitLoading(existingPromise: Promise<any>) {
+    private async awaitLoading(existingPromise: Promise<any>) {
         const result = await existingPromise;
         if (this.loading === existingPromise) {
             this.cache = result;
