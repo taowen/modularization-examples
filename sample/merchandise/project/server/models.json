@@ -25,6 +25,13 @@
     ]
   },
   {
+    "archetype": "Gateway",
+    "qualifiedName": "Home/Private/TaskGateway",
+    "services": [
+      "wasteSomeResource"
+    ]
+  },
+  {
     "archetype": "ActiveRecord",
     "qualifiedName": "Home/Ui/BrowserLocation",
     "services": []
@@ -40,6 +47,14 @@
   {
     "archetype": "Widget",
     "qualifiedName": "Home/Ui/HomePage"
+  },
+  {
+    "archetype": "Widget",
+    "qualifiedName": "Home/Ui/TaskList"
+  },
+  {
+    "archetype": "Widget",
+    "qualifiedName": "Home/Ui/TaskListItem"
   },
   {
     "archetype": "ActiveRecord",

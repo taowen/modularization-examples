@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ensureReadonly = exports.enableChangeNotification = exports.enableDependencyTracking = exports.Future = void 0;
 const Operation_1 = require("./Operation");
+// 对表的订阅关系是全局变量，整个浏览器只有一份
 let tables;
 // Future 是一个 async 计算流程，通过 scene 访问 I/O，从而对所访问的 table 进行订阅
 class Future {
