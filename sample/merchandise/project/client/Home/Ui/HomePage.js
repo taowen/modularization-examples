@@ -11,6 +11,8 @@ var _ProductDetailsPage = require("../../Sell/Ui/ProductDetailsPage");
 
 var React = _interopRequireWildcard(require("react"));
 
+var _BrowserLocation = require("./BrowserLocation");
+
 var _Greeting = require("./Greeting");
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
@@ -23,21 +25,28 @@ class HomePage extends _reactiveWidget.Widget {
   constructor(...args) {
     super(...args);
 
-    _defineProperty(this, "syncData", async scene => {});
+    _defineProperty(this, "hash", this.subscribe(async scene => {
+      return (await scene.get(_BrowserLocation.BrowserLocation)).hash;
+    }));
   }
 
-  setupHooks() {
-    const [, updateState] = React.useState({});
-    const forceUpdate = React.useCallback(() => updateState({}), []);
-    React.useEffect(() => {
-      window.addEventListener("hashchange", forceUpdate);
+  async onMount(scene) {
+    await scene.insert(_BrowserLocation.BrowserLocation, {
+      hash: window.location.hash
     });
+    window.addEventListener('hashchange', this.callback('onHashChanged'));
+  }
+
+  async onHashChanged(scene) {
+    const browserLocation = await scene.get(_BrowserLocation.BrowserLocation);
+    browserLocation.hash = window.location.hash;
+    await scene.update(browserLocation);
   }
 
   render() {
-    if (window.location.hash === "#discrete-ui") {
+    if (this.hash === '#discrete-ui') {
       return (0, _reactiveWidget.renderWidget)(_ProductDetailsPage.ProductDetailsPage, {
-        productName: "apple"
+        productName: 'apple'
       });
     }
 

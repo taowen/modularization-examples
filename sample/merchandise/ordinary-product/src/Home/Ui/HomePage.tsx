@@ -1,31 +1,36 @@
-import { Scene } from "@autonomy/entity-archetype";
-import { renderWidget, Widget } from "@autonomy/reactive-widget";
-import { ProductDetailsPage } from "@motherboard/Sell/Ui/ProductDetailsPage";
-import * as React from "react";
-import { Greeting } from "./Greeting";
+import { Scene } from '@autonomy/entity-archetype';
+import { renderWidget, Widget } from '@autonomy/reactive-widget';
+import { ProductDetailsPage } from '@motherboard/Sell/Ui/ProductDetailsPage';
+import * as React from 'react';
+import { BrowserLocation } from './BrowserLocation';
+import { Greeting } from './Greeting';
 
 export class HomePage extends Widget {
-  public syncData = async (scene: Scene) => {};
-  public setupHooks() {
-    const [, updateState] = React.useState({});
-    const forceUpdate = React.useCallback(() => updateState({}), []);
-    React.useEffect(() => {
-      window.addEventListener("hashchange", forceUpdate);
-    });
-  }
-  public render() {
-    if (window.location.hash === "#discrete-ui") {
-      return renderWidget(ProductDetailsPage, { productName: "apple" });
+    public async onMount(scene: Scene) {
+        await scene.insert(BrowserLocation, { hash: window.location.hash });
+        window.addEventListener('hashchange', this.callback('onHashChanged'));
     }
-    return (
-      <div>
-        {renderWidget(Greeting)}
-        <ul>
-          <li>
-            <a href="#discrete-ui">离散型 UI</a>
-          </li>
-        </ul>
-      </div>
-    );
-  }
+    public async onHashChanged(scene: Scene) {
+        const browserLocation = await scene.get(BrowserLocation);
+        browserLocation.hash = window.location.hash;
+        await scene.update(browserLocation);
+    }
+    public hash = this.subscribe(async (scene) => {
+        return (await scene.get(BrowserLocation)).hash;
+    });
+    public render() {
+        if (this.hash === '#discrete-ui') {
+            return renderWidget(ProductDetailsPage, { productName: 'apple' });
+        }
+        return (
+            <div>
+                {renderWidget(Greeting)}
+                <ul>
+                    <li>
+                        <a href="#discrete-ui">离散型 UI</a>
+                    </li>
+                </ul>
+            </div>
+        );
+    }
 }

@@ -9,9 +9,6 @@ class Scene {
     constructor(options) {
         this.notifyChange = (tableName) => { };
         this.subscribers = new Set();
-        this.insert = (activeRecordClass, props) => {
-            return this.database.insert(this, activeRecordClass, props);
-        };
         this.update = (activeRecord) => {
             return this.database.update(this, activeRecord);
         };
@@ -24,8 +21,8 @@ class Scene {
         this.database = options.database;
         this.serviceProtocol = options.serviceProtocol;
         this.operation = {
-            traceId: "",
-            traceOp: "",
+            traceId: '',
+            traceOp: '',
             baggage: {},
             props: {},
             ...options.operation,
@@ -34,11 +31,17 @@ class Scene {
     useServices(project) {
         return this.serviceProtocol.useServices(this, project);
     }
+    insert(activeRecordClass, props) {
+        return this.database.insert(this, activeRecordClass, props);
+    }
     query(arg1, arg2) {
         if (arg1.IS_ACTIVE_RECORD) {
             return this.database.queryByExample(this, arg1, arg2);
         }
         return arg1(this, arg2);
+    }
+    async get(activeRecordClass) {
+        return (await this.query(activeRecordClass, {}))[0];
     }
     toJSON() {
         return undefined;

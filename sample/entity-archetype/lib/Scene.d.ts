@@ -1,7 +1,7 @@
-import type { ActiveRecord, ActiveRecordClass } from "./ActiveRecord";
-import type { ConstructorType } from "./ConstructorType";
-import type { MethodsOf } from "./MethodsOf";
-import type { GatewayClass } from "./Gateway";
+import type { ActiveRecord, ActiveRecordClass } from './ActiveRecord';
+import type { ConstructorType } from './ConstructorType';
+import type { MethodsOf } from './MethodsOf';
+import type { GatewayClass } from './Gateway';
 declare type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;
 export interface Database {
     insert<T extends ActiveRecord>(scene: Scene, activeRecordClass: ActiveRecordClass<T>, props: ConstructorType<T>): Promise<T>;
@@ -38,13 +38,14 @@ export declare class Scene {
     useServices<T extends GatewayClass | ActiveRecordClass>(project?: string): {
         [P in MethodsOf<T>]: (...a: Parameters<OmitFirstArg<T[P]>>) => ReturnType<T[P]>;
     };
-    insert: OmitFirstArg<Database["insert"]>;
-    update: OmitFirstArg<Database["update"]>;
-    delete: OmitFirstArg<Database["delete"]>;
-    executeSql: OmitFirstArg<Database["executeSql"]>;
+    insert<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, props: ConstructorType<T>): Promise<T>;
+    update: OmitFirstArg<Database['update']>;
+    delete: OmitFirstArg<Database['delete']>;
+    executeSql: OmitFirstArg<Database['executeSql']>;
     query<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, props: Partial<T>): Promise<T[]>;
     query<T extends ActiveRecord, P>(sqlView: (scene: Scene, sqlVars: P) => Promise<T[]>, sqlVars: P): Promise<T[]>;
     query<T extends ActiveRecord>(sqlView: (scene: Scene, sqlVars: {}) => Promise<T[]>): Promise<T[]>;
+    get<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): Promise<T>;
     toJSON(): undefined;
 }
 export {};

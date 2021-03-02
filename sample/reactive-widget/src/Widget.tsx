@@ -25,8 +25,8 @@ export abstract class Widget {
     // 批量编辑，父子表单等类型的界面需要有可编辑的前端状态，放在本地的内存 database 里
     // onMount 的时候从 remoteService 把数据复制到内存 database 里进行编辑
     // onUnmount 的时候清理本地的内存 database
-    public onMount: (scene: Scene) => Promise<void> | undefined;
-    public onUnmount: (scene: Scene) => Promise<void> | undefined;
+    public async onMount(scene: Scene) {}
+    public async onUnmount(scene: Scene) {}
     // react 的钩子不能写在 render 里，必须写在这里
     public setupHooks(): any {}
     // 当外部状态获取完毕之后，会调用 render
@@ -40,42 +40,30 @@ export abstract class Widget {
     // 外部状态发生了变化，触发重渲染
     public notifyChange() {}
 
-    public async mount() {
-        if (this.onMount) {
-            await this.onMount(
-                new Scene({
-                    serviceProtocol: Widget.serviceProtocol,
-                    database: Widget.database,
-                    operation: newOperation('sync scene'),
-                }),
-            );
-        }
+    public async mount(op: Operation) {
+        await this.onMount(newScene(op));
         // afterMounted
         for (const [k, v] of Object.entries(this)) {
             if (v && v instanceof Future) {
                 this.subscriptions.set(k, v);
             }
         }
-        await this.refreshSubscriptions();
+        await this.refreshSubscriptions(op);
     }
 
-    private async refreshSubscriptions() {
+    private async refreshSubscriptions(op: Operation) {
         const promises = new Map<string, Promise<any>>();
         // 并发计算
         for (const [k, future] of this.subscriptions.entries()) {
-            promises.set(k, this.computeFuture(future));
+            promises.set(k, this.computeFuture(future, op));
         }
         for (const [k, promise] of promises.entries()) {
             Reflect.set(this, k, await promise);
         }
     }
 
-    private async computeFuture(future: Future) {
-        const scene = new Scene({
-            serviceProtocol: Widget.serviceProtocol,
-            database: Widget.database,
-            operation: currentOperation(),
-        });
+    private async computeFuture(future: Future, op: Operation) {
+        const scene = newScene(op);
         return await future.get(scene);
     }
 
@@ -85,15 +73,14 @@ export abstract class Widget {
             future.dispose();
         }
         this.subscriptions.clear();
-        if (this.onUnmount) {
-            this.onUnmount(
-                new Scene({
-                    database: Widget.database,
-                    serviceProtocol: Widget.serviceProtocol,
-                    operation: newOperation('unmount component'),
-                }),
-            );
-        }
+        this.onUnmount(newScene(`unMount ${this.constructor.name}`));
+    }
+
+    protected callback<M extends keyof this>(methodName: M): OmitFirstArg<this[M]> {
+        return ((...args: any[]) => {
+            const scene = newScene(`callback ${this.constructor.name}.${methodName}`);
+            return Reflect.get(this, methodName)(scene, ...args);
+        }) as any;
     }
 }
 
@@ -101,6 +88,13 @@ export type WidgetClass<T extends Widget = any> = Function & {
     new (scene: Scene, props?: Record<string, any>): T;
 };
 
+function newScene(op: string | Operation) {
+    return new Scene({
+        database: Widget.database,
+        serviceProtocol: Widget.serviceProtocol,
+        operation: typeof op === 'string' ? newOperation(op) : op,
+    });
+}
 function newOperation(traceOp: string): Operation {
     return {
         traceId: '123',
@@ -155,10 +149,8 @@ export function renderWidget<T extends Widget>(widgetClass: WidgetClass<T>, prop
         const [isReady, setReady] = React.useState(false);
         const initialRenderOp = currentOperation();
         React.useEffect(() => {
-            const promise = runInOperation(initialRenderOp, () => {
-                return widget.mount();
-            });
-            promise
+            widget
+                .mount(initialRenderOp)
                 .then(() => {
                     if (!widget.unmounted) {
                         runInOperation(initialRenderOp, () => {
@@ -181,3 +173,9 @@ export function renderWidget<T extends Widget>(widgetClass: WidgetClass<T>, prop
     }
     return <Wrapper />;
 }
+
+type MethodsOf<T> = {
+    [P in keyof T]: T[P] extends (...a: any) => any ? P : never;
+}[keyof T];
+
+type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;

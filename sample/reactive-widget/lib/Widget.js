@@ -16,6 +16,11 @@ class Widget {
         // 外部状态
         this.subscriptions = new Map();
     }
+    // 批量编辑，父子表单等类型的界面需要有可编辑的前端状态，放在本地的内存 database 里
+    // onMount 的时候从 remoteService 把数据复制到内存 database 里进行编辑
+    // onUnmount 的时候清理本地的内存 database
+    async onMount(scene) { }
+    async onUnmount(scene) { }
     // react 的钩子不能写在 render 里，必须写在这里
     setupHooks() { }
     // 声明一份对外部状态的依赖
@@ -24,38 +29,28 @@ class Widget {
     }
     // 外部状态发生了变化，触发重渲染
     notifyChange() { }
-    async mount() {
-        if (this.onMount) {
-            await this.onMount(new entity_archetype_1.Scene({
-                serviceProtocol: Widget.serviceProtocol,
-                database: Widget.database,
-                operation: newOperation('sync scene'),
-            }));
-        }
+    async mount(op) {
+        await this.onMount(newScene(op));
         // afterMounted
         for (const [k, v] of Object.entries(this)) {
             if (v && v instanceof Future_1.Future) {
                 this.subscriptions.set(k, v);
             }
         }
-        await this.refreshSubscriptions();
+        await this.refreshSubscriptions(op);
     }
-    async refreshSubscriptions() {
+    async refreshSubscriptions(op) {
         const promises = new Map();
         // 并发计算
         for (const [k, future] of this.subscriptions.entries()) {
-            promises.set(k, this.computeFuture(future));
+            promises.set(k, this.computeFuture(future, op));
         }
         for (const [k, promise] of promises.entries()) {
             Reflect.set(this, k, await promise);
         }
     }
-    async computeFuture(future) {
-        const scene = new entity_archetype_1.Scene({
-            serviceProtocol: Widget.serviceProtocol,
-            database: Widget.database,
-            operation: currentOperation(),
-        });
+    async computeFuture(future, op) {
+        const scene = newScene(op);
         return await future.get(scene);
     }
     unmount() {
@@ -64,16 +59,23 @@ class Widget {
             future.dispose();
         }
         this.subscriptions.clear();
-        if (this.onUnmount) {
-            this.onUnmount(new entity_archetype_1.Scene({
-                database: Widget.database,
-                serviceProtocol: Widget.serviceProtocol,
-                operation: newOperation('unmount component'),
-            }));
-        }
+        this.onUnmount(newScene(`unMount ${this.constructor.name}`));
+    }
+    callback(methodName) {
+        return ((...args) => {
+            const scene = newScene(`callback ${this.constructor.name}.${methodName}`);
+            return Reflect.get(this, methodName)(scene, ...args);
+        });
     }
 }
 exports.Widget = Widget;
+function newScene(op) {
+    return new entity_archetype_1.Scene({
+        database: Widget.database,
+        serviceProtocol: Widget.serviceProtocol,
+        operation: typeof op === 'string' ? newOperation(op) : op,
+    });
+}
 function newOperation(traceOp) {
     return {
         traceId: '123',
@@ -122,10 +124,8 @@ function renderWidget(widgetClass, props) {
         const [isReady, setReady] = React.useState(false);
         const initialRenderOp = currentOperation();
         React.useEffect(() => {
-            const promise = runInOperation(initialRenderOp, () => {
-                return widget.mount();
-            });
-            promise
+            widget
+                .mount(initialRenderOp)
                 .then(() => {
                 if (!widget.unmounted) {
                     runInOperation(initialRenderOp, () => {

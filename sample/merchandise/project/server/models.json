@@ -15,6 +15,11 @@
     ]
   },
   {
+    "archetype": "ActiveRecord",
+    "qualifiedName": "Home/Ui/BrowserLocation",
+    "services": []
+  },
+  {
     "archetype": "Widget",
     "qualifiedName": "Home/Ui/Greeting"
   },
