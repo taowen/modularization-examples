@@ -1,5 +1,4 @@
 import { ActiveRecord, ActiveRecordClass, getTableName } from './ActiveRecord';
-import type { ConstructorType } from './ConstructorType';
 import type { MethodsOf } from './MethodsOf';
 import type { GatewayClass } from './Gateway';
 
@@ -7,11 +6,11 @@ type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...arg
 
 // 提供对各种 ActiveRecord 的增删改查，适配各种类型的关系数据库
 export interface Database {
-    insert<T extends ActiveRecord>(
+    insert(
         scene: Scene,
-        activeRecordClass: ActiveRecordClass<T>,
-        props: ConstructorType<T>,
-    ): Promise<T>;
+        activeRecordClass: ActiveRecordClass,
+        props: Record<string, any>,
+    ): Promise<ActiveRecord>;
     update<T extends ActiveRecord>(scene: Scene, activeRecord: T): Promise<void>;
     delete<T extends ActiveRecord>(scene: Scene, activeRecord: T): Promise<void>;
     // 只支持 = 和 AND
@@ -91,9 +90,9 @@ export class Scene {
 
     public insert<T extends ActiveRecord>(
         activeRecordClass: ActiveRecordClass<T>,
-        props: ConstructorType<T>,
+        props: Partial<T>,
     ): Promise<T> {
-        return this.database.insert(this, activeRecordClass, props);
+        return this.database.insert(this, activeRecordClass, props) as any;
     }
     public update: OmitFirstArg<Database['update']> = (activeRecord) => {
         return this.database.update(this, activeRecord);
@@ -121,18 +120,32 @@ export class Scene {
         }
         return arg1(this, arg2);
     }
-    public async load<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, props: Partial<T>): Promise<T> {
+    public async load<T extends ActiveRecord>(
+        activeRecordClass: ActiveRecordClass<T>,
+        props: Partial<T>,
+    ): Promise<T> {
         const records = await this.query(activeRecordClass, props);
         if (records.length === 0) {
-            throw new Error(`${getTableName(activeRecordClass)} is empty, can not find ${JSON.stringify(props)}`);
+            throw new Error(
+                `${getTableName(activeRecordClass)} is empty, can not find ${JSON.stringify(
+                    props,
+                )}`,
+            );
         }
         if (records.length !== 1) {
-            throw new Error(`${getTableName(activeRecordClass)} find more than 1 match of ${JSON.stringify(props)}`);
+            throw new Error(
+                `${getTableName(activeRecordClass)} find more than 1 match of ${JSON.stringify(
+                    props,
+                )}`,
+            );
         }
         return records[0];
     }
-    public async get<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, id: any): Promise<T> {
-        return await this.load(activeRecordClass, id ? { id } : {} as any);
+    public async get<T extends ActiveRecord>(
+        activeRecordClass: ActiveRecordClass<T>,
+        id?: any,
+    ): Promise<T> {
+        return await this.load(activeRecordClass, id ? { id } : ({} as any));
     }
     public toJSON() {
         return undefined;

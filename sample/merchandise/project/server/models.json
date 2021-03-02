@@ -8,6 +8,14 @@
     "qualifiedName": "Sell/Ui/ProductDetailsPage"
   },
   {
+    "archetype": "ActiveRecord",
+    "qualifiedName": "Home/Private/Counter",
+    "services": [
+      "queryCounters",
+      "insertCounter"
+    ]
+  },
+  {
     "archetype": "Gateway",
     "qualifiedName": "Home/Private/GreetingWordsGateway",
     "services": [
@@ -18,6 +26,10 @@
     "archetype": "ActiveRecord",
     "qualifiedName": "Home/Ui/BrowserLocation",
     "services": []
+  },
+  {
+    "archetype": "Widget",
+    "qualifiedName": "Home/Ui/CounterDemo"
   },
   {
     "archetype": "Widget",

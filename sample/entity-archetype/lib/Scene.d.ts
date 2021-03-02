@@ -1,10 +1,9 @@
 import { ActiveRecord, ActiveRecordClass } from './ActiveRecord';
-import type { ConstructorType } from './ConstructorType';
 import type { MethodsOf } from './MethodsOf';
 import type { GatewayClass } from './Gateway';
 declare type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;
 export interface Database {
-    insert<T extends ActiveRecord>(scene: Scene, activeRecordClass: ActiveRecordClass<T>, props: ConstructorType<T>): Promise<T>;
+    insert(scene: Scene, activeRecordClass: ActiveRecordClass, props: Record<string, any>): Promise<ActiveRecord>;
     update<T extends ActiveRecord>(scene: Scene, activeRecord: T): Promise<void>;
     delete<T extends ActiveRecord>(scene: Scene, activeRecord: T): Promise<void>;
     queryByExample<T extends ActiveRecord>(scene: Scene, activeRecordClass: ActiveRecordClass<T>, props: Partial<T>): Promise<T[]>;
@@ -38,7 +37,7 @@ export declare class Scene {
     useServices<T extends GatewayClass | ActiveRecordClass>(project?: string): {
         [P in MethodsOf<T>]: (...a: Parameters<OmitFirstArg<T[P]>>) => ReturnType<T[P]>;
     };
-    insert<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, props: ConstructorType<T>): Promise<T>;
+    insert<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, props: Partial<T>): Promise<T>;
     update: OmitFirstArg<Database['update']>;
     delete: OmitFirstArg<Database['delete']>;
     executeSql: OmitFirstArg<Database['executeSql']>;
@@ -46,7 +45,7 @@ export declare class Scene {
     query<T extends ActiveRecord, P>(sqlView: (scene: Scene, sqlVars: P) => Promise<T[]>, sqlVars: P): Promise<T[]>;
     query<T extends ActiveRecord>(sqlView: (scene: Scene, sqlVars: {}) => Promise<T[]>): Promise<T[]>;
     load<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, props: Partial<T>): Promise<T>;
-    get<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, id: any): Promise<T>;
+    get<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, id?: any): Promise<T>;
     toJSON(): undefined;
 }
 export {};

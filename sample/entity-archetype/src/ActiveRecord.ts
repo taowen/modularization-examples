@@ -35,7 +35,7 @@ export type ActiveRecordClass<T extends ActiveRecord = any> = {
 };
 
 export function toInsert<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>) {
-    return (scene: Scene, props: ConstructorType<T>) => {
+    return (scene: Scene, props: Partial<T>) => {
         return scene.insert(activeRecordClass, props);
     };
 }

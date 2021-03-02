@@ -3,6 +3,7 @@ import { renderWidget, Widget } from '@autonomy/reactive-widget';
 import { ProductDetailsPage } from '@motherboard/Sell/Ui/ProductDetailsPage';
 import * as React from 'react';
 import { BrowserLocation } from './BrowserLocation';
+import { CounterDemo } from './CounterDemo';
 import { Greeting } from './Greeting';
 
 export class HomePage extends Widget {
@@ -15,12 +16,15 @@ export class HomePage extends Widget {
         browserLocation.hash = window.location.hash;
         await scene.update(browserLocation);
     }
-    public hash = this.subscribe(async (scene) => {
+    public locationHash = this.subscribe(async (scene) => {
         return (await scene.get(BrowserLocation)).hash;
     });
     public render() {
-        if (this.hash === '#discrete-ui') {
-            return renderWidget(ProductDetailsPage, { productName: 'apple' });
+        switch (this.locationHash) {
+            case '#discrete-ui':
+                return renderWidget(ProductDetailsPage, { productName: 'apple' });
+            case '#counter-demo':
+                return renderWidget(CounterDemo);
         }
         return (
             <div>
@@ -28,6 +32,9 @@ export class HomePage extends Widget {
                 <ul>
                     <li>
                         <a href="#discrete-ui">离散型 UI</a>
+                    </li>
+                    <li>
+                        <a href="#counter-demo">RPC和I/O订阅</a>
                     </li>
                 </ul>
             </div>

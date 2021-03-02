@@ -6,8 +6,6 @@ export declare class ActiveRecord {
     readonly scene: Scene;
     static IS_ACTIVE_RECORD: true;
     constructor(scene: Scene);
-    beforeInsert?: () => Promise<void>;
-    beforeDelete?: () => Promise<void>;
     protected update(): Promise<void>;
     protected call<C extends Command>(commandClass: new (scene: Scene, props: Record<string, any>) => C, props: {} extends ConstructorType<C> ? void : ConstructorType<C>): ReturnType<C['run']>;
     get class(): ActiveRecordClass<this>;
@@ -18,7 +16,7 @@ export declare type ActiveRecordClass<T extends ActiveRecord = any> = {
     IS_ACTIVE_RECORD: true;
     tableName?: string;
 };
-export declare function toInsert<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): (scene: Scene, props: ConstructorType<T>) => Promise<T>;
+export declare function toInsert<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): (scene: Scene, props: Partial<T>) => Promise<T>;
 export declare function toQuery<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): (scene: Scene, props?: Partial<T> | undefined) => Promise<T[]>;
 export declare function toLoad<T extends ActiveRecord & {
     id: any;

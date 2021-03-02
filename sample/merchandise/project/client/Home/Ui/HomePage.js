@@ -13,6 +13,8 @@ var React = _interopRequireWildcard(require("react"));
 
 var _BrowserLocation = require("./BrowserLocation");
 
+var _CounterDemo = require("./CounterDemo");
+
 var _Greeting = require("./Greeting");
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
@@ -25,7 +27,7 @@ class HomePage extends _reactiveWidget.Widget {
   constructor(...args) {
     super(...args);
 
-    _defineProperty(this, "hash", this.subscribe(async scene => {
+    _defineProperty(this, "locationHash", this.subscribe(async scene => {
       return (await scene.get(_BrowserLocation.BrowserLocation)).hash;
     }));
   }
@@ -44,15 +46,21 @@ class HomePage extends _reactiveWidget.Widget {
   }
 
   render() {
-    if (this.hash === '#discrete-ui') {
-      return (0, _reactiveWidget.renderWidget)(_ProductDetailsPage.ProductDetailsPage, {
-        productName: 'apple'
-      });
+    switch (this.locationHash) {
+      case '#discrete-ui':
+        return (0, _reactiveWidget.renderWidget)(_ProductDetailsPage.ProductDetailsPage, {
+          productName: 'apple'
+        });
+
+      case '#counter-demo':
+        return (0, _reactiveWidget.renderWidget)(_CounterDemo.CounterDemo);
     }
 
     return /*#__PURE__*/React.createElement("div", null, (0, _reactiveWidget.renderWidget)(_Greeting.Greeting), /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
       href: "#discrete-ui"
-    }, "\u79BB\u6563\u578B UI"))));
+    }, "\u79BB\u6563\u578B UI")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
+      href: "#counter-demo"
+    }, "RPC\u548CI/O\u8BA2\u9605"))));
   }
 
 }
