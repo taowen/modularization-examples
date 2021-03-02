@@ -1,9 +1,13 @@
 import * as React from 'react';
 import { Widget } from '@autonomy/reactive-widget';
 import { Scene } from '@autonomy/entity-archetype';
-import { GreetingWordsGateway } from '../Private/GreetingWordsGateway';
 import { bigCounters } from './bigCounters';
 import type { Counter } from '../Private/Counter';
+import type { GreetingWordsGateway } from '../Private/GreetingWordsGateway';
+
+function $(scene: Scene) {
+    return scene.useServices<typeof Counter & typeof GreetingWordsGateway>();
+}
 
 export class CounterDemo extends Widget {
     public greetingWords = this.subscribe(async (scene) => {
@@ -46,8 +50,4 @@ export class CounterDemo extends Widget {
     public async addCounter(scene: Scene) {
         await $(scene).insertCounter({});
     }
-}
-
-function $(scene: Scene) {
-    return scene.useServices<typeof Counter & typeof GreetingWordsGateway>();
 }
