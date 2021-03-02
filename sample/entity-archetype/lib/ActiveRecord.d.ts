@@ -12,6 +12,7 @@ export declare class ActiveRecord {
     protected call<C extends Command>(commandClass: new (scene: Scene, props: Record<string, any>) => C, props: {} extends ConstructorType<C> ? void : ConstructorType<C>): ReturnType<C['run']>;
     get class(): ActiveRecordClass<this>;
 }
+export declare function getTableName<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): string;
 export declare type ActiveRecordClass<T extends ActiveRecord = any> = {
     new (scene: Scene): T;
     IS_ACTIVE_RECORD: true;

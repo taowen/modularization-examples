@@ -1,5 +1,5 @@
-import { Scene } from "@autonomy/entity-archetype";
-import { Widget } from "./Widget";
+import { Operation, Scene } from '@autonomy/entity-archetype';
+import { Widget } from './Widget';
 export declare class Future<T = any> {
     private readonly compute;
     private readonly widget?;
@@ -10,9 +10,9 @@ export declare class Future<T = any> {
     get(scene: Scene): Promise<any>;
     copySubscriptions(scene: Scene): void;
     awaitLoading(existingPromise: Promise<any>): Promise<any>;
-    notifyChange(): void;
+    notifyChange(op: Operation): void;
     subscribe(tableName: string): void;
     dispose(): void;
 }
 export declare function enableDependencyTracking(): void;
-export declare function enableChangeNotification(scene: Scene): void;
+export declare function enableChangeNotification(scene: Scene): Scene;

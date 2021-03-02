@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InMemDatabase = void 0;
+const ActiveRecord_1 = require("./ActiveRecord");
 // 用内存模拟数据库
 class InMemDatabase {
     constructor() {
@@ -12,17 +13,24 @@ class InMemDatabase {
         Object.assign(record, { ...props, id });
         const table = this.getTable(activeRecordClass);
         table.set(id, JSON.parse(JSON.stringify(record)));
+        scene.notifyChange(ActiveRecord_1.getTableName(activeRecordClass));
         return record;
     }
     async update(scene, activeRecord) {
         const table = this.getTable(activeRecord.class);
         table.set(Reflect.get(activeRecord, "id"), JSON.parse(JSON.stringify(activeRecord)));
+        scene.notifyChange(ActiveRecord_1.getTableName(activeRecord.class));
     }
     async delete(scene, activeRecord) {
         const table = this.getTable(activeRecord.class);
         table.delete(Reflect.get(activeRecord, "id"));
+        scene.notifyChange(ActiveRecord_1.getTableName(activeRecord.class));
     }
     async queryByExample(scene, activeRecordClass, criteria) {
+        const tableName = ActiveRecord_1.getTableName(activeRecordClass);
+        for (const subscriber of scene.subscribers) {
+            subscriber.subscribe(tableName);
+        }
         const table = this.getTable(activeRecordClass);
         function isMatch(record) {
             for (const [k, v] of Object.entries(criteria)) {

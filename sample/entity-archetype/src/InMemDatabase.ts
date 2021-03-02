@@ -1,4 +1,4 @@
-import { ActiveRecord, ActiveRecordClass } from "./ActiveRecord";
+import { ActiveRecord, ActiveRecordClass, getTableName } from "./ActiveRecord";
 import { ConstructorType } from "./ConstructorType";
 import { Database, Scene } from "./Scene";
 
@@ -21,6 +21,7 @@ export class InMemDatabase implements Database {
     Object.assign(record, { ...props, id });
     const table = this.getTable(activeRecordClass);
     table.set(id, JSON.parse(JSON.stringify(record)));
+    scene.notifyChange(getTableName(activeRecordClass))
     return record;
   }
   public async update<T extends ActiveRecord>(
@@ -32,6 +33,7 @@ export class InMemDatabase implements Database {
       Reflect.get(activeRecord, "id"),
       JSON.parse(JSON.stringify(activeRecord))
     );
+    scene.notifyChange(getTableName(activeRecord.class))
   }
   public async delete<T extends ActiveRecord>(
     scene: Scene,
@@ -39,12 +41,17 @@ export class InMemDatabase implements Database {
   ): Promise<void> {
     const table = this.getTable(activeRecord.class);
     table.delete(Reflect.get(activeRecord, "id"));
+    scene.notifyChange(getTableName(activeRecord.class))
   }
   public async queryByExample<T extends ActiveRecord>(
     scene: Scene,
     activeRecordClass: ActiveRecordClass<T>,
     criteria: Partial<T>
   ): Promise<T[]> {
+    const tableName = getTableName(activeRecordClass);
+    for (const subscriber of scene.subscribers) {
+      subscriber.subscribe(tableName);
+    }
     const table = this.getTable(activeRecordClass);
     function isMatch(record: ActiveRecordCopy) {
       for (const [k, v] of Object.entries(criteria)) {

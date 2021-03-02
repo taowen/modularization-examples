@@ -3,7 +3,7 @@ const {
   Scene,
   HttpServiceProtocol,
 } = require("@autonomy/entity-archetype");
-const { Product } = require("./server/Sell/Public/Product");
+const { Product } = require("./server/Sell/Private/Product");
 
 exports.start = async () => {
   const serviceProtocol = new HttpServiceProtocol();

@@ -13,9 +13,9 @@ export declare abstract class Widget {
     setupHooks(): any;
     abstract render(hooks: ReturnType<this['setupHooks']>): React.ReactElement;
     protected subscribe<T>(compute: (scene: Scene) => Promise<T>): T;
-    notifyChange(): void;
+    notifyChange: () => void;
     mount(op: Operation): Promise<void>;
-    private refreshSubscriptions;
+    refreshSubscriptions(op: Operation): Promise<void>;
     private computeFuture;
     unmount(): void;
     protected callback<M extends keyof this>(methodName: M): OmitFirstArg<this[M]>;

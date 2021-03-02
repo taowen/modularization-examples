@@ -26,7 +26,7 @@ export class ActiveRecord {
     }
 }
 
-function getTableName<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): string {
+export function getTableName<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): string {
     return activeRecordClass.tableName || activeRecordClass.name;
 }
 
@@ -52,11 +52,7 @@ export function toLoad<T extends ActiveRecord & { id: any }>(
     activeRecordClass: ActiveRecordClass<T>,
 ) {
     return async (scene: Scene, props: Partial<T>) => {
-        const records = await scene.query(activeRecordClass, props);
-        if (records.length !== 1) {
-            throw new Error('unexpected');
-        }
-        return records[0];
+        return await scene.load(activeRecordClass, props);
     };
 }
 
@@ -64,14 +60,7 @@ export function toGet<T extends ActiveRecord & { id: any }>(
     activeRecordClass: ActiveRecordClass<T>,
 ) {
     return async (scene: Scene, id: T['id']) => {
-        const records = await scene.query(activeRecordClass, { id } as any);
-        if (records.length === 0) {
-            throw new Error(`${getTableName(activeRecordClass)} ${id} not found`);
-        }
-        if (records.length !== 1) {
-            throw new Error('unexpected');
-        }
-        return records[0];
+        return await scene.get(activeRecordClass, id);
     };
 }
 

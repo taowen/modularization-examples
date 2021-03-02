@@ -7,8 +7,8 @@ import {
     ServiceProtocol,
     Scene,
 } from '@autonomy/entity-archetype';
-import { enableDependencyTracking, Future } from './Future';
-import * as tracing from 'scheduler/tracing';
+import { enableChangeNotification, enableDependencyTracking, Future } from './Future';
+import { currentOperation, newOperation, runInOperation } from './Operation';
 
 // 展示界面，其数据来自两部分
 // 父组件传递过来的 props
@@ -34,14 +34,14 @@ export abstract class Widget {
 
     // 声明一份对外部状态的依赖
     protected subscribe<T>(compute: (scene: Scene) => Promise<T>): T {
-        return new Future(compute) as any;
+        return new Future(compute, this) as any;
     }
 
     // 外部状态发生了变化，触发重渲染
-    public notifyChange() {}
+    public notifyChange: () => void;
 
     public async mount(op: Operation) {
-        await this.onMount(newScene(op));
+        await this.onMount(enableChangeNotification(newScene(op)));
         // afterMounted
         for (const [k, v] of Object.entries(this)) {
             if (v && v instanceof Future) {
@@ -51,14 +51,22 @@ export abstract class Widget {
         await this.refreshSubscriptions(op);
     }
 
-    private async refreshSubscriptions(op: Operation) {
+    public async refreshSubscriptions(op: Operation) {
         const promises = new Map<string, Promise<any>>();
         // 并发计算
         for (const [k, future] of this.subscriptions.entries()) {
             promises.set(k, this.computeFuture(future, op));
         }
+        let dirty = false;
         for (const [k, promise] of promises.entries()) {
-            Reflect.set(this, k, await promise);
+            const v = await promise;
+            if (Reflect.get(this, k) !== v) {
+                Reflect.set(this, k, v);
+                dirty = true;
+            }
+        }
+        if (dirty) {
+            runInOperation(op, this.notifyChange.bind(this));
         }
     }
 
@@ -73,12 +81,14 @@ export abstract class Widget {
             future.dispose();
         }
         this.subscriptions.clear();
-        this.onUnmount(newScene(`unMount ${this.constructor.name}`));
+        this.onUnmount(enableChangeNotification(newScene(`unMount ${this.constructor.name}`)));
     }
 
     protected callback<M extends keyof this>(methodName: M): OmitFirstArg<this[M]> {
         return ((...args: any[]) => {
-            const scene = newScene(`callback ${this.constructor.name}.${methodName}`);
+            const scene = enableChangeNotification(
+                newScene(`callback ${this.constructor.name}.${methodName}`),
+            );
             return Reflect.get(this, methodName)(scene, ...args);
         }) as any;
     }
@@ -93,34 +103,6 @@ function newScene(op: string | Operation) {
         database: Widget.database,
         serviceProtocol: Widget.serviceProtocol,
         operation: typeof op === 'string' ? newOperation(op) : op,
-    });
-}
-function newOperation(traceOp: string): Operation {
-    return {
-        traceId: '123',
-        traceOp,
-        baggage: {},
-        props: {},
-    };
-}
-
-function currentOperation(): Operation {
-    const interactions = tracing.unstable_getCurrent();
-    if (!interactions) {
-        throw new Error('missing operation');
-    }
-    for (const interaction of interactions) {
-        const maybeOp = interaction.name as any;
-        if (maybeOp && maybeOp.traceId) {
-            return maybeOp;
-        }
-    }
-    throw new Error('missing operation');
-}
-
-function runInOperation<T>(op: Operation, action: () => T): T {
-    return tracing.unstable_trace(op as any, 0, () => {
-        return action();
     });
 }
 
@@ -145,7 +127,14 @@ export function renderRootWidget(
 
 export function renderWidget<T extends Widget>(widgetClass: WidgetClass<T>, props?: T['props']) {
     function Wrapper() {
-        const [widget, _] = React.useState(() => new widgetClass(props as any));
+        const setRenderCount = React.useState(0)[1];
+        const [widget, _] = React.useState(() => {
+            const widget = new widgetClass(props as any);
+            widget.notifyChange = () => {
+                !widget.unmounted && setRenderCount((count) => count + 1);
+            };
+            return widget;
+        });
         const [isReady, setReady] = React.useState(false);
         const initialRenderOp = currentOperation();
         React.useEffect(() => {
@@ -167,15 +156,12 @@ export function renderWidget<T extends Widget>(widgetClass: WidgetClass<T>, prop
         }, []);
         const hooks = widget.setupHooks();
         if (isReady === true) {
+            widget.refreshSubscriptions(currentOperation());
             return widget.render(hooks);
         }
         return <></>;
     }
     return <Wrapper />;
 }
-
-type MethodsOf<T> = {
-    [P in keyof T]: T[P] extends (...a: any) => any ? P : never;
-}[keyof T];
 
 type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;

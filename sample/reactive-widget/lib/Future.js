@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.enableChangeNotification = exports.enableDependencyTracking = exports.Future = void 0;
+const Operation_1 = require("./Operation");
 let tables;
 // Future 是一个 async 计算流程，通过 scene 访问 I/O，从而对所访问的 table 进行订阅
 class Future {
@@ -46,12 +47,12 @@ class Future {
         }
         return result;
     }
-    // 标记 widget 需要重新渲染，下次渲染的时候会重新读取 get
-    notifyChange() {
+    // 数据变化了，需要重新计算
+    notifyChange(op) {
         this.subscriptions.clear();
         this.cache = undefined;
         if (this.widget) {
-            this.widget.notifyChange();
+            Operation_1.runInOperation(op, this.widget.notifyChange.bind(this));
         }
     }
     subscribe(tableName) {
@@ -85,9 +86,10 @@ function enableChangeNotification(scene) {
     scene.notifyChange = (tableName) => {
         const table = tables && tables.get(tableName);
         if (table) {
-            table.notifyChange();
+            table.notifyChange(scene.operation);
         }
     };
+    return scene;
 }
 exports.enableChangeNotification = enableChangeNotification;
 class Table {
@@ -95,11 +97,11 @@ class Table {
         this.name = name;
         this.subscribers = new Set();
     }
-    notifyChange() {
+    notifyChange(op) {
         const subscribers = [...this.subscribers];
         this.subscribers.clear();
         for (const subscriber of subscribers) {
-            subscriber.notifyChange();
+            subscriber.notifyChange(op);
         }
     }
     unsubscribe(subscriber) {

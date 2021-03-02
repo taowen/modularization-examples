@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sqlView = exports.subsetOf = exports.toRunMethod = exports.toGet = exports.toLoad = exports.toQuery = exports.toInsert = exports.ActiveRecord = void 0;
+exports.sqlView = exports.subsetOf = exports.toRunMethod = exports.toGet = exports.toLoad = exports.toQuery = exports.toInsert = exports.getTableName = exports.ActiveRecord = void 0;
 const Command_1 = require("./Command");
 // 数据库表
 class ActiveRecord {
@@ -22,6 +22,7 @@ ActiveRecord.IS_ACTIVE_RECORD = true;
 function getTableName(activeRecordClass) {
     return activeRecordClass.tableName || activeRecordClass.name;
 }
+exports.getTableName = getTableName;
 function toInsert(activeRecordClass) {
     return (scene, props) => {
         return scene.insert(activeRecordClass, props);
@@ -36,24 +37,13 @@ function toQuery(activeRecordClass) {
 exports.toQuery = toQuery;
 function toLoad(activeRecordClass) {
     return async (scene, props) => {
-        const records = await scene.query(activeRecordClass, props);
-        if (records.length !== 1) {
-            throw new Error('unexpected');
-        }
-        return records[0];
+        return await scene.load(activeRecordClass, props);
     };
 }
 exports.toLoad = toLoad;
 function toGet(activeRecordClass) {
     return async (scene, id) => {
-        const records = await scene.query(activeRecordClass, { id });
-        if (records.length === 0) {
-            throw new Error(`${getTableName(activeRecordClass)} ${id} not found`);
-        }
-        if (records.length !== 1) {
-            throw new Error('unexpected');
-        }
-        return records[0];
+        return await scene.get(activeRecordClass, id);
     };
 }
 exports.toGet = toGet;

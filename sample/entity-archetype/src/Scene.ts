@@ -1,4 +1,4 @@
-import type { ActiveRecord, ActiveRecordClass } from './ActiveRecord';
+import { ActiveRecord, ActiveRecordClass, getTableName } from './ActiveRecord';
 import type { ConstructorType } from './ConstructorType';
 import type { MethodsOf } from './MethodsOf';
 import type { GatewayClass } from './Gateway';
@@ -58,6 +58,7 @@ export interface Operation {
 // 前端处理一次鼠标点击（写操作），触发订阅者
 export class Scene {
     public notifyChange = (tableName: string) => {};
+    // operation 在 scene 的整个声明周期内是不变的
     public readonly operation: Operation;
     public readonly database: Database;
     public readonly serviceProtocol: ServiceProtocol;
@@ -120,8 +121,18 @@ export class Scene {
         }
         return arg1(this, arg2);
     }
-    public async get<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): Promise<T> {
-      return (await this.query(activeRecordClass, {}))[0] as any;
+    public async load<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, props: Partial<T>): Promise<T> {
+        const records = await this.query(activeRecordClass, props);
+        if (records.length === 0) {
+            throw new Error(`${getTableName(activeRecordClass)} is empty, can not find ${JSON.stringify(props)}`);
+        }
+        if (records.length !== 1) {
+            throw new Error(`${getTableName(activeRecordClass)} find more than 1 match of ${JSON.stringify(props)}`);
+        }
+        return records[0];
+    }
+    public async get<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, id: any): Promise<T> {
+        return await this.load(activeRecordClass, id ? { id } : {} as any);
     }
     public toJSON() {
         return undefined;

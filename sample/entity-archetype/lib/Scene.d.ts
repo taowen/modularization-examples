@@ -1,4 +1,4 @@
-import type { ActiveRecord, ActiveRecordClass } from './ActiveRecord';
+import { ActiveRecord, ActiveRecordClass } from './ActiveRecord';
 import type { ConstructorType } from './ConstructorType';
 import type { MethodsOf } from './MethodsOf';
 import type { GatewayClass } from './Gateway';
@@ -45,7 +45,8 @@ export declare class Scene {
     query<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, props: Partial<T>): Promise<T[]>;
     query<T extends ActiveRecord, P>(sqlView: (scene: Scene, sqlVars: P) => Promise<T[]>, sqlVars: P): Promise<T[]>;
     query<T extends ActiveRecord>(sqlView: (scene: Scene, sqlVars: {}) => Promise<T[]>): Promise<T[]>;
-    get<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): Promise<T>;
+    load<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, props: Partial<T>): Promise<T>;
+    get<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>, id: any): Promise<T>;
     toJSON(): undefined;
 }
 export {};
