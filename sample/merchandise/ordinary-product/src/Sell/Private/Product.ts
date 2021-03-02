@@ -2,14 +2,19 @@ import {
   ActiveRecord,
   sqlView,
   subsetOf,
+  toLoad,
+  toRun,
 } from "@autonomy/entity-archetype";
+import { UnpublishProducts } from "./UnpublishProducts";
 
 export class Product extends ActiveRecord {
-  public static subset = subsetOf(Product);
+  private static subset = subsetOf(Product);
+
+  public static loadProduct = toLoad(Product);
 
   public static publishedProducts = Product.subset`published = TRUE`;
 
-  public static batchLoad = Product.subset<{
+  public static batchLoadProducts = Product.subset<{
     productIds: string[];
   }>`id IN :productIds`;
 
@@ -21,6 +26,8 @@ export class Product extends ActiveRecord {
       category: string;
     }
   >`SELECT COUNT(*) as totalCount FROM ${Product} WHERE NOT published AND category = :category`;
+
+  public static unpublishProducts = toRun(UnpublishProducts);
 
   public id: string;
   public name: string;

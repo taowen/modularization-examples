@@ -1,13 +1,11 @@
-import { buildModel } from './buildModel';
+import { buildModel, Model } from './buildModel';
 import * as fs from 'fs';
 import * as path from 'path';
 
-class Model {
-    public qualifiedName: string;
-    public srcFiles: string[] = [];
-}
-
-const models = new Map<string, Model>();
+const models = new Map<string, {
+    qualifiedName: string;
+    srcFiles: string[];
+}>();
 
 const project = process.argv[2];
 if (!project) {
@@ -26,17 +24,15 @@ function main() {
 
 function build() {
     const projectDir = path.dirname(require.resolve(`${project}/package.json`));
-    const gateways = [];
-    for (const model of models.values()) {
-        const archetype = buildModel(projectDir, model.qualifiedName, model.srcFiles);
-        if (archetype === 'Gateway') {
-            gateways.push(model.qualifiedName);
-        }
+    const builtModels = [];
+    for (const { qualifiedName, srcFiles } of models.values()) {
+        const model = buildModel(projectDir, qualifiedName, srcFiles);
+        builtModels.push(model);
     }
-    const gatewayArray = gateways.map(gateway => `require('./${gateway}').${path.basename(gateway)}`).join(',\n');
-    fs.writeFileSync(path.join(projectDir, 'server', 'gateways.js'), `
-        exports.gateways = [${gatewayArray}];
-    `);
+    fs.writeFileSync(
+        path.join(projectDir, 'server', 'models.json'),
+        JSON.stringify(builtModels, undefined, '  '),
+    );
 }
 
 function scanPackage(pkgDir: string) {
@@ -57,8 +53,7 @@ function scanPackage(pkgDir: string) {
 function registerModel(qualifiedName: string) {
     let model = models.get(qualifiedName);
     if (!model) {
-        model = new Model();
-        model.qualifiedName = qualifiedName;
+        model = { qualifiedName, srcFiles: []};
         models.set(qualifiedName, model);
     }
     return model;

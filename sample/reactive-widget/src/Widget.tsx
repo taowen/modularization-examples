@@ -2,9 +2,9 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {
     Database,
-    HttpRemoteService,
+    HttpServiceProtocol,
     Operation,
-    RemoteService,
+    ServiceProtocol,
     Scene,
 } from '@autonomy/entity-archetype';
 import { enableDependencyTracking, Future } from './Future';
@@ -15,7 +15,7 @@ import * as tracing from 'scheduler/tracing';
 // 从 I/O 获得的外部状态，保存在 futures 里
 export abstract class Widget {
     public static database: Database;
-    public static remoteService: RemoteService;
+    public static serviceProtocol: ServiceProtocol;
     public unmounted?: boolean;
     // 外部状态
     public subscriptions: Map<string, Future> = new Map();
@@ -24,7 +24,7 @@ export abstract class Widget {
 
     // 批量编辑，父子表单等类型的界面需要有可编辑的前端状态，放在本地的内存 database 里
     // onMount 的时候从 remoteService 把数据复制到内存 database 里进行编辑
-    // onUnmount 的时候清理本地的内存 database 释放内存
+    // onUnmount 的时候清理本地的内存 database
     public onMount: (scene: Scene) => Promise<void> | undefined;
     public onUnmount: (scene: Scene) => Promise<void> | undefined;
     // react 的钩子不能写在 render 里，必须写在这里
@@ -44,7 +44,7 @@ export abstract class Widget {
         if (this.onMount) {
             await this.onMount(
                 new Scene({
-                    remoteService: Widget.remoteService,
+                    serviceProtocol: Widget.serviceProtocol,
                     database: Widget.database,
                     operation: newOperation('sync scene'),
                 }),
@@ -72,7 +72,7 @@ export abstract class Widget {
 
     private async computeFuture(future: Future) {
         const scene = new Scene({
-            remoteService: Widget.remoteService,
+            serviceProtocol: Widget.serviceProtocol,
             database: Widget.database,
             operation: currentOperation(),
         });
@@ -89,7 +89,7 @@ export abstract class Widget {
             this.onUnmount(
                 new Scene({
                     database: Widget.database,
-                    remoteService: Widget.remoteService,
+                    serviceProtocol: Widget.serviceProtocol,
                     operation: newOperation('unmount component'),
                 }),
             );
@@ -132,11 +132,11 @@ function runInOperation<T>(op: Operation, action: () => T): T {
 
 export function renderRootWidget(
     widgetClass: WidgetClass,
-    options: { project: string; database: Database; remoteService: RemoteService },
+    options: { project: string; database: Database; serviceProtocol: ServiceProtocol },
 ) {
-    HttpRemoteService.project = options.project;
+    HttpServiceProtocol.project = options.project;
     Widget.database = options.database;
-    Widget.remoteService = options.remoteService;
+    Widget.serviceProtocol = options.serviceProtocol;
     enableDependencyTracking();
     const elem = document.getElementById('RootWidget');
     if (!elem) {

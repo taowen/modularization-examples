@@ -27,7 +27,7 @@ class Widget {
     async mount() {
         if (this.onMount) {
             await this.onMount(new entity_archetype_1.Scene({
-                remoteService: Widget.remoteService,
+                serviceProtocol: Widget.serviceProtocol,
                 database: Widget.database,
                 operation: newOperation('sync scene'),
             }));
@@ -52,7 +52,7 @@ class Widget {
     }
     async computeFuture(future) {
         const scene = new entity_archetype_1.Scene({
-            remoteService: Widget.remoteService,
+            serviceProtocol: Widget.serviceProtocol,
             database: Widget.database,
             operation: currentOperation(),
         });
@@ -67,7 +67,7 @@ class Widget {
         if (this.onUnmount) {
             this.onUnmount(new entity_archetype_1.Scene({
                 database: Widget.database,
-                remoteService: Widget.remoteService,
+                serviceProtocol: Widget.serviceProtocol,
                 operation: newOperation('unmount component'),
             }));
         }
@@ -101,9 +101,9 @@ function runInOperation(op, action) {
     });
 }
 function renderRootWidget(widgetClass, options) {
-    entity_archetype_1.HttpRemoteService.project = options.project;
+    entity_archetype_1.HttpServiceProtocol.project = options.project;
     Widget.database = options.database;
-    Widget.remoteService = options.remoteService;
+    Widget.serviceProtocol = options.serviceProtocol;
     Future_1.enableDependencyTracking();
     const elem = document.getElementById('RootWidget');
     if (!elem) {
@@ -112,7 +112,6 @@ function renderRootWidget(widgetClass, options) {
     }
     const operation = newOperation(`initial render ${window.location.href}`);
     runInOperation(operation, () => {
-        console.log(currentOperation());
         ReactDOM.render(renderWidget(widgetClass), elem);
     });
 }

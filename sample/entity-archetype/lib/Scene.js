@@ -22,7 +22,7 @@ class Scene {
             return this.database.executeSql(this, sql, sqlVars);
         };
         this.database = options.database;
-        this.remoteService = options.remoteService;
+        this.serviceProtocol = options.serviceProtocol;
         this.operation = {
             traceId: "",
             traceOp: "",
@@ -31,8 +31,8 @@ class Scene {
             ...options.operation,
         };
     }
-    useGateway(project) {
-        return this.remoteService.useGateway(this, project);
+    useServices(project) {
+        return this.serviceProtocol.useServices(this, project);
     }
     query(arg1, arg2) {
         if (arg1.IS_ACTIVE_RECORD) {

@@ -1,25 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HttpRemoteService = void 0;
-class HttpRemoteService {
-    useService(scene, project) {
+exports.HttpServiceProtocol = void 0;
+class HttpServiceProtocol {
+    useServices(scene, project) {
         return new Proxy({}, {
             get: (target, propertyKey, receiver) => {
-                project = project || HttpRemoteService.project;
+                project = project || HttpServiceProtocol.project;
                 return callViaHttp.bind(undefined, project, propertyKey);
             },
         });
     }
 }
-exports.HttpRemoteService = HttpRemoteService;
-async function callViaHttp(project, command, ...args) {
+exports.HttpServiceProtocol = HttpServiceProtocol;
+async function callViaHttp(project, service, ...args) {
     const result = await fetch("/call", {
         method: "POST",
         headers: {
             "X-Project": project,
         },
         body: JSON.stringify({
-            command,
+            service,
             args,
         }),
     });
@@ -29,4 +29,4 @@ async function callViaHttp(project, command, ...args) {
     }
     return resultJson.data;
 }
-//# sourceMappingURL=HttpRemoteService.js.map
+//# sourceMappingURL=HttpServiceProtocol.js.map

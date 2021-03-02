@@ -1,7 +1,7 @@
 import type { ActiveRecord, ActiveRecordClass } from "./ActiveRecord";
 import type { ConstructorType } from "./ConstructorType";
 import type { MethodsOf } from "./MethodsOf";
-import type { Gateway } from "./Gateway";
+import type { GatewayClass } from "./Gateway";
 
 type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
   ? (...args: P) => R
@@ -26,13 +26,17 @@ export interface Database {
   executeSql(
     scene: Scene,
     sql: string,
-    sqlVars: Record<string, any>
+    sqlVars: Record<string, any>,
+    optoins?: {
+      read?: ActiveRecordClass[],
+      write?: ActiveRecordClass[]
+    }
   ): Promise<any[]>;
 }
 
-// 提供 RPC
-export interface RemoteService {
-  useGateway(scene: Scene, project?: string): any;
+// 提供远程方法调用
+export interface ServiceProtocol {
+  useServices(scene: Scene, project?: string): any;
 }
 
 // trace -> operation -> scene
@@ -58,17 +62,17 @@ export class Scene {
   public notifyChange = (tableName: string) => {};
   public readonly operation: Operation;
   public readonly database: Database;
-  public readonly remoteService: RemoteService;
+  public readonly serviceProtocol: ServiceProtocol;
   public readonly subscribers = new Set<{
     subscribe(tableName: string): void;
   }>();
   constructor(options: {
     database: Database;
-    remoteService: RemoteService;
+    serviceProtocol: ServiceProtocol;
     operation: Partial<Operation>;
   }) {
     this.database = options.database;
-    this.remoteService = options.remoteService;
+    this.serviceProtocol = options.serviceProtocol;
     this.operation = {
       traceId: "",
       traceOp: "",
@@ -78,14 +82,14 @@ export class Scene {
     };
   }
 
-  public useGateway<T extends Gateway>(
+  public useServices<T extends GatewayClass | ActiveRecordClass>(
     project?: string
   ): {
     [P in MethodsOf<T>]: (
       ...a: Parameters<OmitFirstArg<T[P]>>
     ) => ReturnType<T[P]>;
   } {
-    return this.remoteService.useGateway(this, project);
+    return this.serviceProtocol.useServices(this, project);
   }
 
   public insert: OmitFirstArg<Database["insert"]> = (

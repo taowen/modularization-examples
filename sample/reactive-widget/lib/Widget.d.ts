@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Database, RemoteService, Scene } from '@autonomy/entity-archetype';
+import { Database, ServiceProtocol, Scene } from '@autonomy/entity-archetype';
 import { Future } from './Future';
 export declare abstract class Widget {
     props?: Record<string, any> | undefined;
     static database: Database;
-    static remoteService: RemoteService;
+    static serviceProtocol: ServiceProtocol;
     unmounted?: boolean;
     subscriptions: Map<string, Future>;
     constructor(props?: Record<string, any> | undefined);
@@ -25,6 +25,6 @@ export declare type WidgetClass<T extends Widget = any> = Function & {
 export declare function renderRootWidget(widgetClass: WidgetClass, options: {
     project: string;
     database: Database;
-    remoteService: RemoteService;
+    serviceProtocol: ServiceProtocol;
 }): void;
 export declare function renderWidget<T extends Widget>(widgetClass: WidgetClass<T>, props?: T['props']): JSX.Element;

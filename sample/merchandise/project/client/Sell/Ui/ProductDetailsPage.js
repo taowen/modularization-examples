@@ -19,16 +19,16 @@ class ProductDetailsPage extends _reactiveWidget.Widget {
   constructor(...args) {
     super(...args);
 
-    _defineProperty(this, "theProduct", this.future(async scene => {
-      const gateway = scene.useGateway();
-      return await gateway.loadProduct({
+    _defineProperty(this, "theProduct", this.subscribe(async scene => {
+      const s = scene.useServices();
+      return await s.loadProduct({
         name: this.props.productName
       });
     }));
 
-    _defineProperty(this, "activeXszkPromotions", this.future(async scene => {
-      const gateway = scene.useGateway();
-      return await gateway.listActiveXszkPromotions();
+    _defineProperty(this, "activeXszkPromotions", this.subscribe(async scene => {
+      const s = scene.useServices();
+      return await s.listActiveXszkPromotions();
     }));
   }
 

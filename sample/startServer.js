@@ -9,22 +9,16 @@ if (!project) {
 
 async function main() {
   const projectDir = path.dirname(require.resolve(`${project}/package.json`));
-  const { gateways: gatewayClasses } = require(path.join(
+  const models = require(path.join(
     projectDir,
     "server",
-    "gateways.js"
+    "models.json"
   ));
-  const commands = new Map();
-  for (const gatewayClass of gatewayClasses) {
-    const gateway = new gatewayClass();
-    for (const command of Object.getOwnPropertyNames(gatewayClass.prototype)) {
-      if (command === "constructor") {
-        continue;
-      }
-      commands.set(command, gateway);
-    }
-    for (const command of Object.keys(gateway)) {
-      commands.set(command, gateway);
+  const services = new Map();
+  for (const model of models) {
+    for (const service of model.services || []) {
+      const serviceClass = require(`${project}/server/${model.qualifiedName}`)[path.basename(model.qualifiedName)];
+      services.set(service, serviceClass);
     }
   }
   const { start } = require(path.join(projectDir, "server.js"));
@@ -35,9 +29,9 @@ async function main() {
       reqBody += chunk;
     });
     req.on("end", async () => {
-      const { command, args } = JSON.parse(reqBody) || {};
-      const gateway = commands.get(command);
-      if (!gateway) {
+      const { service, args } = JSON.parse(reqBody) || {};
+      const serviceClass = services.get(service);
+      if (!serviceClass) {
         console.error("can not find handler", reqBody);
         resp.end(JSON.stringify({ error: "handler not found" }));
         return;
@@ -46,7 +40,7 @@ async function main() {
       try {
         const result = await handle(
           operation,
-          Reflect.get(gateway, command),
+          Reflect.get(serviceClass, service),
           args
         );
         resp.end(JSON.stringify({ data: result }));

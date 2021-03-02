@@ -1,13 +1,13 @@
-import { RemoteService, Scene } from "./Scene";
+import { Scene, ServiceProtocol } from "./Scene";
 
-export class HttpRemoteService implements RemoteService {
+export class HttpServiceProtocol implements ServiceProtocol {
   public static project: string;
-  public useGateway(scene: Scene, project?: string) {
+  public useServices(scene: Scene, project?: string) {
     return new Proxy(
       {},
       {
         get: (target: object, propertyKey: string, receiver?: any) => {
-          project = project || HttpRemoteService.project;
+          project = project || HttpServiceProtocol.project;
           return callViaHttp.bind(undefined, project!, propertyKey);
         },
       }
@@ -15,14 +15,14 @@ export class HttpRemoteService implements RemoteService {
   }
 }
 
-async function callViaHttp(project: string, command: string, ...args: any[]) {
+async function callViaHttp(project: string, service: string, ...args: any[]) {
   const result = await fetch("/call", {
     method: "POST",
     headers: {
       "X-Project": project,
     },
     body: JSON.stringify({
-      command,
+      service,
       args,
     }),
   });

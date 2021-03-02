@@ -1,28 +1,28 @@
 const {
   InMemDatabase,
   Scene,
-  HttpRemoteService,
+  HttpServiceProtocol,
 } = require("@autonomy/entity-archetype");
 const { Product } = require("./server/Sell/Public/Product");
 
 exports.start = async () => {
-  const remoteService = new HttpRemoteService();
+  const serviceProtocol = new HttpServiceProtocol();
   const database = new InMemDatabase();
-  await insertTestData(remoteService, database);
+  await insertTestData(serviceProtocol, database);
   return async (operation, handler, args) => {
     const scene = new Scene({
       database,
-      remoteService,
+      serviceProtocol,
       operation,
     });
     return await handler(scene, ...(args || []));
   };
 };
 
-async function insertTestData(remoteService, database) {
+async function insertTestData(serviceProtocol, database) {
   const scene = new Scene({
     database,
-    remoteService,
+    serviceProtocol,
     operation: {},
   });
   await database.insert(scene, Product, { name: "apple" });

@@ -7,9 +7,6 @@ class ActiveRecord {
     constructor(scene) {
         this.scene = scene;
     }
-    static getTableName(activeRecordClass) {
-        return activeRecordClass.tableName || activeRecordClass.name;
-    }
     async update() {
         await this.scene.update(this);
     }
@@ -22,6 +19,9 @@ class ActiveRecord {
 }
 exports.ActiveRecord = ActiveRecord;
 ActiveRecord.IS_ACTIVE_RECORD = true;
+function getTableName(activeRecordClass) {
+    return activeRecordClass.tableName || activeRecordClass.name;
+}
 function toInsert(activeRecordClass) {
     return (scene, props) => {
         return scene.insert(activeRecordClass, props);
@@ -48,7 +48,7 @@ function toGet(activeRecordClass) {
     return async (scene, id) => {
         const records = await scene.query(activeRecordClass, { id });
         if (records.length === 0) {
-            throw new Error(`${ActiveRecord.getTableName(activeRecordClass)} ${id} not found`);
+            throw new Error(`${getTableName(activeRecordClass)} ${id} not found`);
         }
         if (records.length !== 1) {
             throw new Error('unexpected');
@@ -67,7 +67,7 @@ exports.toRunMethod = toRunMethod;
 function subsetOf(activeRecordClass) {
     return (sqlWhere, ...args) => {
         return (scene, sqlVars) => {
-            return scene.executeSql(`SELECT * FROM ${ActiveRecord.getTableName(activeRecordClass)} WHERE ${sqlWhere[0]}`, sqlVars);
+            return scene.executeSql(`SELECT * FROM ${getTableName(activeRecordClass)} WHERE ${sqlWhere[0]}`, sqlVars);
         };
     };
 }
@@ -78,10 +78,10 @@ function sqlView(sqlFragments, ...activeRecordClasses) {
         merged.push(sqlFragment);
         const activeRecordClass = activeRecordClasses[i];
         if (activeRecordClass) {
-            merged.push(ActiveRecord.getTableName(activeRecordClass));
+            merged.push(getTableName(activeRecordClass));
         }
     }
-    const sql = merged.join("");
+    const sql = merged.join('');
     return (scene, sqlVars) => {
         return scene.executeSql(sql, sqlVars);
     };
