@@ -26,7 +26,8 @@ async function callViaHttp(scene: Scene, project: string, service: string, ...ar
     });
     enqueue({
         scene,
-        job: { project, service, args },
+        project,
+        job: { service, args },
         resolve: resolve!,
         reject: reject!,
     });
@@ -35,6 +36,7 @@ async function callViaHttp(scene: Scene, project: string, service: string, ...ar
 
 interface RpcJob {
     scene: Scene;
+    project: string;
     job: Job;
     resolve: (result: any) => void;
     reject: (reason: any) => void;
@@ -43,7 +45,7 @@ interface RpcJob {
 const projects = new Map<string, BatchExecutor<RpcJob>>();
 
 function enqueue(job: RpcJob) {
-    const project = job.job.project;
+    const project = job.project;
     let batchExecutor = projects.get(project);
     if (!batchExecutor) {
         batchExecutor = new BatchExecutor<RpcJob>(32, batchExecute.bind(undefined, project));

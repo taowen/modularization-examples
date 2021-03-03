@@ -1,5 +1,4 @@
 export interface Job {
-    project: string;
     service: string;
     args: any[];
 }
