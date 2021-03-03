@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Suspense } from 'react';
-import { ErrorBoundary, renderWidget, Widget } from '@autonomy/io-react';
+import { renderWidget, Widget } from '@autonomy/io-react';
 import { TaskListItem } from './TaskListItem';
+import { ErrorBoundary } from 'react-error-boundary';
 
 export class TaskList extends Widget {
     public render() {
