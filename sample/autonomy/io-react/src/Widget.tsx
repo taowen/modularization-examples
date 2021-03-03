@@ -15,7 +15,7 @@ import { currentOperation, runInOperation } from './Operation';
 // 从 I/O 获得的外部状态，保存在 futures 里
 export abstract class Widget {
     // 可以覆盖这个回调来实现全局写操作的异常处理，读操作的异常用 ErrorBoundary 去抓
-    public static onUnhanledCallbackError = (scene: Scene, e: any) => {
+    public static onUnhandledCallbackError = (scene: Scene, e: any) => {
         console.error(`unhandled callback error: ${scene}`, e);
     };
     public static database: Database;
@@ -124,7 +124,7 @@ export abstract class Widget {
                     await scene.sleep(0);
                     return await cb(scene, ...boundArgs, ...args);
                 } catch (e) {
-                    Widget.onUnhanledCallbackError(scene, e);
+                    Widget.onUnhandledCallbackError(scene, e);
                     return undefined;
                 } finally {
                     await scene.tasks(); // 等待重渲染完成
@@ -245,7 +245,7 @@ export function bindCallback(traceOp: string, cb: any, ...boundArgs: any[]): any
             try {
                 return await cb(scene, ...boundArgs, ...args);
             } catch (e) {
-                Widget.onUnhanledCallbackError(scene, e);
+                Widget.onUnhandledCallbackError(scene, e);
                 return undefined;
             }
         })();

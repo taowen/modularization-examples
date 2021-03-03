@@ -95,7 +95,7 @@ export function enableDependencyTracking() {
 // @internal
 export function enableChangeNotification(scene: Scene) {
     scene.operation.onError = (e) => {
-        Widget.onUnhanledCallbackError(scene, e);
+        Widget.onUnhandledCallbackError(scene, e);
     };
     scene.notifyChange = (tableName) => {
         const table = tables && tables.get(tableName);
