@@ -1,6 +1,6 @@
 const http = require('http');
 const path = require('path');
-const { HttpXServer } = require('@autonomy/io');
+const { HttpXServer } = require('@autonomy/io-server');
 
 const project = process.argv[2];
 if (!project) {
@@ -23,8 +23,7 @@ async function main() {
     }
   }
   const { start } = require(path.join(projectDir, "server.js"));
-  const httpXServer = new HttpXServer(await start({ services }));
-  http.createServer(httpXServer.handleRequest.bind(httpXServer)).listen(3000);
+  new HttpXServer(await start({ services })).listen(3000);
   console.log(`${project} server started @3000`);
 }
 

@@ -5,4 +5,5 @@ export * from "./Scene";
 export * from "./InMemDatabase";
 export * from "./override";
 export * from "./HttpX/HttpXClient";
-export * from "./HttpX/HttpXServer";
+import * as HttpX from './HttpX/HttpX';
+export { HttpX }

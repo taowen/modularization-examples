@@ -1,6 +1,6 @@
 import { BatchExecutor } from '../BatchExecutor';
 import { Scene, ServiceProtocol } from '../Scene';
-import { isJobError, Job, JobResult } from './proto';
+import { isJobError, Job, JobResult } from './HttpX';
 
 export class HttpXClient implements ServiceProtocol {
     public static project: string;

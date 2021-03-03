@@ -1,6 +1,6 @@
-import { Database, Scene, ServiceProtocol } from '../Scene';
-import type { IncomingMessage, ServerResponse } from 'http';
-import { Job } from './proto';
+import { Database, HttpX, Scene, ServiceProtocol } from '@autonomy/io';
+import * as http from 'http';
+
 type ServiceClass = new () => any;
 
 export class HttpXServer {
@@ -13,14 +13,18 @@ export class HttpXServer {
         },
     ) {}
 
-    public handleRequest(req: IncomingMessage, resp: ServerResponse) {
+    public listen(...args: Parameters<http.Server['listen']>) {
+        return http.createServer(this.handleRequest.bind(this)).listen(...args);
+    }
+
+    private handleRequest(req: http.IncomingMessage, resp: http.ServerResponse) {
         let reqBody = '';
         req.on('data', (chunk) => {
             reqBody += chunk;
         });
         req.on('end', async () => {
-            const jobs: Job[] = JSON.parse(reqBody) || [];
-            const promises = jobs.map(job => this.execute(job));
+            const jobs: HttpX.Job[] = JSON.parse(reqBody) || [];
+            const promises = jobs.map((job) => this.execute(job));
             const results = [];
             for (const promise of promises) {
                 results.push(await promise);
@@ -29,7 +33,7 @@ export class HttpXServer {
         });
     }
 
-    private async execute(job: Job) {
+    private async execute(job: HttpX.Job) {
         const { service, args } = job;
         const serviceClass = this.options.services.get(service);
         if (!serviceClass) {
@@ -43,12 +47,14 @@ export class HttpXServer {
             if (!changed.includes(table)) {
                 changed.push(table);
             }
-        }
-        scene.subscribers.add({ subscribe(table) {
-            if (!subscribed.includes(table)) {
-                subscribed.push(table);
-            }
-        }})
+        };
+        scene.subscribers.add({
+            subscribe(table) {
+                if (!subscribed.includes(table)) {
+                    subscribed.push(table);
+                }
+            },
+        });
         try {
             const handler = Reflect.get(serviceClass, service);
             const result = await this.runService(scene, handler, args);
