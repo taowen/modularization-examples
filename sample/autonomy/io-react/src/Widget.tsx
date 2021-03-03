@@ -50,7 +50,7 @@ export abstract class Widget {
     }
 
     // 外部状态发生了变化，触发重渲染
-    public notifyChange: () => void;
+    public notifyChange: (op: Operation) => void;
 
     private async mount(op: Operation) {
         await this.onMount(enableChangeNotification(newScene(op)));
@@ -60,25 +60,34 @@ export abstract class Widget {
                 this.subscriptions.set(k, v);
             }
         }
-        await this.refreshSubscriptions(op);
+        await this.refreshSubscriptions(op, true);
     }
 
-    private async refreshSubscriptions(op: Operation) {
+    private async refreshSubscriptions(op: Operation, isMounting: boolean) {
         const promises = new Map<string, Promise<any>>();
         // 并发计算
         for (const [k, future] of this.subscriptions.entries()) {
-            promises.set(k, future.get(ensureReadonly(newScene(op))));
+            const scene = ensureReadonly(newScene(op));
+            const promise = scene.trackTask(future.get(scene));
+            promise.catch(op.onError);
+            promises.set(k, promise);
         }
         let dirty = false;
         for (const [k, promise] of promises.entries()) {
-            const v = await promise;
-            if (Reflect.get(this, k) !== v) {
-                Reflect.set(this, k, v);
-                dirty = true;
+            try {
+                const v = await promise;
+                if (Reflect.get(this, k) !== v) {
+                    Reflect.set(this, k, v);
+                    dirty = true;
+                }
+            } catch (e) {
+                if (isMounting) {
+                    throw e;
+                }
             }
         }
         if (dirty) {
-            runInOperation(op, this.notifyChange.bind(this));
+            this.notifyChange(op);
         }
     }
 
@@ -112,11 +121,13 @@ export abstract class Widget {
             scene.notifyChange(callbackId);
             return (async () => {
                 try {
+                    await scene.sleep(0);
                     return await cb(scene, ...boundArgs, ...args);
                 } catch (e) {
                     Widget.onUnhanledCallbackError(scene, e);
                     return undefined;
                 } finally {
+                    await scene.tasks(); // 等待重渲染完成
                     this.executingCallbacks!.delete(methodName);
                     scene.notifyChange(callbackId);
                 }
@@ -126,9 +137,7 @@ export abstract class Widget {
 
     protected isExecuting<M extends keyof this>(methodName: M) {
         return this.subscribe(async (scene) => {
-            for (const subscriber of scene.subscribers) {
-                subscriber.subscribe(this.getCallbackId(methodName));
-            }
+            scene.subscribe(this.getCallbackId(methodName));
             return this.executingCallbacks && this.executingCallbacks.has(methodName);
         });
     }
@@ -139,7 +148,7 @@ export abstract class Widget {
         }
         let callbackId = this.callbackIds.get(methodName);
         if (!callbackId) {
-            this.callbackIds.set(methodName, callbackId = `cb-${nextCallbackId()}`);
+            this.callbackIds.set(methodName, (callbackId = `cb-${nextCallbackId()}`));
         }
         return callbackId;
     }
@@ -156,9 +165,11 @@ export abstract class Widget {
         // 创建 widget，仅会在首次渲染时执行一次
         const [{ widget, initialRenderOp }, _] = React.useState(() => {
             const widget: Widget = new widgetClass(props as any);
-            widget.notifyChange = () => {
+            widget.notifyChange = (op) => {
                 if (!widget.unmounted) {
-                    forceRender((count) => count + 1);
+                    runInOperation(op, () => {
+                        forceRender((count) => count + 1);
+                    });
                 }
             };
             return { widget, initialRenderOp: currentOperation() };
@@ -194,7 +205,7 @@ export abstract class Widget {
         if (isReady === true) {
             if (isForceRender) {
                 // isReady 了之后，后续的重渲染都是因为外部状态改变而触发的，所以要刷一下
-                widget.refreshSubscriptions(currentOperation());
+                widget.refreshSubscriptions(currentOperation(), false);
                 // 刷新是异步的，刷新完成了之后会再次重渲染 react 组件重新走到这里
                 // refreshSubscriptions 内部会判重，不会死循环
             }

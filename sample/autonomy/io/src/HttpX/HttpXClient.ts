@@ -81,9 +81,7 @@ async function batchExecute(project: string, batch: RpcJob[]) {
                 job.reject(result.error);
             } else {
                 for (const table of result.subscribed) {
-                    for (const subscriber of job.scene.subscribers) {
-                        subscriber.subscribe(table);
-                    }
+                    job.scene.subscribe(table);
                 }
                 for (const table of result.changed) {
                     job.scene.notifyChange(table);

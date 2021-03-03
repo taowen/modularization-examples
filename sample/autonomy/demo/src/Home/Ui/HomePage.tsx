@@ -5,6 +5,7 @@ import { BrowserLocation, renderWidget, Widget } from '@autonomy/io-react';
 import { CounterDemo } from './CounterDemo';
 import { Greeting } from './Greeting';
 import { TaskList } from './TaskList';
+import { RandomNumberPage } from './RandomNumberPage';
 
 export class HomePage extends Widget {
     // 把 window.location 同步到内存数据库中
@@ -21,7 +22,15 @@ export class HomePage extends Widget {
             case '#counter-demo':
                 return renderWidget(CounterDemo);
             case '#task-list':
-                return <div>{renderWidget(TaskList)}<hr/>{renderWidget(TaskList)}</div>;
+                return (
+                    <div>
+                        {renderWidget(TaskList)}
+                        <hr />
+                        {renderWidget(TaskList)}
+                    </div>
+                );
+            case '#random-number':
+                return <RandomNumberPage />;
         }
         // 未知 URL，显示默认的首页内容
         return (
@@ -33,6 +42,9 @@ export class HomePage extends Widget {
                     </li>
                     <li>
                         <a href="#task-list">Suspense，ErrorBoundary以及I/O合并</a>
+                    </li>
+                    <li>
+                        <a href="#random-number">操作追踪</a>
                     </li>
                 </ul>
             </div>

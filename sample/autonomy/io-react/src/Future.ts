@@ -59,7 +59,7 @@ export class Future<T = any> {
         this.subscriptions.clear();
         this.cache = undefined;
         if (this.widget) {
-            runInOperation(op, this.widget.notifyChange.bind(this));
+            this.widget.notifyChange(op);
         }
     }
 
@@ -94,6 +94,9 @@ export function enableDependencyTracking() {
 // 对每个写操作的 scene 都打开改动通知
 // @internal
 export function enableChangeNotification(scene: Scene) {
+    scene.operation.onError = (e) => {
+        Widget.onUnhanledCallbackError(scene, e);
+    };
     scene.notifyChange = (tableName) => {
         const table = tables && tables.get(tableName);
         if (table) {
@@ -107,7 +110,7 @@ export function enableChangeNotification(scene: Scene) {
 // @internal
 export function ensureReadonly(scene: Scene) {
     scene.notifyChange = (tableName) => {
-        throw new Error(`detected readonly scene ${scene} changed ${tableName}`)
+        throw new Error(`detected readonly scene ${scene} changed ${tableName}`);
     };
     return scene;
 }

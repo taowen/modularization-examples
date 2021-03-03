@@ -36,9 +36,7 @@ export class InMemDatabase implements Database {
         criteria: Partial<T>,
     ): Promise<T[]> {
         const tableName = getTableName(activeRecordClass);
-        for (const subscriber of scene.subscribers) {
-            subscriber.subscribe(tableName);
-        }
+        scene.subscribe(tableName);
         const table = this.getTable(activeRecordClass);
         function isMatch(record: ActiveRecordCopy) {
             for (const [k, v] of Object.entries(criteria)) {

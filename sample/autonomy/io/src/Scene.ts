@@ -49,6 +49,8 @@ export interface Operation {
     baggage: Record<string, any>;
     // 当前正在做什么操作，不会跨进程传递
     props: Record<string, any>;
+    tasks?: Map<Promise<any>, Scene>;
+    onError?: (e: any) => void;
 }
 
 // 同时每个异步执行流程会创建一个独立的 scene，用来跟踪异步操作与I/O的订阅关系
@@ -70,6 +72,12 @@ export class Scene {
         operation: Operation;
     }) {
         Object.assign(this, options);
+    }
+
+    public subscribe(tableName: string) {
+        for (const subscriber of this.subscribers) {
+            subscriber.subscribe(tableName);
+        }
     }
 
     public useServices<T extends GatewayClass | ActiveRecordClass>(
@@ -138,6 +146,33 @@ export class Scene {
         id?: any,
     ): Promise<T> {
         return await this.load(activeRecordClass, id ? { id } : ({} as any));
+    }
+    public trackTask<T>(promise: Promise<T>): Promise<T> {
+        let tasks = this.operation.tasks;
+        if (!tasks) {
+            this.operation.tasks = tasks = new Map();
+        }
+        tasks.set(promise, this);
+        promise.finally(() => {
+            tasks!.delete(promise);
+        });
+        return promise;
+    }
+    public async tasks() {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        if (!this.operation.tasks) {
+            return;
+        }
+        for (const promise of this.operation.tasks.keys()) {
+            try {
+                await promise;
+            } catch (e) {
+                // just need to wait for complete;
+            }
+        }
+    }
+    public async sleep(millis: number) {
+        return new Promise((resolve) => setTimeout(resolve, millis));
     }
     public toJSON() {
         return undefined;
