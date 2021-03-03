@@ -1,14 +1,14 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Suspense } from 'react';
-import { Database, Operation, ServiceProtocol, Scene } from '@autonomy/io';
+import { Database, Operation, ServiceProtocol, Scene, newOperation } from '@autonomy/io';
 import {
     enableChangeNotification,
     enableDependencyTracking,
     ensureReadonly,
     Future,
 } from './Future';
-import { currentOperation, newOperation, runInOperation } from './Operation';
+import { currentOperation, runInOperation } from './Operation';
 
 // 展示界面，其数据来自两部分
 // 父组件传递过来的 props

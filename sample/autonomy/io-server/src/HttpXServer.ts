@@ -1,4 +1,4 @@
-import { Database, HttpX, Scene, ServiceProtocol } from '@autonomy/io';
+import { Database, HttpX, newOperation, Operation, Scene, ServiceProtocol } from '@autonomy/io';
 import * as http from 'http';
 
 type ServiceClass = new () => any;
@@ -26,25 +26,35 @@ export class HttpXServer {
             resp.writeHead(200, {
                 'Content-Type': 'text/plain; charset=utf-8',
                 'Transfer-Encoding': 'chunked',
-                'X-Content-Type-Options': 'nosniff'});
+                'X-Content-Type-Options': 'nosniff',
+            });
             const jobs: HttpX.Job[] = JSON.parse(reqBody) || [];
-            const promises = jobs.map((job, i) => this.execute(i, job, resp));
+            const operation =
+                createOperationFromHeaders(req.headers) || newOperation('handle /call');
+            const promises = jobs.map((job, i) => this.execute(i, job, operation, resp));
             await Promise.all(promises);
             resp.end();
         });
     }
 
-    private async execute(index: number, job: HttpX.Job, resp: http.ServerResponse) {
+    private async execute(
+        index: number,
+        job: HttpX.Job,
+        operation: Operation,
+        resp: http.ServerResponse,
+    ) {
         const { service, args } = job;
         const serviceClass = this.options.services.get(service);
         if (!serviceClass) {
             console.error('can not find handler', job.service);
-            resp.write(JSON.stringify({ index, error: `handler not found: ${job.service}` }) + '\n');
+            resp.write(
+                JSON.stringify({ index, error: `handler not found: ${job.service}` }) + '\n',
+            );
             return;
         }
         const subscribed: string[] = [];
         const changed: string[] = [];
-        const scene = this.createScene();
+        const scene = new Scene({ ...this.options, operation });
         scene.notifyChange = (table) => {
             if (!changed.includes(table)) {
                 changed.push(table);
@@ -64,20 +74,8 @@ export class HttpXServer {
         } catch (e) {
             console.error(`failed to handle: ${JSON.stringify(job)}\n`, e);
             resp.write(JSON.stringify({ index, error: new String(e) }) + '\n');
-            resp.flushHeaders()
+            resp.flushHeaders();
         }
-    }
-
-    private createScene() {
-        return new Scene({
-            ...this.options,
-            operation: {
-                traceId: '',
-                traceOp: '',
-                baggage: {},
-                props: {},
-            },
-        });
     }
 
     private async runService(scene: Scene, handler: Function, args: any[]) {
@@ -86,4 +84,32 @@ export class HttpXServer {
         }
         return await handler.call(undefined, scene, ...args);
     }
+}
+
+function createOperationFromHeaders(
+    headers: Record<string, string> | NodeJS.Dict<string | string[]>,
+): Operation | undefined {
+    if (!headers) {
+        return undefined;
+    }
+    const traceId = headers['x-b3-traceid'] as string;
+    if (!traceId) {
+        return undefined;
+    }
+    const baggage: Record<string, string> = {};
+    for (const [k, v] of Object.entries(headers)) {
+        if (k.startsWith('baggage-') && typeof v === 'string') {
+            baggage[k.substr('baggage-'.length)] = v;
+        }
+    }
+    const spanId = headers['x-b3-spanid'] as string;
+    const parentSpanId = headers['x-b3-parentspanid'] as string;
+    return {
+        traceId,
+        parentSpanId,
+        spanId,
+        baggage: baggage,
+        traceOp: baggage['op'],
+        props: {},
+    };
 }

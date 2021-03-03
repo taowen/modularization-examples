@@ -1,6 +1,7 @@
 import { ActiveRecord, ActiveRecordClass, getTableName } from './ActiveRecord';
 import type { MethodsOf } from './MethodsOf';
 import type { GatewayClass } from './Gateway';
+import { uuid } from './uuid';
 
 type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;
 
@@ -37,7 +38,7 @@ export interface ServiceProtocol {
 }
 
 // trace -> operation -> scene
-// 一个 trace 会有多个进程被多次执行，每次执行是一个 operation
+// 一个 trace 会有多个进程被多次执行，每次执行是一个 operation（或者叫span）
 // 一个 operation 会包含一个或者多个 scene
 // 浏览器进入首次渲染，是一个 operation
 // 每次鼠标点击，触发重渲染，也是一个 operation。此时因为可能触发多处重渲染，所以会触发多个 scene
@@ -45,6 +46,8 @@ export interface ServiceProtocol {
 export interface Operation {
     // traceId, traceOp, baggage 会 RPC 透传
     traceId: string;
+    parentSpanId?: string;
+    spanId: string;
     traceOp: string;
     baggage: Record<string, any>;
     // 当前正在做什么操作，不会跨进程传递
@@ -52,6 +55,18 @@ export interface Operation {
     tasks?: Map<Promise<any>, Scene>;
     onError?: (e: any) => void;
 }
+
+export function newOperation(traceOp: string): Operation {
+    // 分布式追踪的 traceId 是在前端浏览器这里分配的，一直会往后传递
+    return {
+        traceId: uuid(),
+        spanId: uuid(),
+        traceOp,
+        baggage: {},
+        props: {},
+    };
+}
+
 
 // 同时每个异步执行流程会创建一个独立的 scene，用来跟踪异步操作与I/O的订阅关系
 // 后端 handle 一个 http 请求，后端不开启订阅

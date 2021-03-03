@@ -23,5 +23,7 @@ export class RandomNumber extends Widget {
     }
     public async tryAgain(scene: Scene) {
         scene.notifyChange('some fake table');
+        // notifyChange 触发的页面刷新没有做完，按钮会一直是灰色的
+        // 而不是 notifyChange 触发之之后，立马按钮就又可以点了
     }
 }

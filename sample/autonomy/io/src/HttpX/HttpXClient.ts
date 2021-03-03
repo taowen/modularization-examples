@@ -1,5 +1,6 @@
+import { uuid } from '../uuid';
 import { BatchExecutor } from '../BatchExecutor';
-import { Scene, ServiceProtocol } from '../Scene';
+import { Operation, Scene, ServiceProtocol } from '../Scene';
 import { isJobError, Job, JobResult } from './HttpX';
 
 export class HttpXClient implements ServiceProtocol {
@@ -55,12 +56,36 @@ function enqueue(job: RpcJob) {
 }
 
 async function batchExecute(project: string, batch: RpcJob[]) {
+    const operationJobs = new Map<Operation, RpcJob[]>();
+    for (const job of batch) {
+        let jobs = operationJobs.get(job.scene.operation);
+        if (!jobs) {
+            operationJobs.set(job.scene.operation, jobs = []);
+        }
+        jobs.push(job);
+    }
+    const promises = [];
+    for (const [operation, jobs] of operationJobs.entries()) {
+        promises.push(batchExecuteOneOperationJobs(project, operation, jobs));
+    }
+    await Promise.all(promises);
+}
+
+async function batchExecuteOneOperationJobs(project: string, operation: Operation, jobs: RpcJob[]) {
+    const headers: Record<string, string> = {
+        'x-project': project,
+        'x-b3-traceid': operation.traceId,
+        'x-b3-parentspanid': operation.spanId,
+        'x-b3-spanid': uuid(),
+        'baggage-op': operation.traceOp
+    };
+    for (const [k, v] of Object.entries(operation.baggage)) {
+        headers[`baggage-${k}`] = v;
+    }
     const resp = await fetch('/call', {
         method: 'POST',
-        headers: {
-            'X-Project': project,
-        },
-        body: JSON.stringify(batch.map((job) => job.job)),
+        headers,
+        body: JSON.stringify(jobs.map((job) => job.job)),
     });
     const reader = resp.body!.getReader();
     const decoder = new TextDecoder('utf-8');
@@ -76,7 +101,7 @@ async function batchExecute(project: string, batch: RpcJob[]) {
         lines.length = lines.length - 1;
         for (const line of lines) {
             const result = JSON.parse(line) as JobResult;
-            const job = batch[result.index];
+            const job = jobs[result.index];
             if (isJobError(result)) {
                 job.reject(result.error);
             } else {

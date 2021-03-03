@@ -9,16 +9,6 @@ export function runInOperation<T>(op: Operation, action: () => T): T {
     });
 }
 
-export function newOperation(traceOp: string): Operation {
-    // 分布式追踪的 traceId 是在前端浏览器这里分配的，一直会往后传递
-    return {
-        traceId: '123',
-        traceOp,
-        baggage: {},
-        props: {},
-    };
-}
-
 export function currentOperation(): Operation {
     const interactions = tracing.unstable_getCurrent();
     if (!interactions) {
