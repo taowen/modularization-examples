@@ -142,4 +142,7 @@ export class Scene {
     public toJSON() {
         return undefined;
     }
+    get [Symbol.toStringTag]() {
+        return `[OP]${this.operation.traceId} ${this.operation.traceOp}`;
+    }
 }

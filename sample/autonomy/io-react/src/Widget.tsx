@@ -2,13 +2,22 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Suspense } from 'react';
 import { Database, Operation, ServiceProtocol, Scene } from '@autonomy/io';
-import { enableChangeNotification, enableDependencyTracking, ensureReadonly, Future } from './Future';
+import {
+    enableChangeNotification,
+    enableDependencyTracking,
+    ensureReadonly,
+    Future,
+} from './Future';
 import { currentOperation, newOperation, runInOperation } from './Operation';
 
 // 展示界面，其数据来自两部分
 // 父组件传递过来的 props
 // 从 I/O 获得的外部状态，保存在 futures 里
 export abstract class Widget {
+    // 可以覆盖这个回调来实现全局写操作的异常处理，读操作的异常用 ErrorBoundary 去抓
+    public static onUnhanledCallbackError = (scene: Scene, e: any) => {
+        console.error(`unhandled callback error: ${scene}`, e);
+    }
     public static database: Database;
     public static serviceProtocol: ServiceProtocol;
     private unmounted?: boolean;
@@ -87,13 +96,12 @@ export abstract class Widget {
         boundArg2: any,
     ): OmitThreeArg<this[M]>;
     protected callback<M extends keyof this>(methodName: M, ...boundArgs: any[]): any {
-        const method = Reflect.get(this, methodName);
-        return (...args: any[]) => {
-            const scene = enableChangeNotification(
-                newScene(`callback ${this.constructor.name}.${methodName}`),
-            );
-            return method(scene, ...boundArgs, ...args);
-        };
+        const cb = Reflect.get(this, methodName).bind(this);
+        return bindCallback(
+            `callback ${this.constructor.name}.${methodName}`,
+            cb,
+            ...(boundArgs as any),
+        );
     }
 
     // 以下是 react 的黑魔法，看不懂是正常的
@@ -161,6 +169,36 @@ export abstract class Widget {
     }
 }
 
+// 给回调提供 scene，并统一捕获异常兜底
+export function bindCallback<T extends (...args: any[]) => any>(
+    traceOp: string,
+    cb: T,
+    ...boundArgs: any[]
+): any;
+export function bindCallback<T extends (...args: any[]) => any>(
+    traceOp: string,
+    cb: T,
+    boundArg1: Parameters<T>[1],
+    boundArg2: Parameters<T>[2],
+): OmitThreeArg<T>;
+export function bindCallback<T extends (...args: any[]) => any>(
+    traceOp: string,
+    cb: T,
+    boundArg1: Parameters<T>[1],
+): OmitTwoArg<T>;
+export function bindCallback<T>(traceOp: string, cb: T): OmitOneArg<T>;
+export function bindCallback(traceOp: string, cb: any, ...boundArgs: any[]): any {
+    return (...args: any[]) => {
+        const scene = enableChangeNotification(newScene(traceOp));
+        try {
+            return cb(scene, ...boundArgs, ...args);
+        } catch (e) {
+            Widget.onUnhanledCallbackError(scene, e);
+            throw e;
+        }
+    };
+}
+
 export type WidgetClass<T extends Widget = any> = Function & {
     new (scene: Scene, props?: Record<string, any>): T;
 };
@@ -196,7 +234,7 @@ export function renderRootWidget(
 
 export function renderWidget<T extends Widget>(widgetClass: WidgetClass<T>, props?: T['props']) {
     const Component = Widget.reactComponent.bind(undefined, widgetClass);
-    return <Component {...props}/>;
+    return <Component {...props} />;
 }
 
 type OmitOneArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;

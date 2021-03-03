@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Suspense } from 'react';
 import { Scene } from '@autonomy/io';
-import { renderWidget, Widget } from '@autonomy/io-react';
-import { BrowserLocation } from './BrowserLocation';
+import { BrowserLocation, renderWidget, Widget } from '@autonomy/io-react';
 import { CounterDemo } from './CounterDemo';
 import { Greeting } from './Greeting';
 import { TaskList } from './TaskList';
@@ -10,13 +9,7 @@ import { TaskList } from './TaskList';
 export class HomePage extends Widget {
     // 把 window.location 同步到内存数据库中
     public async onMount(scene: Scene) {
-        await scene.insert(BrowserLocation, { hash: window.location.hash });
-        window.addEventListener('hashchange', this.callback('onHashChanged'));
-    }
-    public async onHashChanged(scene: Scene) {
-        const browserLocation = await scene.get(BrowserLocation);
-        browserLocation.hash = window.location.hash;
-        await scene.update(browserLocation);
+        await BrowserLocation.startSyncing(scene);
     }
     // 从内存数据库读取到最新的 window.location 达到间接订阅 window hashchange 的目的
     // 当用户点了链接之后，因为这里的订阅会重新渲染

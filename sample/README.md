@@ -57,7 +57,7 @@ merchandise/project/client/Sell/Ui/ProductDetailsPage.js
 # TODO
 
 * 检查 method 是否被覆盖两次，标注 scan 顺序
-* 处理 loading，loadError
+* operation 出错
 * 演示混合型 UI
 * 演示离散型流程
 * 演示混合型流程
