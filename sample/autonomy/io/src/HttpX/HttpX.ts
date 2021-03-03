@@ -11,11 +11,13 @@ export function isJobError(jobResult: JobResult): jobResult is JobError {
 }
 
 export interface JobSuccess {
+    index: number;
     data: any;
     subscribed: string[];
     changed: string[];
 }
 
 export interface JobError {
+    index: number;
     error: any;
 }

@@ -1,4 +1,3 @@
-const http = require('http');
 const path = require('path');
 const { HttpXServer } = require('@autonomy/io-server');
 

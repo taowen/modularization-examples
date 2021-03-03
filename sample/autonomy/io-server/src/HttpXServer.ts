@@ -23,22 +23,24 @@ export class HttpXServer {
             reqBody += chunk;
         });
         req.on('end', async () => {
+            resp.writeHead(200, {
+                'Content-Type': 'text/plain; charset=utf-8',
+                'Transfer-Encoding': 'chunked',
+                'X-Content-Type-Options': 'nosniff'});
             const jobs: HttpX.Job[] = JSON.parse(reqBody) || [];
-            const promises = jobs.map((job) => this.execute(job));
-            const results = [];
-            for (const promise of promises) {
-                results.push(await promise);
-            }
-            resp.end(JSON.stringify(results));
+            const promises = jobs.map((job, i) => this.execute(i, job, resp));
+            await Promise.all(promises);
+            resp.end();
         });
     }
 
-    private async execute(job: HttpX.Job) {
+    private async execute(index: number, job: HttpX.Job, resp: http.ServerResponse) {
         const { service, args } = job;
         const serviceClass = this.options.services.get(service);
         if (!serviceClass) {
             console.error('can not find handler', job.service);
-            return { error: 'handler not found' };
+            resp.write(JSON.stringify({ index, error: `handler not found: ${job.service}` }) + '\n');
+            return;
         }
         const subscribed: string[] = [];
         const changed: string[] = [];
@@ -58,10 +60,11 @@ export class HttpXServer {
         try {
             const handler = Reflect.get(serviceClass, service);
             const result = await this.runService(scene, handler, args);
-            return { data: result, subscribed, changed };
+            resp.write(JSON.stringify({ index, data: result, subscribed, changed }) + '\n');
         } catch (e) {
             console.error(`failed to handle: ${JSON.stringify(job)}\n`, e);
-            return { error: new String(e) };
+            resp.write(JSON.stringify({ index, error: new String(e) }) + '\n');
+            resp.flushHeaders()
         }
     }
 

@@ -60,21 +60,34 @@ async function batchExecute(project: string, batch: RpcJob[]) {
         },
         body: JSON.stringify(batch.map((job) => job.job)),
     });
-    const results = (await resp.json()) as JobResult[];
-    for (const [i, result] of results.entries()) {
-        const job = batch[i];
-        if (isJobError(result)) {
-            job.reject(result.error);
-        } else {
-            for (const table of result.subscribed) {
-                for (const subscriber of job.scene.subscribers) {
-                    subscriber.subscribe(table);
+    const reader = resp.body!.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let buf = '';
+    while (true) {
+        const chunk = await reader.read();
+        if (chunk.done) {
+            break;
+        }
+        buf += decoder.decode(chunk.value!, { stream: true });
+        const lines = buf.split('\n');
+        buf = lines[lines.length - 1];
+        lines.length = lines.length - 1;
+        for (const line of lines) {
+            const result = JSON.parse(line) as JobResult;
+            const job = batch[result.index];
+            if (isJobError(result)) {
+                job.reject(result.error);
+            } else {
+                for (const table of result.subscribed) {
+                    for (const subscriber of job.scene.subscribers) {
+                        subscriber.subscribe(table);
+                    }
                 }
+                for (const table of result.changed) {
+                    job.scene.notifyChange(table);
+                }
+                job.resolve(result.data);
             }
-            for (const table of result.changed) {
-                job.scene.notifyChange(table);
-            }
-            job.resolve(result.data);
         }
     }
 }
