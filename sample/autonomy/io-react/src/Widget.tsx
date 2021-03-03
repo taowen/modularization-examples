@@ -17,10 +17,13 @@ export abstract class Widget {
     // 可以覆盖这个回调来实现全局写操作的异常处理，读操作的异常用 ErrorBoundary 去抓
     public static onUnhanledCallbackError = (scene: Scene, e: any) => {
         console.error(`unhandled callback error: ${scene}`, e);
-    }
+    };
     public static database: Database;
     public static serviceProtocol: ServiceProtocol;
     private unmounted?: boolean;
+    // 用来实现按钮在执行中灰掉
+    private executingCallbacks?: Set<PropertyKey>;
+    private callbackIds?: Map<PropertyKey, string>;
     // 外部状态
     private subscriptions: Map<string, Future> = new Map();
     // 父组件传入的 props
@@ -97,11 +100,48 @@ export abstract class Widget {
     ): OmitThreeArg<this[M]>;
     protected callback<M extends keyof this>(methodName: M, ...boundArgs: any[]): any {
         const cb = Reflect.get(this, methodName).bind(this);
-        return bindCallback(
-            `callback ${this.constructor.name}.${methodName}`,
-            cb,
-            ...(boundArgs as any),
-        );
+        return (...args: any[]) => {
+            const scene = enableChangeNotification(
+                newScene(`callback ${this.constructor.name}.${methodName}`),
+            );
+            if (!this.executingCallbacks) {
+                this.executingCallbacks = new Set();
+            }
+            this.executingCallbacks.add(methodName);
+            const callbackId = this.getCallbackId(methodName);
+            scene.notifyChange(callbackId);
+            return (async () => {
+                try {
+                    return await cb(scene, ...boundArgs, ...args);
+                } catch (e) {
+                    Widget.onUnhanledCallbackError(scene, e);
+                    return undefined;
+                } finally {
+                    this.executingCallbacks!.delete(methodName);
+                    scene.notifyChange(callbackId);
+                }
+            })();
+        };
+    }
+
+    protected isExecuting<M extends keyof this>(methodName: M) {
+        return this.subscribe(async (scene) => {
+            for (const subscriber of scene.subscribers) {
+                subscriber.subscribe(this.getCallbackId(methodName));
+            }
+            return this.executingCallbacks && this.executingCallbacks.has(methodName);
+        });
+    }
+
+    private getCallbackId(methodName: PropertyKey) {
+        if (!this.callbackIds) {
+            this.callbackIds = new Map();
+        }
+        let callbackId = this.callbackIds.get(methodName);
+        if (!callbackId) {
+            this.callbackIds.set(methodName, callbackId = `cb-${nextCallbackId()}`);
+        }
+        return callbackId;
     }
 
     // 以下是 react 的黑魔法，看不懂是正常的
@@ -190,12 +230,14 @@ export function bindCallback<T>(traceOp: string, cb: T): OmitOneArg<T>;
 export function bindCallback(traceOp: string, cb: any, ...boundArgs: any[]): any {
     return (...args: any[]) => {
         const scene = enableChangeNotification(newScene(traceOp));
-        try {
-            return cb(scene, ...boundArgs, ...args);
-        } catch (e) {
-            Widget.onUnhanledCallbackError(scene, e);
-            throw e;
-        }
+        return (async () => {
+            try {
+                return await cb(scene, ...boundArgs, ...args);
+            } catch (e) {
+                Widget.onUnhanledCallbackError(scene, e);
+                return undefined;
+            }
+        })();
     };
 }
 
@@ -244,3 +286,8 @@ type OmitTwoArg<F> = F extends (x1: any, x2: any, ...args: infer P) => infer R
 type OmitThreeArg<F> = F extends (x1: any, x2: any, x3: any, ...args: infer P) => infer R
     ? (...args: P) => R
     : never;
+
+let counter = 1;
+function nextCallbackId() {
+    return counter++;
+}

@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { renderWidget, Widget } from '@autonomy/io-react';
 import { TaskListItem } from './TaskListItem';
 import { ErrorBoundary } from 'react-error-boundary';
+import { RollDiceButton } from './RollDiceButton';
 
 export class TaskList extends Widget {
     public render() {
@@ -19,6 +20,11 @@ export class TaskList extends Widget {
                 </div>,
             );
         }
-        return <>{items}</>;
+        return (
+            <div>
+                {items}
+                {renderWidget(RollDiceButton)}
+            </div>
+        );
     }
 }
