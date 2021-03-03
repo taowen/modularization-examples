@@ -1,10 +1,5 @@
 演示 motherboard + 插件 的实现方式
 
-* 服务端使用 typescript + node + http/json
-* 客户端使用 typescript + web + react
-
-除了 react 框架之外，没有使用其他框架和库
-
 ```
 安装 node：https://nodejs.dev/
 安装 yarn：https://classic.yarnpkg.com/en/

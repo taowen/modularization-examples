@@ -1,4 +1,4 @@
-import { Operation } from "@autonomy/entity-archetype";
+import { Operation } from "@autonomy/io";
 import * as tracing from 'scheduler/tracing';
 
 export function runInOperation<T>(op: Operation, action: () => T): T {

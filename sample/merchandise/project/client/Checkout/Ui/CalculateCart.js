@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CalculateCart = void 0;
 
-var _entityArchetype = require("@autonomy/entity-archetype");
+var _io = require("@autonomy/io");
 
-class CalculateCart extends _entityArchetype.Command {
+class CalculateCart extends _io.Command {
   run() {
     return "hello";
   }

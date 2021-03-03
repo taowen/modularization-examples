@@ -5,11 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.UnpublishProducts = void 0;
 
-var _entityArchetype = require("@autonomy/entity-archetype");
+var _io = require("@autonomy/io");
 
 var _Product = require("./Product");
 
-class UnpublishProducts extends _entityArchetype.Command {
+class UnpublishProducts extends _io.Command {
   async run() {
     const products = await this.scene.query(_Product.Product.batchLoadProducts, {
       productIds: this.productIds

@@ -7,7 +7,7 @@ exports.CounterDemo = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
-var _reactiveWidget = require("@autonomy/reactive-widget");
+var _ioReact = require("@autonomy/io-react");
 
 var _bigCounters = require("./bigCounters");
 
@@ -21,7 +21,7 @@ function $(scene) {
   return scene.useServices();
 }
 
-class CounterDemo extends _reactiveWidget.Widget {
+class CounterDemo extends _ioReact.Widget {
   constructor(...args) {
     super(...args);
 

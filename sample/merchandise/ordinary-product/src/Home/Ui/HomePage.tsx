@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Suspense } from 'react';
-import { Scene } from '@autonomy/entity-archetype';
-import { renderWidget, Widget } from '@autonomy/reactive-widget';
+import { Scene } from '@autonomy/io';
+import { renderWidget, Widget } from '@autonomy/io-react';
 import { ProductDetailsPage } from '@motherboard/Sell/Ui/ProductDetailsPage';
 import { BrowserLocation } from './BrowserLocation';
 import { CounterDemo } from './CounterDemo';

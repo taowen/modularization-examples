@@ -3,6 +3,6 @@
     "private": true,
     "name": "@wms/motherboard",
     "dependencies": {
-        "@autonomy/entity-archetype": "0.0.1"
+        "@autonomy/io": "0.0.1"
     }
 }

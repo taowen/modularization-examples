@@ -1,4 +1,4 @@
-import { Operation, Scene } from '@autonomy/entity-archetype';
+import { Operation, Scene } from '@autonomy/io';
 import { runInOperation } from './Operation';
 import { Widget } from './Widget';
 

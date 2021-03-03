@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProductDetailsPage = void 0;
 
-var _reactiveWidget = require("@autonomy/reactive-widget");
+var _ioReact = require("@autonomy/io-react");
 
 var React = _interopRequireWildcard(require("react"));
 
@@ -23,7 +23,7 @@ function $(scene) {
   return scene.useServices();
 }
 
-class ProductDetailsPage extends _reactiveWidget.Widget {
+class ProductDetailsPage extends _ioReact.Widget {
   constructor(...args) {
     super(...args);
 

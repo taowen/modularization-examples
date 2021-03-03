@@ -5,10 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.bigCounters = void 0;
 
-var _reactiveWidget = require("@autonomy/reactive-widget");
+var _ioReact = require("@autonomy/io-react");
 
 // 可以用 Future 来缓存一些跨 widget 的公共数据
-const bigCounters = new _reactiveWidget.Future(async scene => {
+const bigCounters = new _ioReact.Future(async scene => {
   const allCounters = await scene.useServices().queryCounters();
   const bigCounters = [];
 

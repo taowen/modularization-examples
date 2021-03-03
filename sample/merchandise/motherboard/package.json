@@ -3,7 +3,7 @@
     "private": true,
     "name": "@merchandise/motherboard",
     "dependencies": {
-        "@autonomy/entity-archetype": "0.0.1",
-        "@autonomy/reactive-widget": "0.0.1"
+        "@autonomy/io": "0.0.1",
+        "@autonomy/io-react": "0.0.1"
     }
 }

@@ -2,7 +2,7 @@ const {
   InMemDatabase,
   Scene,
   HttpXClient,
-} = require("@autonomy/entity-archetype");
+} = require("@autonomy/io");
 const { Product } = require("./server/Sell/Private/Product");
 
 exports.start = async (options) => {

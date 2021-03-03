@@ -7,7 +7,7 @@ exports.TaskListItem = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
-var _reactiveWidget = require("@autonomy/reactive-widget");
+var _ioReact = require("@autonomy/io-react");
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
@@ -19,7 +19,7 @@ function $(scene) {
   return scene.useServices();
 }
 
-class TaskListItem extends _reactiveWidget.Widget {
+class TaskListItem extends _ioReact.Widget {
   constructor(...args) {
     super(...args);
 

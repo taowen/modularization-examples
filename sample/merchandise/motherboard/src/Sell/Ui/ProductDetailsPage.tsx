@@ -1,4 +1,4 @@
-import { Widget } from "@autonomy/reactive-widget";
+import { Widget } from "@autonomy/io-react";
 import * as React from "react";
 
 export class ProductDetailsPage extends Widget {

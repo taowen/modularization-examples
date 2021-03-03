@@ -1,5 +1,5 @@
-import { Gateway } from "@autonomy/entity-archetype";
-import { Scene } from "@autonomy/entity-archetype";
+import { Gateway } from "@autonomy/io";
+import { Scene } from "@autonomy/io";
 
 export class GreetingWordsGateway extends Gateway {
   public static async getGreetingWords(scene: Scene) {

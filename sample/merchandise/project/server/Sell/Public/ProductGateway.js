@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProductGateway = void 0;
 
-var _entityArchetype = require("@autonomy/entity-archetype");
+var _entityArchetype = require("@autonomy/io");
 
 var _Product = require("./Product");
 

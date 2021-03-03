@@ -1,8 +1,8 @@
 const {
   HttpXClient,
   InMemDatabase,
-} = require("@autonomy/entity-archetype");
-const { renderRootWidget } = require("@autonomy/reactive-widget");
+} = require("@autonomy/io");
+const { renderRootWidget } = require("@autonomy/io-react");
 const { HomePage } = require("./client/Home/Ui/HomePage");
 
 HttpXClient.project = "@merchandise/project";

@@ -1,4 +1,4 @@
-import { Operation, Scene } from '@autonomy/entity-archetype';
+import { Operation, Scene } from '@autonomy/io';
 import { Widget } from './Widget';
 export declare class Future<T = any> {
     private readonly compute;

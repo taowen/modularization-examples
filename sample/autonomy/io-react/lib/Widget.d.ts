@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Database, ServiceProtocol, Scene } from '@autonomy/entity-archetype';
+import { Database, ServiceProtocol, Scene } from '@autonomy/io';
 export declare abstract class Widget {
     props?: Record<string, any> | undefined;
     static database: Database;

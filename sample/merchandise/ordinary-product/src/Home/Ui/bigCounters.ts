@@ -1,4 +1,4 @@
-import { Future } from "@autonomy/reactive-widget";
+import { Future } from "@autonomy/io-react";
 import { Counter } from "../Private/Counter";
 
 // 可以用 Future 来缓存一些跨 widget 的公共数据

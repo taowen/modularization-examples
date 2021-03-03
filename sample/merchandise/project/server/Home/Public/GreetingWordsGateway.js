@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.GreetingWordsGateway = void 0;
 
-var _entityArchetype = require("@autonomy/entity-archetype");
+var _entityArchetype = require("@autonomy/io");
 
 class GreetingWordsGateway extends _entityArchetype.Gateway {
   async getGreetingWords(scene) {

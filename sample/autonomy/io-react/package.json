@@ -1,11 +1,11 @@
 {
   "version": "0.0.1",
   "private": true,
-  "name": "@autonomy/reactive-widget",
+  "name": "@autonomy/io-react",
   "main": "lib/index.js",
   "typings": "src/index.ts",
   "dependencies": {
-    "@autonomy/entity-archetype": "0.0.1",
+    "@autonomy/io": "0.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

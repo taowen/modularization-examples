@@ -7,7 +7,7 @@ exports.HomePage = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
-var _reactiveWidget = require("@autonomy/reactive-widget");
+var _ioReact = require("@autonomy/io-react");
 
 var _ProductDetailsPage = require("../../Sell/Ui/ProductDetailsPage");
 
@@ -25,7 +25,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-class HomePage extends _reactiveWidget.Widget {
+class HomePage extends _ioReact.Widget {
   constructor(...args) {
     super(...args);
 
@@ -53,21 +53,21 @@ class HomePage extends _reactiveWidget.Widget {
   render() {
     switch (this.locationHash) {
       case '#discrete-ui':
-        return (0, _reactiveWidget.renderWidget)(_ProductDetailsPage.ProductDetailsPage, {
+        return (0, _ioReact.renderWidget)(_ProductDetailsPage.ProductDetailsPage, {
           productName: 'apple'
         });
 
       case '#counter-demo':
-        return (0, _reactiveWidget.renderWidget)(_CounterDemo.CounterDemo);
+        return (0, _ioReact.renderWidget)(_CounterDemo.CounterDemo);
 
       case '#task-list':
-        return /*#__PURE__*/React.createElement("div", null, (0, _reactiveWidget.renderWidget)(_TaskList.TaskList), /*#__PURE__*/React.createElement("hr", null), (0, _reactiveWidget.renderWidget)(_TaskList.TaskList));
+        return /*#__PURE__*/React.createElement("div", null, (0, _ioReact.renderWidget)(_TaskList.TaskList), /*#__PURE__*/React.createElement("hr", null), (0, _ioReact.renderWidget)(_TaskList.TaskList));
     } // 未知 URL，显示默认的首页内容
 
 
     return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(React.Suspense, {
       fallback: /*#__PURE__*/React.createElement("span", null, "loading...")
-    }, (0, _reactiveWidget.renderWidget)(_Greeting.Greeting)), /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
+    }, (0, _ioReact.renderWidget)(_Greeting.Greeting)), /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
       href: "#discrete-ui"
     }, "\u79BB\u6563\u578B UI \u96C6\u6210")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
       href: "#counter-demo"

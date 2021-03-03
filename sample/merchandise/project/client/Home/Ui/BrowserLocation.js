@@ -5,8 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BrowserLocation = void 0;
 
-var _entityArchetype = require("@autonomy/entity-archetype");
+var _io = require("@autonomy/io");
 
-class BrowserLocation extends _entityArchetype.ActiveRecord {}
+class BrowserLocation extends _io.ActiveRecord {}
 
 exports.BrowserLocation = BrowserLocation;

@@ -1,5 +1,5 @@
-import { Scene } from '@autonomy/entity-archetype';
-import { Widget } from '@autonomy/reactive-widget';
+import { Scene } from '@autonomy/io';
+import { Widget } from '@autonomy/io-react';
 import * as React from 'react';
 import type { GreetingWordsGateway } from '../Private/GreetingWordsGateway';
 

@@ -1,6 +1,6 @@
 const http = require('http');
 const path = require('path');
-const { HttpXServer } = require('@autonomy/entity-archetype');
+const { HttpXServer } = require('@autonomy/io');
 
 const project = process.argv[2];
 if (!project) {

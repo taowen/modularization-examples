@@ -1,8 +1,8 @@
 {
     "version": "0.0.1",
     "private": true,
-    "name": "@autonomy-design-sample/dev",
-    "workspaces": ["entity-archetype", "reactive-widget", "merchandise/*", "wms/*"],
+    "name": "@autonomy/dev",
+    "workspaces": ["autonomy/*", "merchandise/*", "wms/*"],
     "devDependencies": {
         "ts-node": "^9.1.1",
         "typescript": "^4.2.2",
@@ -23,8 +23,8 @@
         "nodemon": "^2.0.7"
     },
     "scripts": {
-        "build:entity-archetype": "cd entity-archetype && yarn tsc",
-        "build:reactive-widget": "cd reactive-widget && yarn tsc",
+        "build:io": "cd autonomy/io && yarn tsc",
+        "build:io-react": "cd autonomy/io-react && yarn tsc",
         "build:merchandise": "ts-node build.ts @merchandise/project",
         "build": "run-p build:**",
         "start": "ts-node start.ts @merchandise/project"

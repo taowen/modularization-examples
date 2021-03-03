@@ -1,4 +1,4 @@
-import { Gateway } from '@autonomy/entity-archetype';
+import { Gateway } from '@autonomy/io';
 
 export class TaskGateway extends Gateway {
     public static async wasteSomeResource() {

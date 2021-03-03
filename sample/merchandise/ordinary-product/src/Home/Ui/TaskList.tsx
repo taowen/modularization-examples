@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Suspense } from 'react';
-import { ErrorBoundary, renderWidget, Widget } from '@autonomy/reactive-widget';
+import { ErrorBoundary, renderWidget, Widget } from '@autonomy/io-react';
 import { TaskListItem } from './TaskListItem';
 
 export class TaskList extends Widget {

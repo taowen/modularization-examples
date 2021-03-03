@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Widget } from '@autonomy/reactive-widget';
-import { Scene } from '@autonomy/entity-archetype';
+import { Widget } from '@autonomy/io-react';
+import { Scene } from '@autonomy/io';
 import { bigCounters } from './bigCounters';
 import type { Counter } from '../Private/Counter';
 import type { GreetingWordsGateway } from '../Private/GreetingWordsGateway';

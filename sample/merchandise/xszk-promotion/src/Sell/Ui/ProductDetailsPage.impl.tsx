@@ -1,4 +1,4 @@
-import { override, Scene } from '@autonomy/entity-archetype';
+import { override, Scene } from '@autonomy/io';
 import * as React from 'react';
 import { ProductDetailsPage as INF } from '@motherboard/Sell/Ui/ProductDetailsPage';
 import { XszkPromotion } from '../Private/XszkPromotion';

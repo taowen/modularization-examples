@@ -31,7 +31,7 @@ class BatchExecutor {
                 await this.batchExecute(batch);
             }
             catch (e) {
-                console.log(`did not expect batchExecute to throw exception`, e);
+                console.error(`did not expect batchExecute to throw exception`, e);
             }
         }
     }

@@ -1,4 +1,4 @@
-import { ActiveRecord, toInsert, toQuery, toRunMethod } from '@autonomy/entity-archetype';
+import { ActiveRecord, toInsert, toQuery, toRunMethod } from '@autonomy/io';
 
 export class Counter extends ActiveRecord {
     public static queryCounters = toQuery(Counter);
