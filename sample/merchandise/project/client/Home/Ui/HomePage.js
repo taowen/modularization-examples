@@ -13,12 +13,6 @@ var _ProductDetailsPage = require("../../Sell/Ui/ProductDetailsPage");
 
 var _BrowserLocation = require("./BrowserLocation");
 
-var _CounterDemo = require("./CounterDemo");
-
-var _Greeting = require("./Greeting");
-
-var _TaskList = require("./TaskList");
-
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -56,24 +50,12 @@ class HomePage extends _ioReact.Widget {
         return (0, _ioReact.renderWidget)(_ProductDetailsPage.ProductDetailsPage, {
           productName: 'apple'
         });
-
-      case '#counter-demo':
-        return (0, _ioReact.renderWidget)(_CounterDemo.CounterDemo);
-
-      case '#task-list':
-        return /*#__PURE__*/React.createElement("div", null, (0, _ioReact.renderWidget)(_TaskList.TaskList), /*#__PURE__*/React.createElement("hr", null), (0, _ioReact.renderWidget)(_TaskList.TaskList));
     } // 未知 URL，显示默认的首页内容
 
 
-    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(React.Suspense, {
-      fallback: /*#__PURE__*/React.createElement("span", null, "loading...")
-    }, (0, _ioReact.renderWidget)(_Greeting.Greeting)), /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
+    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
       href: "#discrete-ui"
-    }, "\u79BB\u6563\u578B UI \u96C6\u6210")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
-      href: "#counter-demo"
-    }, "RPC\u548CI/O\u8BA2\u9605")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
-      href: "#task-list"
-    }, "Suspense\uFF0CErrorBoundary\u4EE5\u53CAI/O\u5408\u5E76"))));
+    }, "\u79BB\u6563\u578B UI \u96C6\u6210"))));
   }
 
 }

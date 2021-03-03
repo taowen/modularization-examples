@@ -9,52 +9,12 @@
   },
   {
     "archetype": "ActiveRecord",
-    "qualifiedName": "Home/Private/Counter",
-    "services": [
-      "queryCounters",
-      "insertCounter",
-      "incrementCounter",
-      "decrementCounter"
-    ]
-  },
-  {
-    "archetype": "Gateway",
-    "qualifiedName": "Home/Private/GreetingWordsGateway",
-    "services": [
-      "getGreetingWords"
-    ]
-  },
-  {
-    "archetype": "Gateway",
-    "qualifiedName": "Home/Private/TaskGateway",
-    "services": [
-      "wasteSomeResource"
-    ]
-  },
-  {
-    "archetype": "ActiveRecord",
     "qualifiedName": "Home/Ui/BrowserLocation",
     "services": []
   },
   {
     "archetype": "Widget",
-    "qualifiedName": "Home/Ui/CounterDemo"
-  },
-  {
-    "archetype": "Widget",
-    "qualifiedName": "Home/Ui/Greeting"
-  },
-  {
-    "archetype": "Widget",
     "qualifiedName": "Home/Ui/HomePage"
-  },
-  {
-    "archetype": "Widget",
-    "qualifiedName": "Home/Ui/TaskList"
-  },
-  {
-    "archetype": "Widget",
-    "qualifiedName": "Home/Ui/TaskListItem"
   },
   {
     "archetype": "ActiveRecord",

@@ -20,7 +20,10 @@ yarn build && yarn start
     * motherboard 主板
     * ordinary-fulfilment 常规履约
     * project 聚合项目，无业务代码，仅定义了插件列表和功能入口
-* entity-archetype 基础设施，业务无关
+* autonomy 基础设施，业务无关
+    * io 对 I/O 外设的抽象接口
+    * io-react 为 react 技术栈对接 I/O 外设
+    * demo 演示如何输入输出
 
 每个项目 yarn build 会聚合主板和所有的插件，构建出两个可执行的进程
 
