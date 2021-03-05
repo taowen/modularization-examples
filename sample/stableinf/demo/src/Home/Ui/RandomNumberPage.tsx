@@ -1,4 +1,4 @@
-import { renderWidget } from '@stableinf/io-react';
+import { renderWidget } from '@stableinf/rx-react';
 import * as React from 'react';
 import { Suspense } from 'react';
 import { RandomNumber } from './RandomNumber';

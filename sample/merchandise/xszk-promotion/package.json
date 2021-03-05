@@ -4,7 +4,7 @@
     "name": "@merchandise/xszk-promotion",
     "dependencies": {
         "@stableinf/io": "0.0.1",
-        "@stableinf/io-react": "0.0.1",
+        "@stableinf/rx-react": "0.0.1",
         "@merchandise/motherboard": "0.0.1"
     }
 }

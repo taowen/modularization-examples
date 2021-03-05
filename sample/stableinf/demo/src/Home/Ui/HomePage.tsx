@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Suspense } from 'react';
 import { Scene } from '@stableinf/io';
-import { BrowserLocation, renderWidget, Widget } from '@stableinf/io-react';
+import { BrowserLocation, renderWidget, Widget } from '@stableinf/rx-react';
 import { CounterDemo } from './CounterDemo';
 import { Greeting } from './Greeting';
 import { TaskList } from './TaskList';

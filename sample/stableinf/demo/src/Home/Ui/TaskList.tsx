@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Suspense } from 'react';
-import { renderWidget, Widget } from '@stableinf/io-react';
+import { renderWidget, Widget } from '@stableinf/rx-react';
 import { TaskListItem } from './TaskListItem';
 import { ErrorBoundary } from 'react-error-boundary';
 import { RollDiceButton } from './RollDiceButton';

@@ -1,5 +1,5 @@
 import { Scene } from '@stableinf/io';
-import { Widget } from '@stableinf/io-react';
+import { Widget } from '@stableinf/rx-react';
 import * as React from 'react';
 import type { GreetingWordsGateway } from '../Private/GreetingWordsGateway';
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Scene } from '@stableinf/io';
-import { BrowserLocation, renderWidget, Widget } from '@stableinf/io-react';
+import { BrowserLocation, renderWidget, Widget } from '@stableinf/rx-react';
 import { ProductDetailsPage } from '@motherboard/Sell/Ui/ProductDetailsPage';
 
 export class HomePage extends Widget {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Widget } from '@stableinf/io-react';
+import { Widget } from '@stableinf/rx-react';
 import { TaskGateway } from '../Private/TaskGateway';
 import { Scene } from '@stableinf/io';
 

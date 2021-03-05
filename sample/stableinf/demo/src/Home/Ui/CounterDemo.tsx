@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Widget } from '@stableinf/io-react';
+import { Widget } from '@stableinf/rx-react';
 import { Scene } from '@stableinf/io';
 import { bigCounters } from './bigCounters';
 import type { Counter } from '../Private/Counter';

@@ -4,6 +4,6 @@
     "name": "@merchandise/motherboard",
     "dependencies": {
         "@stableinf/io": "0.0.1",
-        "@stableinf/io-react": "0.0.1"
+        "@stableinf/rx-react": "0.0.1"
     }
 }
