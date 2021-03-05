@@ -3,6 +3,7 @@ import * as http from 'http';
 
 const memFs = new Map<string, string>();
 
+// 模拟 aws s3 服务
 export async function startObjectStorage(): Promise<ObjectStorage> {
     new http.Server((req, resp) => {
         let reqBody = '';
@@ -10,6 +11,7 @@ export async function startObjectStorage(): Promise<ObjectStorage> {
             reqBody += chunk;
         });
         req.on('end', async () => {
+            resp.setHeader('Access-Control-Allow-Origin', '*');
             resp.end(memFs.get(req.url!) || '');
         });
     }).listen(8080);
@@ -18,6 +20,5 @@ export async function startObjectStorage(): Promise<ObjectStorage> {
         putObject: async (path, content) => {
             memFs.set(path, content);
         },
-    }
+    };
 }
-

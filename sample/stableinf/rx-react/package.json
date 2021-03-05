@@ -2,8 +2,7 @@
   "version": "0.0.1",
   "private": true,
   "name": "@stableinf/rx-react",
-  "main": "lib/index.js",
-  "typings": "src/index.ts",
+  "main": "src/index.ts",
   "dependencies": {
     "@stableinf/io": "0.0.1",
     "react": "^17.0.1",

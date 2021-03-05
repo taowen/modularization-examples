@@ -82,7 +82,7 @@ async function batchExecuteOneOperationJobs(project: string, operation: Operatio
     for (const [k, v] of Object.entries(operation.baggage)) {
         headers[`baggage-${k}`] = v;
     }
-    const resp = await fetch('/call', {
+    const resp = await fetch('http://localhost:3000/call', {
         method: 'POST',
         headers,
         body: JSON.stringify(jobs.map((job) => job.job)),
