@@ -34,7 +34,7 @@ export interface Database {
 
 // 提供远程方法调用
 export interface ServiceProtocol {
-    useServices(scene: Scene, project?: string): any;
+    call(scene: Scene, project: string, service: string, args: any[]): Promise<any>;
 }
 
 // trace -> operation -> scene
@@ -67,12 +67,17 @@ export function newOperation(traceOp: string): Operation {
     };
 }
 
+export interface SceneConf {
+    serviceProtocol: ServiceProtocol;
+    database: Database;
+}
 
 // 同时每个异步执行流程会创建一个独立的 scene，用来跟踪异步操作与I/O的订阅关系
 // 后端 handle 一个 http 请求，后端不开启订阅
 // 前端计算每个 future 的值（读操作），捕捉订阅关系
 // 前端处理一次鼠标点击（写操作），触发订阅者
 export class Scene {
+    public static currentProject = '';
     public notifyChange = (tableName: string) => {};
     // operation 在 scene 的整个声明周期内是不变的
     public readonly operation: Operation;
@@ -100,7 +105,19 @@ export class Scene {
     ): {
         [P in MethodsOf<T>]: (...a: Parameters<OmitFirstArg<T[P]>>) => ReturnType<T[P]>;
     } {
-        return this.serviceProtocol.useServices(this, project);
+        const scene = this;
+        // proxy intercept property get, returns rpc stub
+        const get = (target: object, propertyKey: string, receiver?: any) => {
+            return (...args: any[]) => {
+                return scene.serviceProtocol.call(
+                    scene,
+                    project || Scene.currentProject,
+                    propertyKey,
+                    args,
+                );
+            };
+        };
+        return new Proxy({}, { get }) as any;
     }
 
     public insert<T extends ActiveRecord>(

@@ -3,36 +3,24 @@ import { BatchExecutor } from '../BatchExecutor';
 import { Operation, Scene, ServiceProtocol } from '../Scene';
 import { isJobError, Job, JobResult } from './HttpX';
 
+// 前端通过互联网调用 api gateway 后面的 serverless
 export class HttpXClient implements ServiceProtocol {
-    public static project: string;
-    public useServices(scene: Scene, project?: string) {
-        return new Proxy(
-            {},
-            {
-                get: (target: object, propertyKey: string, receiver?: any) => {
-                    project = project || HttpXClient.project;
-                    return callViaHttp.bind(undefined, scene, project!, propertyKey);
-                },
-            },
-        ) as any;
+    public async call(scene: Scene, project: string, service: string, ...args: any[]) {
+        let resolve: (result: any) => void;
+        let reject: (reason: any) => void;
+        const promise = new Promise((_resolve, _reject) => {
+            resolve = _resolve;
+            reject = _reject;
+        });
+        enqueue({
+            scene,
+            project,
+            job: { service, args },
+            resolve: resolve!,
+            reject: reject!,
+        });
+        return await promise;
     }
-}
-
-async function callViaHttp(scene: Scene, project: string, service: string, ...args: any[]) {
-    let resolve: (result: any) => void;
-    let reject: (reason: any) => void;
-    const promise = new Promise((_resolve, _reject) => {
-        resolve = _resolve;
-        reject = _reject;
-    });
-    enqueue({
-        scene,
-        project,
-        job: { service, args },
-        resolve: resolve!,
-        reject: reject!,
-    });
-    return await promise;
 }
 
 interface RpcJob {
@@ -60,7 +48,7 @@ async function batchExecute(project: string, batch: RpcJob[]) {
     for (const job of batch) {
         let jobs = operationJobs.get(job.scene.operation);
         if (!jobs) {
-            operationJobs.set(job.scene.operation, jobs = []);
+            operationJobs.set(job.scene.operation, (jobs = []));
         }
         jobs.push(job);
     }
@@ -77,12 +65,12 @@ async function batchExecuteOneOperationJobs(project: string, operation: Operatio
         'x-b3-traceid': operation.traceId,
         'x-b3-parentspanid': operation.spanId,
         'x-b3-spanid': uuid(),
-        'baggage-op': operation.traceOp
+        'baggage-op': operation.traceOp,
     };
     for (const [k, v] of Object.entries(operation.baggage)) {
         headers[`baggage-${k}`] = v;
     }
-    const resp = await fetch('http://localhost:3000/call', {
+    const resp = await fetch('http://localhost:3000/batchCall', {
         method: 'POST',
         headers,
         body: JSON.stringify(jobs.map((job) => job.job)),

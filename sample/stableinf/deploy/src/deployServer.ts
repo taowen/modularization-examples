@@ -21,9 +21,10 @@ export async function deployServer(cloud: Cloud, projectDir: string) {
 
 async function onServerBuilt(cloud: Cloud, result: esbuild.BuildResult) {
     await cloud.serverless.createSharedLayer(result.outputFiles[0].text);
+    await cloud.serverless.createFunction('handleBatchCall');
     await cloud.apiGateway.createRoute({
         path: '/batchCall',
         httpMethod: 'POST',
-        functionName: 'batchCall',
+        functionName: 'handleBatchCall',
     });
 }
