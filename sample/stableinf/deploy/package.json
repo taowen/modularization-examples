@@ -1,11 +1,13 @@
 {
     "version": "0.0.1",
     "name": "@stableinf/deploy",
-    "devDependencies": {
+    "dependencies": {
         "pirates": "^4.0.1",
-        "commander": "^7.1.0"
+        "commander": "^7.1.0",
+        "@stableinf/cloud": "0.0.1",
+        "@stableinf/cloud-mem": "0.0.1"
     },
     "bin": {
-        "stableinf-deploy": "bin/stableinf-deploy"
+        "stableinf-deploy": "bin/stableinf-deploy.js"
     }
 }

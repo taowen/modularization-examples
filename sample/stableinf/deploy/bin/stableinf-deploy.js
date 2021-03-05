@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // 用 esbuild 代替 ts-node
 const pirates = require('pirates');
 const esbuild = require('esbuild');
@@ -18,4 +20,4 @@ pirates.addHook(
 );
 
 // 启动 typescript 写的代码
-require('../src/stableinf-deploy');
+require('../src').main();

@@ -1,4 +1,5 @@
 {
     "version": "0.0.1",
-    "name": "@stableinf/cloud"
+    "name": "@stableinf/cloud",
+    "main": "src/index.ts"
 }

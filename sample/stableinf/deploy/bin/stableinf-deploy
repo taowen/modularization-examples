@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-SCRIPTPATH="$(dirname "$(readlink -f "$0")")"
-exec node $SCRIPTPATH/stableinf-deploy.js "$@"
