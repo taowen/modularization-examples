@@ -29,6 +29,7 @@
         "build:mem-cloud": "cd stableinf/mem-cloud && yarn tsc",
         "build:merchandise": "ts-node build.ts @merchandise/project",
         "build": "run-p build:**",
-        "start": "ts-node start.ts @merchandise/project"
+        "start": "ts-node start.ts @merchandise/project",
+	"deploy": "yarn stableinf-deploy @merchandise/project"
     }
 }

@@ -1,4 +1,11 @@
 {
     "version": "0.0.1",
-    "name": "@stableinf/deploy"
+    "name": "@stableinf/deploy",
+    "devDependencies": {
+        "pirates": "^4.0.1",
+        "commander": "^7.1.0"
+    },
+    "bin": {
+        "stableinf-deploy": "bin/stableinf-deploy"
+    }
 }
