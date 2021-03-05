@@ -25,7 +25,7 @@
     "scripts": {
         "build:io": "cd stableinf/io && yarn tsc",
         "build:rx-react": "cd stableinf/rx-react && yarn tsc",
-        "build:io-server": "cd stableinf/io-server && yarn tsc",
+        "build:mem-cloud": "cd stableinf/mem-cloud && yarn tsc",
         "build:merchandise": "ts-node build.ts @merchandise/project",
         "build": "run-p build:**",
         "start": "ts-node start.ts @merchandise/project"

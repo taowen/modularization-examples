@@ -1,5 +1,5 @@
 const path = require('path');
-const { HttpXServer } = require('@stableinf/io-server');
+const { HttpXServer } = require('@stableinf/mem-cloud');
 
 const project = process.argv[2];
 if (!project) {
