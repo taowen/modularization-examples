@@ -3,6 +3,6 @@
     "private": true,
     "name": "@wms/motherboard",
     "dependencies": {
-        "@autonomy/io": "0.0.1"
+        "@stableinf/io": "0.0.1"
     }
 }

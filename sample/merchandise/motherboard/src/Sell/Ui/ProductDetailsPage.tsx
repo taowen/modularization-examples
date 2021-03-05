@@ -1,4 +1,4 @@
-import { Widget } from "@autonomy/io-react";
+import { Widget } from "@stableinf/io-react";
 import * as React from "react";
 
 export class ProductDetailsPage extends Widget {

@@ -1,4 +1,4 @@
-import { Command } from "@autonomy/io";
+import { Command } from "@stableinf/io";
 import { Product } from "./Product";
 
 export class UnpublishProducts extends Command {

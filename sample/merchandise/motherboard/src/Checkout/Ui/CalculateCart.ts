@@ -1,4 +1,4 @@
-import { Command } from "@autonomy/io";
+import { Command } from "@stableinf/io";
 
 export class CalculateCart extends Command {
   public run() {

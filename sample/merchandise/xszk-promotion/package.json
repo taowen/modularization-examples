@@ -3,8 +3,8 @@
     "private": true,
     "name": "@merchandise/xszk-promotion",
     "dependencies": {
-        "@autonomy/io": "0.0.1",
-        "@autonomy/io-react": "0.0.1",
+        "@stableinf/io": "0.0.1",
+        "@stableinf/io-react": "0.0.1",
         "@merchandise/motherboard": "0.0.1"
     }
 }

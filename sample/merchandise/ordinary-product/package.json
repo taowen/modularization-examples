@@ -3,7 +3,7 @@
     "private": true,
     "name": "@merchandise/ordinary-product",
     "dependencies": {
-        "@autonomy/io": "0.0.1",
+        "@stableinf/io": "0.0.1",
         "@merchandise/motherboard": "0.0.1"
     }
 }

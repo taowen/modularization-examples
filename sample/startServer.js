@@ -1,5 +1,5 @@
 const path = require('path');
-const { HttpXServer } = require('@autonomy/io-server');
+const { HttpXServer } = require('@stableinf/io-server');
 
 const project = process.argv[2];
 if (!project) {

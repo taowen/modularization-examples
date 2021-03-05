@@ -1,0 +1,18 @@
+{
+    "version": "0.0.1",
+    "private": true,
+    "name": "@stableinf/demo-project",
+    "main": "lib/index.js",
+    "typings": "src/index.ts",
+    "dependencies": {
+        "@stableinf/demo": "0.0.1"
+    },
+    "scripts": {
+        "build:io": "cd ../io && yarn tsc",
+        "build:io-react": "cd ../io-react && yarn tsc",
+        "build:io-server": "cd ../io-server && yarn tsc",
+        "build:demo-project": "cd ../../ && ts-node build.ts @stableinf/demo-project",
+        "build": "run-p build:**",
+        "start": "cd ../../ && ts-node start.ts @stableinf/demo-project"
+    }
+}

@@ -2,7 +2,7 @@ const {
   InMemDatabase,
   Scene,
   HttpXClient,
-} = require("@autonomy/io");
+} = require("@stableinf/io");
 const { Product } = require("./server/Sell/Private/Product");
 
 exports.start = async (options) => {

@@ -1,0 +1,14 @@
+{
+    "version": "0.0.1",
+    "private": true,
+    "name": "@stableinf/io-server",
+    "main": "lib/index.js",
+    "typings": "src/index.ts",
+    "dependencies": {
+      "@stableinf/io": "0.0.1"
+    },
+    "devDependencies": {
+      "@types/node": "^14.14.31"
+    }
+  }
+  

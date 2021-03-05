@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Scene } from '@autonomy/io';
-import { BrowserLocation, renderWidget, Widget } from '@autonomy/io-react';
+import { Scene } from '@stableinf/io';
+import { BrowserLocation, renderWidget, Widget } from '@stableinf/io-react';
 import { ProductDetailsPage } from '@motherboard/Sell/Ui/ProductDetailsPage';
 
 export class HomePage extends Widget {

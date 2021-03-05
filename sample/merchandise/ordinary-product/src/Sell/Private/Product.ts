@@ -4,7 +4,7 @@ import {
   subsetOf,
   toLoad,
   toRun,
-} from "@autonomy/io";
+} from "@stableinf/io";
 import { UnpublishProducts } from "./UnpublishProducts";
 
 export class Product extends ActiveRecord {

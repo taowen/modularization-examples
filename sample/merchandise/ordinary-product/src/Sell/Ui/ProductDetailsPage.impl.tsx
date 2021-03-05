@@ -1,4 +1,4 @@
-import { override, Scene } from '@autonomy/io';
+import { override, Scene } from '@stableinf/io';
 import * as React from 'react';
 import { ProductDetailsPage as INF } from '@motherboard/Sell/Ui/ProductDetailsPage';
 import type { Product } from '../Private/Product';

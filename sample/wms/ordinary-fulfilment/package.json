@@ -3,7 +3,7 @@
     "private": true,
     "name": "@wms/ordinary-fulfilment",
     "dependencies": {
-        "@autonomy/io": "0.0.1",
+        "@stableinf/io": "0.0.1",
         "@wms/motherboard": "0.0.1"
     }
 }
