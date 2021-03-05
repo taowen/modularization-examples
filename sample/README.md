@@ -58,7 +58,7 @@ merchandise/project/client/Sell/Ui/ProductDetailsPage.js
 
 * 基类改名 Table，搞一个 ActiveRecord 继承 Table
 * 定义一个最小的 cloud 依赖接口
-* 提供一个本地内存mock的 cloud，包括：lambda, aurora, redshift, s3
+* 提供一个本地内存mock的 cloud，包括：lambda, aurora, redshift, s3, cognito
 * 提供一个基于 aws 的 cloud
 * 用 esbuild 重写 continous delopyment 脚本，检测代码改动，部署到 cloud
 * io 中增加 association 提供关联关系的定义和遍历
