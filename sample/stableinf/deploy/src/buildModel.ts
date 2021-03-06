@@ -1,11 +1,11 @@
 import * as path from 'path';
-import { listProjectPackages } from './listProjectPackages';
 import * as fs from 'fs';
 import { promisify } from 'util';
 import { parse } from '@babel/parser';
 import * as babel from '@babel/types';
 import generate from '@babel/generator';
 import { fromObject } from 'convert-source-map';
+import { Project } from './Project';
 
 const lstat = promisify(fs.lstat);
 const readFile = promisify(fs.readFile);
@@ -29,7 +29,7 @@ interface SrcFile {
 
 export type Archetype = 'Gateway' | 'ActiveRecord' | 'Widget' | 'Command';
 
-export function esbuildPlugin(project: string) {
+export function esbuildPlugin(project: Project) {
     return {
         name: 'stableinf',
         setup: (build) => {
@@ -48,9 +48,8 @@ export function esbuildPlugin(project: string) {
     };
 }
 
-export async function buildModel(project: string, qualifiedName: string) {
-    const packages = listProjectPackages(project);
-    const { hash, srcFiles, resolveDir } = await locateSrcFiles(packages, qualifiedName);
+export async function buildModel(project: Project, qualifiedName: string) {
+    const { hash, srcFiles, resolveDir } = await locateSrcFiles(project.packages, qualifiedName);
     if (srcFiles.size === 0) {
         throw new Error(`referenced ${qualifiedName} not found`);
     }
@@ -76,7 +75,7 @@ export async function buildModel(project: string, qualifiedName: string) {
         });
         extractStatements(className, ast, { imports, others, classDecls });
     }
-    const mergedStmts = [...mergeImports(qualifiedName, imports), ...others];
+    const mergedStmts = [...mergeImports(project, qualifiedName, imports), ...others];
     let archetype: Archetype | undefined;
     let services = [];
     if (classDecls.length > 0) {
@@ -204,7 +203,7 @@ function hasOverrideDecorator(method: babel.ClassMethod) {
     return false;
 }
 
-function mergeImports(qualifiedName: string, imports: babel.ImportDeclaration[]) {
+function mergeImports(project: Project, qualifiedName: string, imports: babel.ImportDeclaration[]) {
     const symbols = new Set<string>();
     const merged = [];
     for (const stmt of imports) {
@@ -214,6 +213,8 @@ function mergeImports(qualifiedName: string, imports: babel.ImportDeclaration[])
                 path.dirname(qualifiedName),
                 stmt.source.value,
             )}`;
+        } else if (!stmt.source.value.startsWith('@motherboard/')) {
+            project.subscribePackage(stmt.source.value);
         }
         const specifiers = [];
         for (const specifier of stmt.specifiers) {

@@ -45,7 +45,6 @@ function startWorker() {
     worker.stdout!.pipe(process.stdout);
     worker.stderr!.pipe(process.stderr);
     worker.on('exit', async (code) => {
-        console.error(`apiGateway worker quit with ${code}`);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         worker = undefined;
         fs.existsSync(pidPath) && fs.unlinkSync(pidPath);

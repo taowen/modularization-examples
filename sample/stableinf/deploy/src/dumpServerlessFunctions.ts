@@ -1,4 +1,4 @@
-import { listProjectPackages } from './listProjectPackages';
+import { Project } from './Project';
 import * as path from 'path';
 import * as fs from 'fs';
 import { listBuiltModels } from './buildModel';
@@ -6,7 +6,7 @@ import { listBuiltModels } from './buildModel';
 let cache = '';
 
 // watch fs and dump bakcend services into serverlessFunctions.js
-export function dumpServerlessFunctions(project: string, projectDir: string) {
+export function dumpServerlessFunctions(project: Project) {
     const lines = [
         `require('./backend')`,
         `const { handleCall, handleBatchCall } = require('@stableinf/io');`,
@@ -30,14 +30,16 @@ export function dumpServerlessFunctions(project: string, projectDir: string) {
     if (content === cache) {
         return false;
     }
-    fs.writeFileSync(path.join(projectDir, 'serverlessFunctions.js'), (cache = content));
+    const filePath = path.join(project.projectDir, 'serverlessFunctions.js');
+    project.subscribePath(filePath);
+    fs.writeFileSync(filePath, (cache = content));
     return true;
 }
 
-function listBackendQualifiedNames(project: string) {
-    const packages = listProjectPackages(project);
+function listBackendQualifiedNames(project: Project) {
     const qualifiedNames = [];
-    for (const pkg of packages) {
+    for (const pkg of project.packages) {
+        project.subscribePath(pkg.path);
         const srcDir = path.join(pkg.path, 'src');
         for (const srcFile of walk(srcDir)) {
             const ext = path.extname(srcFile);

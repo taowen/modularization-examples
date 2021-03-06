@@ -16,7 +16,7 @@
         "esbuild": "^0.8.55"
     },
     "scripts": {
-	    "dev:merchandise": "yarn stableinf dev @merchandise/project",
-	    "dev:demo": "yarn stableinf dev @stableinf/demo-project"
+	    "watch:merchandise": "yarn stableinf watch @merchandise/project",
+	    "watch:demo": "yarn stableinf watch @stableinf/demo-project"
     }
 }
