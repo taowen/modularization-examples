@@ -14,7 +14,7 @@ export class ServerlessClient implements ServiceProtocol {
             parentSpanId: scene.operation.spanId,
             spanId: uuid(),
         };
-        const { data, subscribed, changed } = func.call(undefined, newOperation, ...args);
+        const { data, subscribed, changed } = await func.call(undefined, newOperation, ...args);
         for (const table of subscribed) {
             scene.subscribe(table);
         }

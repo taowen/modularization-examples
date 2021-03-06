@@ -25,13 +25,6 @@ yarn build && yarn start
     * io-react 为 react 技术栈对接 I/O 外设
     * demo 演示如何输入输出
 
-每个项目 yarn build 会聚合主板和所有的插件，构建出两个可执行的进程
-
-* project/client react 写的客户端，启动在 8080 端口
-* project/server node 服务端，启动在 3000 端口
-
-client 默认会去连自己的 server
-
 # 目录结构
 
 * src/** 代码都在 src 下
@@ -46,22 +39,16 @@ client 默认会去连自己的 server
 * ordinary-product 中定义了 src/Sell/Ui/ProductDetailsPage.impl.tsx
 * xszk-promotion 中定义了 src/Sell/Ui/ProductDetailsPage.impl.tsx
 
-这三份代码会被 buildModel.ts 聚合之后，输出到
+这三份代码会被 buildModel.ts 聚合为
 
-merchandise/project/client/Sell/Ui/ProductDetailsPage.js
-
-* client：是客户端代码，因为 src/Sell/Ui 是在 Ui 下
-* merchandise/project/package.json：这里了定义了 merchandise 项目的所有插件，聚合之后的代码也会写出到这个目录下
-* ProductDetailsPage.js：typescript 代码的后缀是 .ts 或者 .tsx，实际执行的代码需要转换成 .js 文件
+Sell/Ui/ProductDetailsPage.js
 
 # TODO
 
+* 修复 demo
 * ActiveRecordClass 改名为 Table，订阅的对象改名为 atom 类型 any
 * 删掉默认的 isExecuting 实现，改为更 general 的实现
-* 定义一个最小的 cloud 依赖接口
-* 提供一个本地内存mock的 cloud，包括：lambda, aurora, redshift, s3, cognito
 * 提供一个基于 aws 的 cloud
-* 用 esbuild 重写 continous delopyment 脚本，检测代码改动，部署到 cloud
 * io 中增加 association 提供关联关系的定义和遍历
 * 给 service 声明 prefetch
 * 拆分 rx-core 和 rx-react

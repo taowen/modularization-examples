@@ -1,7 +1,7 @@
 import { Operation, Scene, SceneConf } from '../Scene';
 
 // apiGateway => handleBatchCall => handleCall => services
-export function handleCall(
+export async function handleCall(
     options: { sceneConf: SceneConf },
     handler: Function,
     operation: Operation,
@@ -25,6 +25,6 @@ export function handleCall(
             }
         },
     });
-    const data = handler.call(undefined, scene, ...args);
+    const data = await handler.call(undefined, scene, ...args);
     return { data: data, subscribed, changed };
 }
