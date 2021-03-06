@@ -45,9 +45,8 @@ Sell/Ui/ProductDetailsPage.js
 
 # TODO
 
-* 修复 demo
+* 修复 demo：多点几次“重算一次”会没反应
 * ActiveRecordClass 改名为 Table，订阅的对象改名为 atom 类型 any
-* 删掉默认的 isExecuting 实现，改为更 general 的实现
 * 提供一个基于 aws 的 cloud
 * io 中增加 association 提供关联关系的定义和遍历
 * 给 service 声明 prefetch

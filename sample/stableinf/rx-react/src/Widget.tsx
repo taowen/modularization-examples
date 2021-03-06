@@ -21,9 +21,6 @@ export abstract class Widget {
     public static database: Database;
     public static serviceProtocol: ServiceProtocol;
     private unmounted?: boolean;
-    // 用来实现按钮在执行中灰掉
-    private executingCallbacks?: Set<PropertyKey>;
-    private callbackIds?: Map<PropertyKey, string>;
     // 外部状态
     private subscriptions: Map<string, Future> = new Map();
     // 父组件传入的 props
@@ -45,7 +42,8 @@ export abstract class Widget {
     // 声明一份对外部状态的依赖，async 计算过程中的所有读到的表（含RPC服务端读的表）都会被收集到依赖关系里
     // 不同于 vue 和 mobx 的细粒度状态订阅，这里实现的订阅是表级别的，而不是行级别的
     // 也就是一张表中的任意新增删除修改，都会触发所有订阅者的刷新
-    protected subscribe<T>(compute: (scene: Scene) => Promise<T>): T {
+    // @internal
+    public subscribe<T>(compute: (scene: Scene) => Promise<T>): T {
         return new Future(compute, this) as any;
     }
 
@@ -68,7 +66,10 @@ export abstract class Widget {
         // 并发计算
         for (const [k, future] of this.subscriptions.entries()) {
             const scene = ensureReadonly(newScene(op));
-            const promise = scene.trackTask(future.get(scene));
+            const promise = future.get(scene);
+            if (scene.operation.onAsyncTaskStarted) {
+                scene.operation.onAsyncTaskStarted(promise);
+            }
             promise.catch(op.onError);
             promises.set(k, promise);
         }
@@ -110,47 +111,17 @@ export abstract class Widget {
     protected callback<M extends keyof this>(methodName: M, ...boundArgs: any[]): any {
         const cb = Reflect.get(this, methodName).bind(this);
         return (...args: any[]) => {
-            const scene = enableChangeNotification(
-                newScene(`callback ${this.constructor.name}.${methodName}`),
-            );
-            if (!this.executingCallbacks) {
-                this.executingCallbacks = new Set();
-            }
-            this.executingCallbacks.add(methodName);
-            const callbackId = this.getCallbackId(methodName);
-            scene.notifyChange(callbackId);
+            const traceOp = `callback ${this.constructor.name}.${methodName}`;
+            const scene = enableChangeNotification(newScene(traceOp));
             return (async () => {
                 try {
-                    await scene.sleep(0);
                     return await cb(scene, ...boundArgs, ...args);
                 } catch (e) {
                     Widget.onUnhandledCallbackError(scene, e);
                     return undefined;
-                } finally {
-                    await scene.tasks(); // 等待重渲染完成
-                    this.executingCallbacks!.delete(methodName);
-                    scene.notifyChange(callbackId);
                 }
             })();
         };
-    }
-
-    protected isExecuting<M extends keyof this>(methodName: M) {
-        return this.subscribe(async (scene) => {
-            scene.subscribe(this.getCallbackId(methodName));
-            return this.executingCallbacks && this.executingCallbacks.has(methodName);
-        });
-    }
-
-    private getCallbackId(methodName: PropertyKey) {
-        if (!this.callbackIds) {
-            this.callbackIds = new Map();
-        }
-        let callbackId = this.callbackIds.get(methodName);
-        if (!callbackId) {
-            this.callbackIds.set(methodName, (callbackId = `cb-${nextCallbackId()}`));
-        }
-        return callbackId;
     }
 
     // 以下是 react 的黑魔法，看不懂是正常的
@@ -297,8 +268,3 @@ type OmitTwoArg<F> = F extends (x1: any, x2: any, ...args: infer P) => infer R
 type OmitThreeArg<F> = F extends (x1: any, x2: any, x3: any, ...args: infer P) => infer R
     ? (...args: P) => R
     : never;
-
-let counter = 1;
-function nextCallbackId() {
-    return counter++;
-}

@@ -21,10 +21,17 @@ function deploy(cloud: Cloud, project: Project, changedFile?: string) {
         return;
     }
     if (changedFile) {
-        console.log(`detected ${changedFile} changed, trigger re-deploying...`)
+        console.log(`detected ${changedFile} changed, trigger re-deploying...`);
     }
     changedFiles.length = 0;
-    const promises = [deployFrontend(cloud, project), deployBackend(cloud, project)];
+    const promises = [
+        deployFrontend(cloud, project).catch((e) => {
+            console.error(`deployFrontend failed: ${e}`);
+        }),
+        deployBackend(cloud, project).catch((e) => {
+            console.error(`deployBackend failed: ${e}`);
+        }),
+    ];
     deploying = Promise.all(promises);
     deploying.finally(() => {
         deploying = undefined;

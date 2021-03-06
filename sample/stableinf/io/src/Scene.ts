@@ -50,10 +50,10 @@ export interface Operation {
     spanId: string;
     traceOp: string;
     baggage: Record<string, any>;
-    // 当前正在做什么操作，不会跨进程传递
+    // 以下字段仅在进程内，不会 RPC 透传
     props: Record<string, any>;
-    tasks?: Map<Promise<any>, Scene>;
     onError?: (e: any) => void;
+    onAsyncTaskStarted?: (task: Promise<any>) => Promise<any>;
 }
 
 export function newOperation(traceOp: string): Operation {
@@ -178,30 +178,6 @@ export class Scene {
         id?: any,
     ): Promise<T> {
         return await this.load(activeRecordClass, id ? { id } : ({} as any));
-    }
-    public trackTask<T>(promise: Promise<T>): Promise<T> {
-        let tasks = this.operation.tasks;
-        if (!tasks) {
-            this.operation.tasks = tasks = new Map();
-        }
-        tasks.set(promise, this);
-        promise.finally(() => {
-            tasks!.delete(promise);
-        });
-        return promise;
-    }
-    public async tasks() {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-        if (!this.operation.tasks) {
-            return;
-        }
-        for (const promise of this.operation.tasks.keys()) {
-            try {
-                await promise;
-            } catch (e) {
-                // just need to wait for complete;
-            }
-        }
     }
     public async sleep(millis: number) {
         return new Promise((resolve) => setTimeout(resolve, millis));
