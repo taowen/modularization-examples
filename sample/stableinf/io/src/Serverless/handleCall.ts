@@ -2,12 +2,15 @@ import { Operation, Scene, SceneConf } from '../Scene';
 
 // apiGateway => handleBatchCall => handleCall => services
 export function handleCall(
-    sceneConf: SceneConf,
+    options: { sceneConf: SceneConf },
     handler: Function,
     operation: Operation,
     ...args: any[]
 ) {
-    const scene = new Scene({ ...sceneConf, operation });
+    if (!handler) {
+        throw new Error('handler not bind');
+    }
+    const scene = new Scene({ ...options.sceneConf, operation });
     const subscribed: string[] = [];
     const changed: string[] = [];
     scene.notifyChange = (table) => {

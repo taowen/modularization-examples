@@ -5,7 +5,7 @@ import { isJobError, Job, JobResult } from './HttpX';
 
 // 前端通过互联网调用 api gateway 后面的 serverless
 export class HttpXClient implements ServiceProtocol {
-    public async call(scene: Scene, project: string, service: string, ...args: any[]) {
+    public async call(scene: Scene, project: string, service: string, args: any[]) {
         let resolve: (result: any) => void;
         let reject: (reason: any) => void;
         const promise = new Promise((_resolve, _reject) => {

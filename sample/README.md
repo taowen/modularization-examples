@@ -56,7 +56,8 @@ merchandise/project/client/Sell/Ui/ProductDetailsPage.js
 
 # TODO
 
-* 基类改名 Table，搞一个 ActiveRecord 继承 Table
+* ActiveRecordClass 改名为 Table，订阅的对象改名为 atom 类型 any
+* 删掉默认的 isExecuting 实现，改为更 general 的实现
 * 定义一个最小的 cloud 依赖接口
 * 提供一个本地内存mock的 cloud，包括：lambda, aurora, redshift, s3, cognito
 * 提供一个基于 aws 的 cloud
@@ -64,7 +65,8 @@ merchandise/project/client/Sell/Ui/ProductDetailsPage.js
 * io 中增加 association 提供关联关系的定义和遍历
 * 给 service 声明 prefetch
 * 拆分 rx-core 和 rx-react
-* 基于声明式 UI 实现 rx-mp
+* 基于声明式 UI 实现 mp 和 mp-wx
+* 响应式表单 rx-form
 * 演示混合型 UI
 * 演示离散型流程
 * 演示混合型流程

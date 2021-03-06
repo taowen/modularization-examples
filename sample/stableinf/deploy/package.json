@@ -8,6 +8,6 @@
         "@stableinf/cloud-mem": "0.0.1"
     },
     "bin": {
-        "stableinf-deploy": "bin/stableinf-deploy.js"
+        "stableinf": "bin/stableinf.js"
     }
 }

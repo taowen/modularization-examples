@@ -3,7 +3,7 @@ import { Job } from './HttpX';
 import type { ServerResponse, IncomingMessage } from 'http';
 
 // apiGateway => handleBatchCall => handleCall => services
-export async function handleBatchCall(sceneConf: SceneConf, req: IncomingMessage, resp: ServerResponse) {
+export async function handleBatchCall(options: { sceneConf: SceneConf }, req: IncomingMessage, resp: ServerResponse) {
     let reqBody = '';
     req.on('data', (chunk) => {
         reqBody += chunk;
@@ -16,7 +16,7 @@ export async function handleBatchCall(sceneConf: SceneConf, req: IncomingMessage
     });
     const jobs: Job[] = JSON.parse(reqBody) || [];
     const operation = createOperationFromHeaders(req.headers) || newOperation('handle /call');
-    const promises = jobs.map((job, i) => execute(i, job, sceneConf, operation, resp));
+    const promises = jobs.map((job, i) => execute(i, job, options.sceneConf, operation, resp));
     await Promise.all(promises);
     resp.end();
 }
