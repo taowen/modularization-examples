@@ -1,4 +1,4 @@
-import { Operation, Scene, SceneConf } from '../Scene';
+import { Atom, Operation, Scene, SceneConf } from '../Scene';
 
 // apiGateway => handleBatchCall => handleCall => services
 export async function handleCall(
@@ -11,17 +11,17 @@ export async function handleCall(
         throw new Error('handler not bind');
     }
     const scene = new Scene({ ...options.sceneConf, operation });
-    const subscribed: string[] = [];
-    const changed: string[] = [];
-    scene.notifyChange = (table) => {
-        if (!changed.includes(table)) {
-            changed.push(table);
+    const subscribed: Atom[] = [];
+    const changed: Atom[] = [];
+    scene.notifyChange = (atom) => {
+        if (!changed.includes(atom)) {
+            changed.push(atom);
         }
     };
     scene.subscribers.add({
-        subscribe(table) {
-            if (!subscribed.includes(table)) {
-                subscribed.push(table);
+        subscribe(atom) {
+            if (!subscribed.includes(atom)) {
+                subscribed.push(atom);
             }
         },
     });

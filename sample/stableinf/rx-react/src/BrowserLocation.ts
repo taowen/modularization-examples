@@ -8,11 +8,15 @@ export class BrowserLocation extends ActiveRecord {
         await scene.insert(BrowserLocation, { hash: window.location.hash });
         window.addEventListener(
             'hashchange',
-            bindCallback('onHashChanged', async (scene) => {
+            bindCallback('onHashChanged', async (scene: Scene) => {
                 const browserLocation = await scene.get(BrowserLocation);
-                browserLocation.hash = window.location.hash;
-                await scene.update(browserLocation);
+                await browserLocation.updateHash(scene, window.location.hash);
             }),
         );
+    }
+
+    public async updateHash(scene: Scene, newHash: string) {
+        this.hash = newHash;
+        await this.update(scene);
     }
 }

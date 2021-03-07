@@ -4,7 +4,6 @@ import { Suspense } from 'react';
 import { Database, Operation, ServiceProtocol, Scene, newOperation } from '@stableinf/io';
 import {
     enableChangeNotification,
-    enableDependencyTracking,
     ensureReadonly,
     Future,
 } from './Future';
@@ -241,7 +240,6 @@ export function renderRootWidget(
 ) {
     Widget.database = options.database;
     Widget.serviceProtocol = options.serviceProtocol;
-    enableDependencyTracking();
     const elem = document.getElementById('RootWidget');
     if (!elem) {
         console.error('missing element #RootWidget');

@@ -79,11 +79,12 @@ export async function buildModel(project: Project, qualifiedName: string) {
     let archetype: Archetype | undefined;
     let services = [];
     if (classDecls.length > 0) {
-        const mergedClassDecl = mergeClassDecls(classDecls);
+        if (babel.isIdentifier(classDecls[0].superClass)) {
+            archetype = classDecls[0].superClass.name as Archetype;
+        }
+        const mergedClassDecl = mergeClassDecls(qualifiedName, archetype, classDecls);
         mergedStmts.push(babel.exportNamedDeclaration(mergedClassDecl, []));
-
-        if (babel.isIdentifier(mergedClassDecl.superClass)) {
-            archetype = mergedClassDecl.superClass.name as Archetype;
+        if (archetype === 'ActiveRecord' || archetype === 'Gateway') {
             services = listServices(archetype, mergedClassDecl);
         }
     }
@@ -166,9 +167,26 @@ async function locateSrcFiles(packages: { name: string; path: string }[], qualif
     return { hash, srcFiles, resolveDir } as const;
 }
 
-function mergeClassDecls(classDecls: babel.ClassDeclaration[]): babel.ClassDeclaration {
+function mergeClassDecls(
+    qualifiedName: string,
+    archetype: Archetype,
+    classDecls: babel.ClassDeclaration[],
+): babel.ClassDeclaration {
     const methods = new Map<string, babel.ClassMethod>();
     const others = [];
+    if (archetype === 'ActiveRecord') {
+        const tableName = path.basename(qualifiedName);
+        others.push(
+            babel.classProperty(
+                babel.identifier('tableName'),
+                babel.stringLiteral(tableName),
+                undefined,
+                undefined,
+                false,
+                true,
+            ),
+        );
+    }
     for (const classDecl of classDecls) {
         for (const member of classDecl.body.body) {
             if (!babel.isClassMethod(member)) {

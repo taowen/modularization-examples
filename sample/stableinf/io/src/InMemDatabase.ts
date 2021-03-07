@@ -1,44 +1,24 @@
-import { ActiveRecord, ActiveRecordClass, getTableName } from './ActiveRecord';
-import { Database, Scene } from './Scene';
-
-type ActiveRecordCopy = Record<string, any>;
+import { Database, Scene, Table } from './Scene';
 
 // 用内存模拟数据库
 export class InMemDatabase implements Database {
-    private tables: Map<ActiveRecordClass, Map<string, ActiveRecordCopy>> = new Map();
+    private tables: Map<Table, Map<string, Record<string, any>>> = new Map();
 
-    public async insert(
-        scene: Scene,
-        activeRecordClass: ActiveRecordClass,
-        props: Record<string, any>,
-    ): Promise<ActiveRecord> {
-        const record = new activeRecordClass(scene);
+    public async insert(scene: Scene, table: Table, props: Record<string, any>): Promise<any> {
+        const obj = new table(scene);
+        obj.update = this.update.bind(this, obj);
+        obj.delete = this.delete.bind(this, obj);
         const id = nextId();
-        Object.assign(record, { ...props, id });
-        const table = this.getTable(activeRecordClass);
-        table.set(id, JSON.parse(JSON.stringify(record)));
-        scene.notifyChange(getTableName(activeRecordClass));
-        return record;
+        Object.assign(obj, { ...props, id });
+        const records = this.getRecords(table);
+        records.set(id, JSON.parse(JSON.stringify(obj)));
+        scene.notifyChange(table);
+        return obj;
     }
-    public async update<T extends ActiveRecord>(scene: Scene, activeRecord: T): Promise<void> {
-        const table = this.getTable(activeRecord.class);
-        table.set(Reflect.get(activeRecord, 'id'), JSON.parse(JSON.stringify(activeRecord)));
-        scene.notifyChange(getTableName(activeRecord.class));
-    }
-    public async delete<T extends ActiveRecord>(scene: Scene, activeRecord: T): Promise<void> {
-        const table = this.getTable(activeRecord.class);
-        table.delete(Reflect.get(activeRecord, 'id'));
-        scene.notifyChange(getTableName(activeRecord.class));
-    }
-    public async query<T extends ActiveRecord>(
-        scene: Scene,
-        activeRecordClass: ActiveRecordClass<T>,
-        criteria: Partial<T>,
-    ): Promise<T[]> {
-        const tableName = getTableName(activeRecordClass);
-        scene.subscribe(tableName);
-        const table = this.getTable(activeRecordClass);
-        function isMatch(record: ActiveRecordCopy) {
+    public async query(scene: Scene, table: Table, criteria: Record<string, any>): Promise<any[]> {
+        scene.subscribe(table);
+        const records = this.getRecords(table);
+        function isMatch(record: Record<string, any>) {
             for (const [k, v] of Object.entries(criteria)) {
                 if (record[k] !== v) {
                     return false;
@@ -46,24 +26,36 @@ export class InMemDatabase implements Database {
             }
             return true;
         }
-        const filtered = [];
-        for (const record of table.values()) {
+        const objs = [];
+        for (const record of records.values()) {
             if (isMatch(record)) {
-                filtered.push(Object.assign(new activeRecordClass(scene), record));
+                const obj = Object.assign(new table(scene), record);
+                obj.update = this.update.bind(this, obj);
+                obj.delete = this.delete.bind(this, obj);
+                objs.push(obj);
             }
         }
-        return filtered;
+        return objs;
+    }
+    private update(obj: any, scene: Scene) {
+        const records = this.getRecords(obj.constructor);
+        records.set(obj.id, JSON.parse(JSON.stringify(obj)));
+        scene.notifyChange(obj.constructor);
+    }
+    private delete(obj: any, scene: Scene) {
+        const records = this.getRecords(obj.constructor);
+        records.delete(obj.id)
+        scene.notifyChange(obj.constructor);
     }
     public executeSql(scene: Scene, sql: string, sqlVars: Record<string, any>): Promise<any[]> {
         throw new Error('unsupported');
     }
-
-    private getTable(activeRecordClass: ActiveRecordClass) {
-        let table = this.tables.get(activeRecordClass);
-        if (!table) {
-            this.tables.set(activeRecordClass, (table = new Map()));
+    private getRecords(table: Table) {
+        let records = this.tables.get(table);
+        if (!records) {
+            this.tables.set(table, (records = new Map()));
         }
-        return table;
+        return records;
     }
 }
 

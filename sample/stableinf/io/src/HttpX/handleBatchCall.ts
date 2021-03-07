@@ -1,4 +1,4 @@
-import { newOperation, Operation, Scene, SceneConf } from '../Scene';
+import { Atom, newOperation, Operation, Scene, SceneConf } from '../Scene';
 import { Job } from './HttpX';
 import type { ServerResponse, IncomingMessage } from 'http';
 
@@ -32,15 +32,15 @@ async function execute(
     const scene = new Scene({ ...conf, operation });
     const subscribed: string[] = [];
     const changed: string[] = [];
-    scene.notifyChange = (table) => {
-        if (!changed.includes(table)) {
-            changed.push(table);
+    scene.notifyChange = (atom) => {
+        if (atom.tableName && !changed.includes(atom.tableName)) {
+            changed.push(atom.tableName);
         }
     };
     scene.subscribers.add({
-        subscribe(table) {
-            if (!subscribed.includes(table)) {
-                subscribed.push(table);
+        subscribe(atom) {
+            if (atom.tableName && !subscribed.includes(atom.tableName)) {
+                subscribed.push(atom.tableName);
             }
         },
     });

@@ -1,13 +1,9 @@
-import { Operation, Scene } from '@stableinf/io';
-import { runInOperation } from './Operation';
+import { Atom, Operation, Scene } from '@stableinf/io';
 import { Widget } from './Widget';
-
-// 对表的订阅关系是全局变量，整个浏览器只有一份
-let tables: Map<string, Table> | undefined;
 
 // Future 是一个 async 计算流程，通过 scene 访问 I/O，从而对所访问的 table 进行订阅
 export class Future<T = any> {
-    private subscriptions = new Set<Table>();
+    private subscriptions = new Set<Atom>();
     private loading?: Promise<any>;
     private cache: any;
 
@@ -38,8 +34,8 @@ export class Future<T = any> {
 
     private copySubscriptions(scene: Scene) {
         for (const subscriber of scene.subscribers) {
-            for (const subscription of this.subscriptions) {
-                subscriber.subscribe(subscription.name);
+            for (const atom of this.subscriptions) {
+                subscriber.subscribe(atom);
             }
         }
     }
@@ -63,32 +59,19 @@ export class Future<T = any> {
         }
     }
 
-    public subscribe(tableName: string) {
-        if (!tables) {
-            return;
-        }
-        let table = tables.get(tableName);
-        if (!table) {
-            tables.set(tableName, (table = new Table(tableName)));
-        }
-        this.subscriptions.add(table);
-        table.subscribers.add(this);
+    public subscribe(atom: Atom) {
+        this.subscriptions.add(atom);
+        atom.addSubscriber(this);
     }
 
     public dispose() {
         for (const subscription of this.subscriptions) {
-            subscription.unsubscribe(this);
+            subscription.deleteSubscriber(this);
         }
         this.subscriptions.clear();
         this.cache = undefined;
         this.loading = undefined;
     }
-}
-
-// 浏览器进入时设置一次
-// @internal
-export function enableDependencyTracking() {
-    tables = new Map();
 }
 
 // 对每个写操作的 scene 都打开改动通知
@@ -97,11 +80,8 @@ export function enableChangeNotification(scene: Scene) {
     scene.operation.onError = (e) => {
         Widget.onUnhandledCallbackError(scene, e);
     };
-    scene.notifyChange = (tableName) => {
-        const table = tables && tables.get(tableName);
-        if (table) {
-            table.notifyChange(scene.operation);
-        }
+    scene.notifyChange = (atom) => {
+        atom.notifyChange(scene.operation);
     };
     return scene;
 }
@@ -113,21 +93,4 @@ export function ensureReadonly(scene: Scene) {
         throw new Error(`detected readonly scene ${scene} changed ${tableName}`);
     };
     return scene;
-}
-
-class Table {
-    public readonly subscribers = new Set<Future>();
-    constructor(public readonly name: string) {}
-
-    public notifyChange(op: Operation) {
-        const subscribers = [...this.subscribers];
-        this.subscribers.clear();
-        for (const subscriber of subscribers) {
-            subscriber.notifyChange(op);
-        }
-    }
-
-    public unsubscribe(subscriber: Future) {
-        this.subscribers.delete(subscriber);
-    }
 }

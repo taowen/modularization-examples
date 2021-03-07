@@ -9,13 +9,13 @@ export class Counter extends ActiveRecord {
     public id: string;
     public count = 100;
 
-    public increment() {
+    public async increment() {
         this.count++;
-        this.update();
+        await this.update(this.scene);
     }
 
-    public decrement() {
+    public async decrement() {
         this.count--;
-        this.update();
+        await this.update(this.scene);
     }
 }

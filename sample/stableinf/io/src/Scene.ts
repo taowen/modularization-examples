@@ -1,41 +1,7 @@
-import { ActiveRecord, ActiveRecordClass, getTableName } from './ActiveRecord';
+import { ActiveRecord, ActiveRecordClass } from './ActiveRecord';
 import type { MethodsOf } from './MethodsOf';
 import type { GatewayClass } from './Gateway';
 import { uuid } from './uuid';
-
-type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;
-
-// 提供对各种 ActiveRecord 的增删改查，适配各种类型的关系数据库
-export interface Database {
-    insert(
-        scene: Scene,
-        activeRecordClass: ActiveRecordClass,
-        props: Record<string, any>,
-    ): Promise<ActiveRecord>;
-    update<T extends ActiveRecord>(scene: Scene, activeRecord: T): Promise<void>;
-    delete<T extends ActiveRecord>(scene: Scene, activeRecord: T): Promise<void>;
-    // 只支持 = 和 AND
-    query<T extends ActiveRecord>(
-        scene: Scene,
-        activeRecordClass: ActiveRecordClass<T>,
-        props: Partial<T>,
-    ): Promise<T[]>;
-    // 执行任意 SQL
-    executeSql(
-        scene: Scene,
-        sql: string,
-        sqlVars: Record<string, any>,
-        optoins?: {
-            read?: ActiveRecordClass[];
-            write?: ActiveRecordClass[];
-        },
-    ): Promise<any[]>;
-}
-
-// 提供远程方法调用
-export interface ServiceProtocol {
-    callService(scene: Scene, project: string, service: string, args: any[]): Promise<any>;
-}
 
 // trace -> operation -> scene
 // 一个 trace 会有多个进程被多次执行，每次执行是一个 operation（或者叫span）
@@ -67,6 +33,36 @@ export function newOperation(traceOp: string): Operation {
     };
 }
 
+export interface AtomSubscriber {
+    notifyChange(operation: Operation): void;
+}
+
+export interface Atom {
+    tableName?: string;
+    addSubscriber(subscriber: AtomSubscriber): void;
+    deleteSubscriber(subscriber: AtomSubscriber): void;
+    notifyChange(operation: Operation): void;
+}
+
+export interface Table<T = any> extends Atom {
+    new (...args: any[]): T;
+    tableName: string;
+}
+
+// 提供对各种 ActiveRecord 的增删改查，适配各种类型的关系数据库
+export interface Database {
+    insert(scene: Scene, table: Table, props: Record<string, any>): Promise<ActiveRecord>;
+    // 只支持 = 和 AND
+    query<T extends ActiveRecord>(scene: Scene, table: Table, props: Partial<T>): Promise<T[]>;
+    // 执行任意 SQL
+    executeSql(scene: Scene, sql: string, sqlVars: Record<string, any>): Promise<any[]>;
+}
+
+// 提供远程方法调用
+export interface ServiceProtocol {
+    callService(scene: Scene, project: string, service: string, args: any[]): Promise<any>;
+}
+
 export interface SceneConf {
     serviceProtocol: ServiceProtocol;
     database: Database;
@@ -78,13 +74,13 @@ export interface SceneConf {
 // 前端处理一次鼠标点击（写操作），触发订阅者
 export class Scene {
     public static currentProject = '';
-    public notifyChange = (tableName: string) => {};
+    public notifyChange = (atom: Atom) => {};
     // operation 在 scene 的整个声明周期内是不变的
     public readonly operation: Operation;
     public readonly database: Database;
     public readonly serviceProtocol: ServiceProtocol;
     public readonly subscribers = new Set<{
-        subscribe(tableName: string): void;
+        subscribe(atom: Atom): void;
     }>();
     constructor(options: {
         database: Database;
@@ -94,9 +90,9 @@ export class Scene {
         Object.assign(this, options);
     }
 
-    public subscribe(tableName: string) {
+    public subscribe(atom: Atom) {
         for (const subscriber of this.subscribers) {
-            subscriber.subscribe(tableName);
+            subscriber.subscribe(atom);
         }
     }
 
@@ -120,64 +116,38 @@ export class Scene {
         return new Proxy({}, { get }) as any;
     }
 
-    public insert<T extends ActiveRecord>(
-        activeRecordClass: ActiveRecordClass<T>,
-        props: Partial<T>,
-    ): Promise<T> {
-        return this.database.insert(this, activeRecordClass, props) as any;
+    public insert<T>(table: Table<T>, props: Partial<T>): Promise<T> {
+        return this.database.insert(this, table, props) as any;
     }
-    public update: OmitFirstArg<Database['update']> = (activeRecord) => {
-        return this.database.update(this, activeRecord);
-    };
-    public delete: OmitFirstArg<Database['delete']> = (activeRecord) => {
-        return this.database.delete(this, activeRecord);
-    };
-    public executeSql: OmitFirstArg<Database['executeSql']> = (sql, sqlVars) => {
+    public executeSql(sql: string, sqlVars: Record<string, any>): Promise<any[]> {
         return this.database.executeSql(this, sql, sqlVars);
-    };
-    public query<T extends ActiveRecord>(
-        activeRecordClass: ActiveRecordClass<T>,
-        props: Partial<T>,
-    ): Promise<T[]>;
-    public query<T extends ActiveRecord, P>(
+    }
+    public query<T>(table: Table<T>, props: Partial<T>): Promise<T[]>;
+    public query<T, P>(
         sqlView: (scene: Scene, sqlVars: P) => Promise<T[]>,
         sqlVars: P,
     ): Promise<T[]>;
-    public query<T extends ActiveRecord>(
-        sqlView: (scene: Scene, sqlVars: {}) => Promise<T[]>,
-    ): Promise<T[]>;
+    public query<T>(sqlView: (scene: Scene, sqlVars: {}) => Promise<T[]>): Promise<T[]>;
     public query(arg1: any, arg2?: any) {
         if (arg1.IS_ACTIVE_RECORD) {
             return this.database.query(this, arg1, arg2);
         }
         return arg1(this, arg2);
     }
-    public async load<T extends ActiveRecord>(
-        activeRecordClass: ActiveRecordClass<T>,
-        props: Partial<T>,
-    ): Promise<T> {
-        const records = await this.query(activeRecordClass, props);
+    public async load<T>(table: Table<T>, props: Partial<T>): Promise<T> {
+        const records = await this.query(table, props);
         if (records.length === 0) {
-            throw new Error(
-                `${getTableName(activeRecordClass)} is empty, can not find ${JSON.stringify(
-                    props,
-                )}`,
-            );
+            const msg = `${table.tableName} is empty, can not find ${JSON.stringify(props)}`;
+            throw new Error(msg);
         }
         if (records.length !== 1) {
-            throw new Error(
-                `${getTableName(activeRecordClass)} find more than 1 match of ${JSON.stringify(
-                    props,
-                )}`,
-            );
+            const msg = `${table.tableName} find more than 1 match of ${JSON.stringify(props)}`;
+            throw new Error(msg);
         }
         return records[0];
     }
-    public async get<T extends ActiveRecord>(
-        activeRecordClass: ActiveRecordClass<T>,
-        id?: any,
-    ): Promise<T> {
-        return await this.load(activeRecordClass, id ? { id } : ({} as any));
+    public async get<T>(table: Table<T>, id?: any): Promise<T> {
+        return await this.load(table, id ? { id } : ({} as any));
     }
     public async sleep(millis: number) {
         return new Promise((resolve) => setTimeout(resolve, millis));
@@ -189,3 +159,5 @@ export class Scene {
         return `[OP]${this.operation.traceId} ${this.operation.traceOp}`;
     }
 }
+
+type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;

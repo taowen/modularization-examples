@@ -1,16 +1,17 @@
 import { call, Command } from './Command';
 import type { ConstructorType } from './ConstructorType';
 import type { MethodsOf } from './MethodsOf';
-import type { Scene } from './Scene';
+import { AtomSubscriber, Operation, Scene, Table } from './Scene';
 
 // 数据库表
 export class ActiveRecord {
     public static IS_ACTIVE_RECORD = true as true;
+    public static tableName: string;
+
     constructor(public readonly scene: Scene) {}
 
-    protected async update() {
-        await this.scene.update(this);
-    }
+    protected update: (scene: Scene) => Promise<void>;
+    protected delete: (scene: Scene) => Promise<void>;
 
     protected call<C extends Command>(
         commandClass: new (scene: Scene, props: Record<string, any>) => C,
@@ -20,19 +21,34 @@ export class ActiveRecord {
     }
 
     public get class() {
-        return this.constructor as ActiveRecordClass<this>;
+        return this.constructor as typeof ActiveRecord;
+    }
+
+    public static addSubscriber(subscriber: AtomSubscriber) {
+        this.subscribers().add(subscriber);
+    }
+    public static deleteSubscriber(subscriber: AtomSubscriber) {
+        this.subscribers().delete(subscriber);
+    }
+    public static notifyChange(operation: Operation) {
+        const subscribers = (this as any)['_subscribers'];
+        if (subscribers) {
+            for (const subscriber of subscribers) {
+                subscriber.notifyChange(operation);
+            }
+        }
+    }
+
+    private static subscribers(): Set<AtomSubscriber> {
+        let subscribers = (this as any)['_subscribers'];
+        if (!subscribers) {
+            (this as any)['_subscribers'] = subscribers = new Set();
+        }
+        return subscribers;
     }
 }
 
-export function getTableName<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>): string {
-    return activeRecordClass.tableName || activeRecordClass.name;
-}
-
-export type ActiveRecordClass<T extends ActiveRecord = any> = {
-    new (scene: Scene): T;
-    IS_ACTIVE_RECORD: true;
-    tableName?: string;
-};
+export type ActiveRecordClass<T extends ActiveRecord = any> = Table<T>;
 
 export function toInsert<T extends ActiveRecord>(activeRecordClass: ActiveRecordClass<T>) {
     return (scene: Scene, props: Partial<T>) => {
@@ -76,9 +92,7 @@ export function subsetOf<T extends ActiveRecord>(activeRecordClass: ActiveRecord
     return <P = void>(sqlWhere: TemplateStringsArray, ...args: any[]) => {
         return (scene: Scene, sqlVars: P): Promise<T[]> => {
             return scene.executeSql(
-                `SELECT * FROM ${getTableName(activeRecordClass)} WHERE ${
-                    sqlWhere[0]
-                }`,
+                `SELECT * FROM ${activeRecordClass.tableName} WHERE ${sqlWhere[0]}`,
                 sqlVars as any,
             );
         };
@@ -94,7 +108,7 @@ export function sqlView<T, P = void>(
         merged.push(sqlFragment);
         const activeRecordClass = activeRecordClasses[i];
         if (activeRecordClass) {
-            merged.push(getTableName(activeRecordClass));
+            merged.push(activeRecordClass.tableName);
         }
     }
     const sql = merged.join('');

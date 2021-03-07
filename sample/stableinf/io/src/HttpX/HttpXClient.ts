@@ -1,6 +1,6 @@
 import { uuid } from '../uuid';
 import { BatchExecutor } from '../BatchExecutor';
-import { Operation, Scene, ServiceProtocol } from '../Scene';
+import { Atom, AtomSubscriber, Operation, Scene, ServiceProtocol } from '../Scene';
 import { isJobError, Job, JobResult } from './HttpX';
 
 // 前端通过互联网调用 api gateway 后面的 serverless
@@ -93,14 +93,42 @@ async function batchExecuteOneOperationJobs(project: string, operation: Operatio
             if (isJobError(result)) {
                 job.reject(result.error);
             } else {
-                for (const table of result.subscribed) {
-                    job.scene.subscribe(table);
+                for (const tableName of result.subscribed) {
+                    job.scene.subscribe(remoteTable(tableName));
                 }
-                for (const table of result.changed) {
-                    job.scene.notifyChange(table);
+                for (const tableName of result.changed) {
+                    job.scene.notifyChange(remoteTable(tableName));
                 }
                 job.resolve(result.data);
             }
+        }
+    }
+}
+
+const remoteTables = new Map<string, RemoteTable>();
+
+function remoteTable(tableName: string) {
+    let atom = remoteTables.get(tableName);
+    if (!atom) {
+        remoteTables.set(tableName, atom = new RemoteTable(tableName));
+    }
+    return atom;
+}
+
+class RemoteTable implements Atom {
+
+    private readonly subscribers = new Set<AtomSubscriber>();
+    constructor(public readonly tableName: string) {}
+
+    public addSubscriber(subscriber: AtomSubscriber) {
+        this.subscribers.add(subscriber);
+    }
+    public deleteSubscriber(subscriber: AtomSubscriber) {
+        this.subscribers.delete(subscriber);
+    }
+    public notifyChange(operation: Operation) {
+        for (const subscriber of this.subscribers) {
+            subscriber.notifyChange(operation);
         }
     }
 }
