@@ -21,9 +21,6 @@ yarn build && yarn start
     * ordinary-fulfilment 常规履约
     * project 聚合项目，无业务代码，仅定义了插件列表和功能入口
 * stableinf 基础设施，业务无关
-    * io 对 I/O 外设的抽象接口
-    * io-react 为 react 技术栈对接 I/O 外设
-    * demo 演示如何输入输出
 
 # 目录结构
 
@@ -39,20 +36,27 @@ yarn build && yarn start
 * ordinary-product 中定义了 src/Sell/Ui/ProductDetailsPage.impl.tsx
 * xszk-promotion 中定义了 src/Sell/Ui/ProductDetailsPage.impl.tsx
 
-这三份代码会被 buildModel.ts 聚合为
+这三份代码会被 @stableinf/deploy 聚合为
 
 Sell/Ui/ProductDetailsPage.js
 
 # TODO
 
 * 修复 demo：多点几次“重算一次”会没反应
-* ActiveRecordClass 改名为 Table，订阅的对象改名为 atom 类型 any
+* 简化 backend.js 移动代码到 serverlessFunctions.js 里
+* 尝试 Reactive 基类，特别是嵌套 Form
+* 把 BrowserLocation 改为基于 Reactive 实现的
+* 支持 single package project
+* Scene 和 promise 一一对应，跟踪 scene 的生命周期
+* ActiveRecordClass 改名为 Table，订阅的对象改名为 atom 类型 any，全局 atomSubscribers
 * 提供一个基于 aws 的 cloud
-* io 中增加 association 提供关联关系的定义和遍历
+* io 中增加 association 提供关联关系的定义和遍历，attachTo scene
 * 给 service 声明 prefetch
 * 拆分 rx-core 和 rx-react
 * 基于声明式 UI 实现 mp 和 mp-wx
-* 响应式表单 rx-form
+* sqlView({ criteria, model, data }) 独立一个文件定义
+* archived 标志位，delete 归档，独立归档数仓表
+* OLTP => 实时数仓 => 离线数仓
 * 演示混合型 UI
 * 演示离散型流程
 * 演示混合型流程

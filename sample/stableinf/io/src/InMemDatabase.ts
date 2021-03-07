@@ -30,7 +30,7 @@ export class InMemDatabase implements Database {
         table.delete(Reflect.get(activeRecord, 'id'));
         scene.notifyChange(getTableName(activeRecord.class));
     }
-    public async queryByExample<T extends ActiveRecord>(
+    public async query<T extends ActiveRecord>(
         scene: Scene,
         activeRecordClass: ActiveRecordClass<T>,
         criteria: Partial<T>,

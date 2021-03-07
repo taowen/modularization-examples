@@ -1,8 +1,8 @@
 # 提供三种 I/O 外设的标准接口
 
-* RPC 调用：useServices
-* 关系型数据库单表：insert/update/delete/queryByExample
-* 关系型数据库多表：executeSql
+* RPC 调用：ServiceProtocol.callService
+* 关系型数据库单表：Database.insert/Database.query/ActiveRecord.update/ActiveRecord.delete
+* 关系型数据库多表：Database.executeSql
 
 # 提供分布式 Trace 和 I/O 订阅
 

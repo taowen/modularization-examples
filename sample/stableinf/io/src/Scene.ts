@@ -15,7 +15,7 @@ export interface Database {
     update<T extends ActiveRecord>(scene: Scene, activeRecord: T): Promise<void>;
     delete<T extends ActiveRecord>(scene: Scene, activeRecord: T): Promise<void>;
     // 只支持 = 和 AND
-    queryByExample<T extends ActiveRecord>(
+    query<T extends ActiveRecord>(
         scene: Scene,
         activeRecordClass: ActiveRecordClass<T>,
         props: Partial<T>,
@@ -34,7 +34,7 @@ export interface Database {
 
 // 提供远程方法调用
 export interface ServiceProtocol {
-    call(scene: Scene, project: string, service: string, args: any[]): Promise<any>;
+    callService(scene: Scene, project: string, service: string, args: any[]): Promise<any>;
 }
 
 // trace -> operation -> scene
@@ -109,7 +109,7 @@ export class Scene {
         // proxy intercept property get, returns rpc stub
         const get = (target: object, propertyKey: string, receiver?: any) => {
             return (...args: any[]) => {
-                return scene.serviceProtocol.call(
+                return scene.serviceProtocol.callService(
                     scene,
                     project || Scene.currentProject,
                     propertyKey,
@@ -148,7 +148,7 @@ export class Scene {
     ): Promise<T[]>;
     public query(arg1: any, arg2?: any) {
         if (arg1.IS_ACTIVE_RECORD) {
-            return this.database.queryByExample(this, arg1, arg2);
+            return this.database.query(this, arg1, arg2);
         }
         return arg1(this, arg2);
     }
