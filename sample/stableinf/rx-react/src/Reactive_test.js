@@ -6,8 +6,7 @@ describe('Reactive', () => {
     it(
         'direct set property',
         should('notify change', async (scene) => {
-            let obj = new Reactive({ abc: 'hello' });
-            obj = obj.attachTo(scene);
+            const obj = new Reactive({ abc: 'hello' }).attachTo(scene);
             const future = new Future(async () => {
                 return obj.abc;
             });
@@ -16,4 +15,13 @@ describe('Reactive', () => {
             should.eq('world', await future.get(scene));
         }),
     );
+    it('does not wrap Date', should('not detect change', async(scene) => {
+        const obj = new Reactive({ abc: new Date(1) }).attachTo(scene);
+        const future = new Future(async () => {
+            return obj.abc.getTime();
+        });
+        should.eq(1, await future.get(scene));
+        obj.abc.setTime(2);
+        should.eq(1, await future.get(scene));
+    }))
 });

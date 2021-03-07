@@ -13,7 +13,7 @@ export class Future<T = any> {
     ) {}
 
     public async get(scene: Scene): Promise<T> {
-        if (this.cache) {
+        if (this.cache !== undefined) {
             this.copySubscriptions(scene);
             return this.cache;
         }
