@@ -1,4 +1,4 @@
-import { Atom, Scene, SimpleAtom } from '@stableinf/io';
+import { Atom, SimpleAtom, ChangeTracker } from '@stableinf/io';
 
 const mapMutatorMethods: PropertyKey[] = ['set', 'clear', 'delete'];
 const mapIteratorMethods: PropertyKey[] = ['keys', 'values', 'entries', Symbol.iterator];
@@ -10,31 +10,31 @@ export class Reactive {
     constructor(props?: Record<string, any>) {
         Object.assign(this, props);
     }
-    public attachTo(scene: Scene) {
+    public attachTo(tracker: ChangeTracker) {
         const baseHandler: ProxyHandler<any> = {
             get: (target, propertyKey, receiver) => {
-                scene.subscribe(this.atom(propertyKey));
+                tracker.subscribe(this.atom(propertyKey));
                 return this.wrapValue(
-                    scene,
+                    tracker,
                     this.atom(propertyKey),
                     Reflect.get(target, propertyKey),
                 );
             },
             set: (target, propertyKey, value, receiver) => {
                 const returnValue = Reflect.set(target, propertyKey, value, receiver);
-                scene.notifyChange(this.atom(propertyKey));
+                tracker.notifyChange(this.atom(propertyKey));
                 return returnValue;
             },
         };
         return new Proxy(this, baseHandler);
     }
-    private wrapValue(scene: Scene, atom: Atom, wrappee: any): any {
+    private wrapValue(tracker: ChangeTracker, atom: Atom, wrappee: any): any {
         if (typeof wrappee === 'object') {
             if (wrappee instanceof Map) {
                 return new Proxy(wrappee, {
                     get: (target, propertyKey, receiver) => {
                         return this.wrapMapValue(
-                            scene,
+                            tracker,
                             atom,
                             target, // notice here is not receiver
                             propertyKey,
@@ -46,7 +46,7 @@ export class Reactive {
                 return new Proxy(wrappee, {
                     get: (target, propertyKey, receiver) => {
                         return this.wrapSetValue(
-                            scene,
+                            tracker,
                             atom,
                             target, // notice here is not receiver
                             propertyKey,
@@ -59,12 +59,12 @@ export class Reactive {
             }
             return new Proxy(wrappee, {
                 get: (target, propertyKey, receiver) => {
-                    scene.subscribe(atom);
-                    return this.wrapValue(scene, atom, Reflect.get(target, propertyKey));
+                    tracker.subscribe(atom);
+                    return this.wrapValue(tracker, atom, Reflect.get(target, propertyKey));
                 },
                 set: (target, propertyKey, value, receiver) => {
                     const returnValue = Reflect.set(target, propertyKey, value, receiver);
-                    scene.notifyChange(atom);
+                    tracker.notifyChange(atom);
                     return returnValue;
                 },
             });
@@ -72,51 +72,57 @@ export class Reactive {
         return wrappee;
     }
     private wrapMapValue(
-        scene: Scene,
+        tracker: ChangeTracker,
         atom: Atom,
         parent: any,
         parentKey: PropertyKey,
         wrappee: any,
     ) {
         if (mapMutatorMethods.includes(parentKey)) {
-            scene.notifyChange(atom);
+            tracker.notifyChange(atom);
             return wrappee.bind(parent);
         }
         if (mapIteratorMethods.includes(parentKey)) {
             const isPair = parentKey === 'entries' || parentKey === Symbol.iterator;
-            return this.wrapIteratorMethod(scene, atom, parent, wrappee, isPair);
+            return this.wrapIteratorMethod(tracker, atom, parent, wrappee, isPair);
         }
         if (typeof wrappee === 'function') {
             return (...args: any[]) => {
-                return this.wrapValue(scene, atom, wrappee.apply(parent, args));
+                return this.wrapValue(tracker, atom, wrappee.apply(parent, args));
             };
         }
         return wrappee;
     }
     private wrapSetValue(
-        scene: Scene,
+        tracker: ChangeTracker,
         atom: Atom,
         parent: any,
         parentKey: PropertyKey,
         wrappee: any,
     ) {
         if (setMutatorMethods.includes(parentKey)) {
-            scene.notifyChange(atom);
+            tracker.notifyChange(atom);
             return wrappee.bind(parent);
         }
         if (setIteratorMethods.includes(parentKey)) {
             const isPair = parentKey === 'entries';
-            return this.wrapIteratorMethod(scene, atom, parent, wrappee, isPair);
+            return this.wrapIteratorMethod(tracker, atom, parent, wrappee, isPair);
         }
         if (typeof wrappee === 'function') {
             return (...args: any[]) => {
-                return this.wrapValue(scene, atom, wrappee.apply(parent, args));
+                return this.wrapValue(tracker, atom, wrappee.apply(parent, args));
             };
         }
         return wrappee;
     }
-    private wrapIteratorMethod(scene: Scene, atom: Atom, parent: any, wrappee: any, isPair: boolean) {
-        const wrap = this.wrapValue.bind(this, scene, atom);
+    private wrapIteratorMethod(
+        tracker: ChangeTracker,
+        atom: Atom,
+        parent: any,
+        wrappee: any,
+        isPair: boolean,
+    ) {
+        const wrap = this.wrapValue.bind(this, tracker, atom);
         return () => {
             const innerIterator = wrappee.call(parent);
             return {

@@ -88,11 +88,16 @@ const STATUS_INIT = 0;
 const STATUS_EXECUTING = 1;
 const STATUS_FINISHED = 2;
 
+export interface ChangeTracker {
+    subscribe(atom: Atom): void;
+    notifyChange(atom: Atom): void;
+}
+
 // 同时每个异步执行流程会创建一个独立的 scene，用来跟踪异步操作与I/O的订阅关系
 // 后端 handle 一个 http 请求，后端不开启订阅
 // 前端计算每个 future 的值（读操作），捕捉订阅关系
 // 前端处理一次鼠标点击（写操作），触发订阅者
-export class Scene {
+export class Scene implements ChangeTracker {
     public static currentProject = '';
     public notifyChange = (atom: Atom) => {};
     // operation 在 scene 的整个声明周期内是不变的
