@@ -17,6 +17,6 @@
     },
     "scripts": {
 	    "watch:merchandise": "yarn stableinf watch @merchandise/project",
-	    "watch:demo": "yarn stableinf watch @stableinf/demo-project"
+	    "watch:demo": "yarn stableinf watch @stableinf/demo"
     }
 }

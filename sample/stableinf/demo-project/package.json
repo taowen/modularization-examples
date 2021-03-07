@@ -1,9 +1,0 @@
-{
-    "version": "0.0.1",
-    "private": true,
-    "name": "@stableinf/demo-project",
-    "main": "src/index.ts",
-    "dependencies": {
-        "@stableinf/demo": "0.0.1"
-    }
-}

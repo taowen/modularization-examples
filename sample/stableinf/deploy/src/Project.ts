@@ -10,8 +10,14 @@ export class Project {
     constructor(private readonly projectPackageName: string) {
         const packageJsonPath = require.resolve(`${this.projectPackageName}/package.json`);
         this.projectDir = path.dirname(packageJsonPath);
-        for (const pkg of Object.keys(require(`${this.projectPackageName}/package.json`).dependencies)) {
-            this.packages.push({ path: path.dirname(require.resolve(`${pkg}/package.json`)), name: pkg });
+        const packageJson = require(`${this.projectPackageName}/package.json`);
+        const projectType = packageJson.stableinf?.project || 'solo';
+        if (projectType === 'composite') {
+            for (const pkg of Object.keys(packageJson.dependencies)) {
+                this.packages.push({ path: path.dirname(require.resolve(`${pkg}/package.json`)), name: pkg });
+            }
+        } else {
+            this.packages.push({ path: this.projectDir, name: projectPackageName });
         }
     }
 

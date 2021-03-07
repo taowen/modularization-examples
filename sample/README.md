@@ -46,9 +46,7 @@ Sell/Ui/ProductDetailsPage.js
 * 简化 backend.js 移动代码到 serverlessFunctions.js 里
 * 尝试 Reactive 基类，特别是嵌套 Form
 * 把 BrowserLocation 改为基于 Reactive 实现的
-* 支持 single package project
 * Scene 和 promise 一一对应，跟踪 scene 的生命周期
-* ActiveRecordClass 改名为 Table，订阅的对象改名为 atom 类型 any，全局 atomSubscribers
 * 提供一个基于 aws 的 cloud
 * io 中增加 association 提供关联关系的定义和遍历，attachTo scene
 * 给 service 声明 prefetch

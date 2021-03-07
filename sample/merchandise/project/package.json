@@ -6,5 +6,8 @@
         "@merchandise/motherboard": "0.0.1",
         "@merchandise/ordinary-product": "0.0.1",
         "@merchandise/xszk-promotion": "0.0.1"
+    },
+    "stableinf": {
+        "project": "composite"
     }
 }
