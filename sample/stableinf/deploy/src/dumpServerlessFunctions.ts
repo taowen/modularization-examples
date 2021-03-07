@@ -6,11 +6,20 @@ import { listBuiltModels } from './buildModel';
 let cache = '';
 
 // watch fs and dump bakcend services into serverlessFunctions.js
-export function dumpServerlessFunctions(project: Project) {
+export async function dumpServerlessFunctions(project: Project) {
     const lines = [
-        `require('./backend')`,
-        `const { handleCall, handleBatchCall } = require('@stableinf/io');`,
-        `SERVERLESS.functions.handleBatchCall = handleBatchCall.bind(undefined, SERVERLESS);`,
+        fs.existsSync(path.join(project.projectDir, 'backend.js')) ? `require('./backend')` : '',
+        `
+const { handleCall, handleBatchCall, InMemDatabase, ServerlessClient, Scene, newOperation } = require('@stableinf/io');
+SERVERLESS.functions.handleBatchCall = handleBatchCall.bind(undefined, SERVERLESS);
+SERVERLESS.sceneConf = {
+    database: new InMemDatabase(),
+    serviceProtocol: new ServerlessClient(SERVERLESS),
+};
+if (SERVERLESS.insertTestData) {
+    const scene = new Scene({...SERVERLESS.sceneConf, operation: newOperation('initTestData')});
+    SERVERLESS.insertTestData(scene);
+}`,
     ];
     for (const qualifiedName of listBackendQualifiedNames(project)) {
         lines.push(`require('@motherboard/${qualifiedName}');`);

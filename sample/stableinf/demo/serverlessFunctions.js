@@ -1,6 +1,15 @@
-require('./backend')
-const { handleCall, handleBatchCall } = require('@stableinf/io');
+
+
+const { handleCall, handleBatchCall, InMemDatabase, ServerlessClient, Scene, newOperation } = require('@stableinf/io');
 SERVERLESS.functions.handleBatchCall = handleBatchCall.bind(undefined, SERVERLESS);
+SERVERLESS.sceneConf = {
+    database: new InMemDatabase(),
+    serviceProtocol: new ServerlessClient(SERVERLESS),
+};
+if (SERVERLESS.insertTestData) {
+    const scene = new Scene({...SERVERLESS.sceneConf, operation: newOperation('initTestData')});
+    SERVERLESS.insertTestData(scene);
+}
 require('@motherboard/Home/Private/Counter');
 require('@motherboard/Home/Private/GreetingWordsGateway');
 require('@motherboard/Home/Private/TaskGateway');

@@ -6,9 +6,6 @@ const http = require('http');
 startServer();
 
 async function startServer() {
-    if (SERVERLESS.insertTestData) {
-        await SERVERLESS.insertTestData();
-    }
     http.createServer(handleRoute).listen(3000);
     console.log('api gateway worker started @3000');
 }

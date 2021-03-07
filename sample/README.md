@@ -43,7 +43,6 @@ Sell/Ui/ProductDetailsPage.js
 # TODO
 
 * 修复 demo：多点几次“重算一次”会没反应
-* 简化 backend.js 移动代码到 serverlessFunctions.js 里
 * 尝试 Reactive 基类，特别是嵌套 Form
 * 把 BrowserLocation 改为基于 Reactive 实现的
 * Scene 和 promise 一一对应，跟踪 scene 的生命周期
