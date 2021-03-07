@@ -3,7 +3,11 @@ import { Job } from './HttpX';
 import type { ServerResponse, IncomingMessage } from 'http';
 
 // apiGateway => handleBatchCall => handleCall => services
-export async function handleBatchCall(options: { sceneConf: SceneConf }, req: IncomingMessage, resp: ServerResponse) {
+export async function handleBatchCall(
+    options: { sceneConf: SceneConf },
+    req: IncomingMessage,
+    resp: ServerResponse,
+) {
     let reqBody = '';
     req.on('data', (chunk) => {
         reqBody += chunk;
@@ -44,13 +48,15 @@ async function execute(
             }
         },
     });
-    try {
-        const result = await scene.useServices<any>()[service](...args);
-        resp.write(JSON.stringify({ index, data: result, subscribed, changed }) + '\n');
-    } catch (e) {
-        console.error(`failed to handle: ${JSON.stringify(job)}\n`, e);
-        resp.write(JSON.stringify({ index, error: new String(e) }) + '\n');
-    }
+    await scene.execute(undefined, async () => {
+        try {
+            const result = await scene.useServices<any>()[service](...args);
+            resp.write(JSON.stringify({ index, data: result, subscribed, changed }) + '\n');
+        } catch (e) {
+            console.error(`failed to handle: ${JSON.stringify(job)}\n`, e);
+            resp.write(JSON.stringify({ index, error: new String(e) }) + '\n');
+        }
+    });
 }
 
 export function createOperationFromHeaders(

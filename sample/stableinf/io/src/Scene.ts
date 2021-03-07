@@ -19,7 +19,7 @@ export interface Operation {
     // 以下字段仅在进程内，不会 RPC 透传
     props: Record<string, any>;
     onError?: (e: any) => void;
-    onAsyncTaskStarted?: (task: Promise<any>) => Promise<any>;
+    onSceneExecuting?: (scene: Scene) => Promise<any>;
 }
 
 export function newOperation(traceOp: string): Operation {
@@ -68,6 +68,10 @@ export interface SceneConf {
     database: Database;
 }
 
+const STATUS_INIT = 0;
+const STATUS_EXECUTING = 1;
+const STATUS_FINISHED = 2;
+
 // 同时每个异步执行流程会创建一个独立的 scene，用来跟踪异步操作与I/O的订阅关系
 // 后端 handle 一个 http 请求，后端不开启订阅
 // 前端计算每个 future 的值（读操作），捕捉订阅关系
@@ -82,6 +86,9 @@ export class Scene {
     public readonly subscribers = new Set<{
         subscribe(atom: Atom): void;
     }>();
+    private status: 0 | 1 | 2 = STATUS_INIT;
+    public executing?: Promise<any>;
+
     constructor(options: {
         database: Database;
         serviceProtocol: ServiceProtocol;
@@ -90,7 +97,41 @@ export class Scene {
         Object.assign(this, options);
     }
 
+    public execute<T extends (...args: any[]) => any>(
+        theThis: any,
+        task: T,
+        ...args: Parameters<OmitFirstArg<T>>
+    ): ReturnType<T> {
+        this.executing = (async () => {
+            this.status = STATUS_EXECUTING;
+            try {
+                return await task.call(theThis, this, ...args);
+            } finally {
+                this.executing = undefined;
+                this.status = STATUS_FINISHED;
+            }
+        })();
+        if (this.operation.onSceneExecuting) {
+            this.operation.onSceneExecuting(this);
+        }
+        return this.executing as any;
+    }
+
+    private assertExecuting() {
+        if (this.status === STATUS_EXECUTING) {
+            return;
+        }
+        if (this.status === STATUS_INIT) {
+            throw new Error('should call scene.execute to enter executing status');
+        } else if (this.status === STATUS_FINISHED) {
+            throw new Error('scene can not be reused, do not save it persistenly');
+        } else {
+            throw new Error('scene is not executing');
+        }
+    }
+
     public subscribe(atom: Atom) {
+        this.assertExecuting();
         for (const subscriber of this.subscribers) {
             subscriber.subscribe(atom);
         }
@@ -101,6 +142,7 @@ export class Scene {
     ): {
         [P in MethodsOf<T>]: (...a: Parameters<OmitFirstArg<T[P]>>) => ReturnType<T[P]>;
     } {
+        this.assertExecuting();
         const scene = this;
         // proxy intercept property get, returns rpc stub
         const get = (target: object, propertyKey: string, receiver?: any) => {
@@ -117,9 +159,11 @@ export class Scene {
     }
 
     public insert<T>(table: Table<T>, props: Partial<T>): Promise<T> {
+        this.assertExecuting();
         return this.database.insert(this, table, props) as any;
     }
     public executeSql(sql: string, sqlVars: Record<string, any>): Promise<any[]> {
+        this.assertExecuting();
         return this.database.executeSql(this, sql, sqlVars);
     }
     public query<T>(table: Table<T>, props: Partial<T>): Promise<T[]>;
@@ -129,12 +173,14 @@ export class Scene {
     ): Promise<T[]>;
     public query<T>(sqlView: (scene: Scene, sqlVars: {}) => Promise<T[]>): Promise<T[]>;
     public query(arg1: any, arg2?: any) {
+        this.assertExecuting();
         if (arg1.IS_ACTIVE_RECORD) {
             return this.database.query(this, arg1, arg2);
         }
         return arg1(this, arg2);
     }
     public async load<T>(table: Table<T>, props: Partial<T>): Promise<T> {
+        this.assertExecuting();
         const records = await this.query(table, props);
         if (records.length === 0) {
             const msg = `${table.tableName} is empty, can not find ${JSON.stringify(props)}`;
@@ -147,9 +193,11 @@ export class Scene {
         return records[0];
     }
     public async get<T>(table: Table<T>, id?: any): Promise<T> {
+        this.assertExecuting();
         return await this.load(table, id ? { id } : ({} as any));
     }
     public async sleep(millis: number) {
+        this.assertExecuting();
         return new Promise((resolve) => setTimeout(resolve, millis));
     }
     public toJSON() {

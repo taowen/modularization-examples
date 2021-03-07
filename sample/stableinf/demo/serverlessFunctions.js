@@ -8,7 +8,7 @@ SERVERLESS.sceneConf = {
 };
 if (SERVERLESS.insertTestData) {
     const scene = new Scene({...SERVERLESS.sceneConf, operation: newOperation('initTestData')});
-    SERVERLESS.insertTestData(scene);
+    scene.execute(SERVERLESS.insertTestData);
 }
 require('@motherboard/Home/Private/Counter');
 require('@motherboard/Home/Private/GreetingWordsGateway');

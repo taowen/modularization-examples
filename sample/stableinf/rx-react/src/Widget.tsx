@@ -50,7 +50,7 @@ export abstract class Widget {
     public notifyChange: (op: Operation) => void;
 
     private async mount(op: Operation) {
-        await this.onMount(enableChangeNotification(newScene(op)));
+        await enableChangeNotification(newScene(op)).execute(this, this.onMount);
         // afterMounted
         for (const [k, v] of Object.entries(this)) {
             if (v && v instanceof Future) {
@@ -65,10 +65,7 @@ export abstract class Widget {
         // 并发计算
         for (const [k, future] of this.subscriptions.entries()) {
             const scene = ensureReadonly(newScene(op));
-            const promise = future.get(scene);
-            if (scene.operation.onAsyncTaskStarted) {
-                scene.operation.onAsyncTaskStarted(promise);
-            }
+            const promise = scene.execute(future, future.get);
             promise.catch(op.onError);
             promises.set(k, promise);
         }
@@ -97,7 +94,8 @@ export abstract class Widget {
             future.dispose();
         }
         this.subscriptions.clear();
-        this.onUnmount(enableChangeNotification(newScene(`unMount ${this.constructor.name}`)));
+        const scene = enableChangeNotification(newScene(`unMount ${this.constructor.name}`));
+        scene.execute(this, this.onUnmount);
     }
 
     protected callback<M extends keyof this>(methodName: M): OmitOneArg<this[M]>;
@@ -108,13 +106,13 @@ export abstract class Widget {
         boundArg2: any,
     ): OmitThreeArg<this[M]>;
     protected callback<M extends keyof this>(methodName: M, ...boundArgs: any[]): any {
-        const cb = Reflect.get(this, methodName).bind(this);
+        const cb = Reflect.get(this, methodName);
         return (...args: any[]) => {
             const traceOp = `callback ${this.constructor.name}.${methodName}`;
             const scene = enableChangeNotification(newScene(traceOp));
             return (async () => {
                 try {
-                    return await cb(scene, ...boundArgs, ...args);
+                    return await scene.execute(this, cb, ...boundArgs, ...args);
                 } catch (e) {
                     Widget.onUnhandledCallbackError(scene, e);
                     return undefined;
@@ -213,7 +211,7 @@ export function bindCallback(traceOp: string, cb: any, ...boundArgs: any[]): any
         const scene = enableChangeNotification(newScene(traceOp));
         return (async () => {
             try {
-                return await cb(scene, ...boundArgs, ...args);
+                return await scene.execute(undefined, cb, ...boundArgs, ...args);
             } catch (e) {
                 Widget.onUnhandledCallbackError(scene, e);
                 return undefined;

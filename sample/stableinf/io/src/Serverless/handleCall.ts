@@ -3,7 +3,7 @@ import { Atom, Operation, Scene, SceneConf } from '../Scene';
 // apiGateway => handleBatchCall => handleCall => services
 export async function handleCall(
     options: { sceneConf: SceneConf },
-    handler: Function,
+    handler: (...args: any[]) => any,
     operation: Operation,
     ...args: any[]
 ) {
@@ -25,6 +25,6 @@ export async function handleCall(
             }
         },
     });
-    const data = await handler.call(undefined, scene, ...args);
+    const data = await scene.execute(undefined, handler, ...args);
     return { data: data, subscribed, changed };
 }
