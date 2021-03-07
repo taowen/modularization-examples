@@ -44,6 +44,22 @@ export interface Atom {
     notifyChange(operation: Operation): void;
 }
 
+export class SimpleAtom {
+    private readonly subscribers = new Set<AtomSubscriber>();
+
+    public addSubscriber(subscriber: AtomSubscriber) {
+        this.subscribers.add(subscriber);
+    }
+    public deleteSubscriber(subscriber: AtomSubscriber) {
+        this.subscribers.delete(subscriber);
+    }
+    public notifyChange(operation: Operation) {
+        for (const subscriber of this.subscribers) {
+            subscriber.notifyChange(operation);
+        }
+    }
+}
+
 export interface Table<T = any> extends Atom {
     new (...args: any[]): T;
     tableName: string;

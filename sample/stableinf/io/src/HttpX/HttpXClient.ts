@@ -1,6 +1,6 @@
 import { uuid } from '../uuid';
 import { BatchExecutor } from '../BatchExecutor';
-import { Atom, AtomSubscriber, Operation, Scene, ServiceProtocol } from '../Scene';
+import { Atom, AtomSubscriber, Operation, Scene, ServiceProtocol, SimpleAtom } from '../Scene';
 import { isJobError, Job, JobResult } from './HttpX';
 
 // 前端通过互联网调用 api gateway 后面的 serverless
@@ -115,20 +115,8 @@ function remoteTable(tableName: string) {
     return atom;
 }
 
-class RemoteTable implements Atom {
-
-    private readonly subscribers = new Set<AtomSubscriber>();
-    constructor(public readonly tableName: string) {}
-
-    public addSubscriber(subscriber: AtomSubscriber) {
-        this.subscribers.add(subscriber);
-    }
-    public deleteSubscriber(subscriber: AtomSubscriber) {
-        this.subscribers.delete(subscriber);
-    }
-    public notifyChange(operation: Operation) {
-        for (const subscriber of this.subscribers) {
-            subscriber.notifyChange(operation);
-        }
+class RemoteTable extends SimpleAtom {
+    constructor(public readonly tableName: string) {
+        super();
     }
 }
