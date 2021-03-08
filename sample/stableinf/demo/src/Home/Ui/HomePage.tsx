@@ -5,10 +5,13 @@ import { CounterDemo } from './CounterDemo';
 import { Greeting } from './Greeting';
 import { TaskList } from './TaskList';
 import { RandomNumberPage } from './RandomNumberPage';
+import { LocalCounterDemo } from './LocalCounterDemo';
 
 export class HomePage extends Widget {
     public render() {
         switch (getLocationHash()) {
+            case '#local-counter-demo':
+                return renderWidget(LocalCounterDemo);
             case '#counter-demo':
                 return renderWidget(CounterDemo);
             case '#task-list':
@@ -27,6 +30,9 @@ export class HomePage extends Widget {
             <div>
                 <Suspense fallback={<span>loading...</span>}>{renderWidget(Greeting)}</Suspense>
                 <ul>
+                    <li>
+                        <a href="#local-counter-demo">本地订阅</a>
+                    </li>
                     <li>
                         <a href="#counter-demo">RPC和I/O订阅</a>
                     </li>

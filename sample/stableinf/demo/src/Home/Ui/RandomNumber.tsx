@@ -2,7 +2,7 @@ import * as React from 'react';
 import { callbackTracker, Widget } from '@stableinf/rx-react';
 import { TaskGateway } from '../Private/TaskGateway';
 import { Scene } from '@stableinf/io';
-import { Ref } from '@stableinf/rx-react/src/Ref';
+import { Ref } from '@stableinf/rx-react';
 
 const fakeTable = new Ref('some fake table');
 
