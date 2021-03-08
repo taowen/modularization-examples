@@ -4,12 +4,12 @@ import { Suspense } from 'react';
 import { Database, Operation, ServiceProtocol, Scene, newOperation, Atom } from '@stableinf/io';
 import { enableChangeNotification, ensureReadonly, Future } from './Future';
 import { currentOperation, runInOperation } from './Operation';
-import { reactive } from './reactive';
+import { reactive, ReactiveObject } from './reactive';
 
 // 展示界面，其数据来自两部分
 // 父组件传递过来的 props
 // 从 I/O 获得的外部状态，保存在 futures 里
-export abstract class Widget {
+export abstract class Widget extends ReactiveObject {
     // 可以覆盖这个回调来实现全局写操作的异常处理，读操作的异常用 ErrorBoundary 去抓
     public static onUnhandledCallbackError = (scene: Scene, e: any) => {
         console.error(`unhandled callback error: ${scene}`, e);
@@ -21,7 +21,9 @@ export abstract class Widget {
     private futures: Map<string, Future> = new Map();
     private subscribed: Set<Atom> = new Set();
     // 父组件传入的 props
-    constructor(public props?: Record<string, any>) {}
+    constructor(public props?: Record<string, any>) {
+        super();
+    }
 
     // 批量编辑，父子表单等类型的界面需要有可编辑的前端状态，放在本地的内存 database 里
     // onMount 的时候从 remoteService 把数据复制到内存 database 里进行编辑
@@ -114,7 +116,7 @@ export abstract class Widget {
             const scene = enableChangeNotification(newScene(traceOp));
             return (async () => {
                 try {
-                    return await scene.execute(this, cb, ...boundArgs, ...args);
+                    return await scene.execute(this.attachTo(scene), cb, ...boundArgs, ...args);
                 } catch (e) {
                     Widget.onUnhandledCallbackError(scene, e);
                     return undefined;
@@ -189,7 +191,7 @@ export abstract class Widget {
                 }
             }
             try {
-                return widget.render(hooks);
+                return widget.attachTo(reactive.currentChangeTracker).render(hooks);
             } finally {
                 reactive.currentChangeTracker = undefined;
             }

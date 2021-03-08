@@ -48,7 +48,7 @@ export class ReactiveObject {
         const _this = this[rawValue];
         const baseHandler: ProxyHandler<any> = {
             get: (target, propertyKey, receiver) => {
-                if (propertyKey === rawValue || propertyKey === 'attachTo') {
+                if (!this.shouldTrack(propertyKey)) {
                     return Reflect.get(target, propertyKey);
                 }
                 tracker.subscribe(_this.atom(propertyKey));
@@ -60,7 +60,9 @@ export class ReactiveObject {
             },
             set: (target, propertyKey, value, receiver) => {
                 const returnValue = Reflect.set(target, propertyKey, value, receiver);
-                tracker.notifyChange(_this.atom(propertyKey));
+                if (this.shouldTrack(propertyKey)) {
+                    tracker.notifyChange(_this.atom(propertyKey));
+                }
                 return returnValue;
             },
         };
@@ -191,10 +193,15 @@ export class ReactiveObject {
         }
         return atom;
     }
+    protected shouldTrack(propertyKey: PropertyKey) {
+        if (propertyKey === rawValue || propertyKey === 'attachTo') {
+            return false;
+        }
+        return true;
+    }
 }
 
-// @internal
-export const delegatesChnageTracker: ChangeTracker = {
+const delegatesChnageTracker: ChangeTracker = {
     subscribe(atom) {
         if (!reactive.currentChangeTracker) {
             throw new Error('reactive.currentChangeTracker is undefined, can not read from reactive');
