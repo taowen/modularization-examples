@@ -1,12 +1,12 @@
 const should = require('./should');
-const { Reactive } = require('./Reactive');
+const { reactive } = require('./reactive');
 const { Future } = require('./Future');
 
 describe('Reactive / object', () => {
     it(
         'set property',
         should('notify change', async (scene) => {
-            const obj = new Reactive({ a: { b: 'hello' } }).attachTo(scene);
+            const obj = reactive({ a: { b: 'hello' } }).attachTo(scene);
             const future = new Future(async () => {
                 return obj.a.b;
             });
@@ -18,7 +18,7 @@ describe('Reactive / object', () => {
     it(
         'assign property',
         should('notify change', async (scene) => {
-            const obj = new Reactive({ a: { b: 'hello' } }).attachTo(scene);
+            const obj = reactive({ a: { b: 'hello' } }).attachTo(scene);
             const future = new Future(async () => {
                 return obj.a.b;
             });

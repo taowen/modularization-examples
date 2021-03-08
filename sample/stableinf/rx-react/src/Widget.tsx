@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { Database, Operation, ServiceProtocol, Scene, newOperation, Atom } from '@stableinf/io';
 import { enableChangeNotification, ensureReadonly, Future } from './Future';
 import { currentOperation, runInOperation } from './Operation';
-import { reactive } from './Reactive';
+import { reactive } from './reactive';
 
 // 展示界面，其数据来自两部分
 // 父组件传递过来的 props

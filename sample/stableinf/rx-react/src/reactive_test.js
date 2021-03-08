@@ -1,12 +1,12 @@
 const should = require('./should');
-const { Reactive, reactive } = require('./Reactive');
+const { reactive } = require('./reactive');
 const { Future } = require('./Future');
 
 describe('Reactive', () => {
     it(
         'direct set property',
         should('notify change', async (scene) => {
-            const obj = new Reactive({ abc: 'hello' }).attachTo(scene);
+            const obj = reactive({ abc: 'hello' }).attachTo(scene);
             const future = new Future(async () => {
                 return obj.abc;
             });
@@ -18,7 +18,7 @@ describe('Reactive', () => {
     it(
         'does not wrap Date',
         should('not detect change', async (scene) => {
-            const obj = new Reactive({ abc: new Date(1) }).attachTo(scene);
+            const obj = reactive({ abc: new Date(1) }).attachTo(scene);
             const future = new Future(async () => {
                 return obj.abc.getTime();
             });
@@ -54,8 +54,8 @@ describe('Reactive', () => {
         }),
     );
     it('Reactive inside another Reactive', should('not wrap twice', async (scene) => {
-        const r1 = new Reactive({ b: 'hello' });
-        const r2 = new Reactive({ a: [r1] }).attachTo(scene);
+        const r1 = reactive({ b: 'hello' });
+        const r2 = reactive({ a: [r1] }).attachTo(scene);
         const future = new Future(async () => {
             return r2.a[0].b;
         });

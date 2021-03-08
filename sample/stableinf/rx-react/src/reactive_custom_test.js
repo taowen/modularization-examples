@@ -1,5 +1,5 @@
 const should = require('./should');
-const { Reactive } = require('./Reactive');
+const { reactive } = require('./reactive');
 const { Future } = require('./Future');
 
 class MyClass {
@@ -13,7 +13,7 @@ describe('Reactive / custom', () => {
     it(
         'call custom method',
         should('notify its change made internally', async (scene) => {
-            const obj = new Reactive({ a: new MyClass() }).attachTo(scene);
+            const obj = reactive({ a: new MyClass() }).attachTo(scene);
             const future = new Future(async () => {
                 return obj.a.b.c;
             });

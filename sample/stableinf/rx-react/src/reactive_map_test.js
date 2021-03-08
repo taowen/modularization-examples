@@ -1,12 +1,12 @@
 const should = require('./should');
-const { Reactive } = require('./Reactive');
+const { reactive } = require('./reactive');
 const { Future } = require('./Future');
 
 describe('Reactive / map', () => {
     it(
         'set key',
         should('notify change', async (scene) => {
-            const obj = new Reactive({ a: new Map() }).attachTo(scene);
+            const obj = reactive({ a: new Map() }).attachTo(scene);
             const future = new Future(async () => {
                 return Array.from(obj.a.values()).join(',');
             });
@@ -19,7 +19,7 @@ describe('Reactive / map', () => {
         'mutate array hold by map',
         should('notify change', async (scene) => {
             const arr = ['hello'];
-            const obj = new Reactive({ a: new Map([['b', arr]]) }).attachTo(scene);
+            const obj = reactive({ a: new Map([['b', arr]]) }).attachTo(scene);
             const future = new Future(async () => {
                 return obj.a.get('b').join(',');
             });

@@ -1,6 +1,6 @@
 import { Scene } from '@stableinf/io';
+import { Ref } from './reactive';
 import { bindCallback } from './Widget';
-import { Ref } from './Ref';
 
 export let rxLocation: Ref<string> | undefined;
 

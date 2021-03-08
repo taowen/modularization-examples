@@ -1,4 +1,4 @@
-import { Atom, SimpleAtom, ChangeTracker, Scene } from '@stableinf/io';
+import { Atom, SimpleAtom } from '@stableinf/io';
 
 const mapMutatorMethods: PropertyKey[] = ['set', 'clear', 'delete'];
 const mapIteratorMethods: PropertyKey[] = ['keys', 'values', 'entries', Symbol.iterator];
@@ -6,10 +6,39 @@ const setMutatorMethods: PropertyKey[] = ['add', 'clear', 'delete'];
 const setIteratorMethods: PropertyKey[] = ['keys', 'values', 'entries', Symbol.iterator];
 
 const rawValue = Symbol.for('rawValue');
+const atoms = Symbol.for('atoms');
+
+export interface ChangeTracker {
+    subscribe(atom: Atom): void;
+    notifyChange(atom: Atom): void;
+}
+
+// 和 vue3 的 reactive 类似，根据初始值构造响应式的对象
+export function reactive<T>(initData: T): T & { attachTo(changeTracker: ChangeTracker): T } {
+    return new ReactiveObject(initData).attachTo(delegatesChnageTracker) as any;
+}
+reactive.currentChangeTracker = undefined as ChangeTracker | undefined;
+
+// 和 vue3 的 Ref 类似，是响应式的单个值
+export class Ref<T = any> extends SimpleAtom {
+    constructor(private value: T) {
+        super();
+    }
+
+    public set(newVal: T, changeTracker?: { notifyChange(atom: Atom): void }) {
+        this.value = newVal;
+        (changeTracker || delegatesChnageTracker).notifyChange(this);
+    }
+    
+    public get(changeTracker?: { subscribe(atom: Atom): void }) {
+        (changeTracker || delegatesChnageTracker).subscribe(this);
+        return this.value;
+    }
+}
 
 // @internal
-export class Reactive {
-    private atoms = new Map<PropertyKey, Atom>();
+export class ReactiveObject {
+    private [atoms] = new Map<PropertyKey, Atom>();
     private [rawValue] = this;
     constructor(props?: Record<string, any>) {
         Object.assign(this, props);
@@ -39,7 +68,7 @@ export class Reactive {
     }
     private wrapValue(tracker: ChangeTracker, atom: Atom, wrappee: any): any {
         if (typeof wrappee === 'object') {
-            if (wrappee instanceof Reactive) {
+            if (wrappee instanceof ReactiveObject) {
                 // 不要包两遍，Reactive 独立跟踪自己的订阅者
                 return wrappee[rawValue];
             } else if (wrappee instanceof Map) {
@@ -156,18 +185,13 @@ export class Reactive {
         };
     }
     private atom(propertyKey: PropertyKey) {
-        let atom = this.atoms.get(propertyKey);
+        let atom = this[atoms].get(propertyKey);
         if (!atom) {
-            this.atoms.set(propertyKey, (atom = new ReactiveProp(propertyKey)));
+            this[atoms].set(propertyKey, (atom = new ReactiveProp(propertyKey)));
         }
         return atom;
     }
 }
-
-export function reactive<T>(initData: T): T & { attachTo(scene: Scene): T } {
-    return new Reactive(initData).attachTo(delegatesChnageTracker) as any;
-}
-reactive.currentChangeTracker = undefined as ChangeTracker | undefined;
 
 // @internal
 export const delegatesChnageTracker: ChangeTracker = {

@@ -1,12 +1,12 @@
 const should = require('./should');
-const { Reactive } = require('./Reactive');
+const { reactive } = require('./reactive');
 const { Future } = require('./Future');
 
 describe('Reactive / array', () => {
     it(
         'push element',
         should('notify change', async (scene) => {
-            const obj = new Reactive({ a: ['first'] }).attachTo(scene);
+            const obj = reactive({ a: ['first'] }).attachTo(scene);
             const future = new Future(async () => {
                 return obj.a.length;
             });
@@ -18,7 +18,7 @@ describe('Reactive / array', () => {
     it(
         'iterate',
         should('still work', async (scene) => {
-            const obj = new Reactive({ a: [1, 2, 3] }).attachTo(scene);
+            const obj = reactive({ a: [1, 2, 3] }).attachTo(scene);
             let total = 0;
             for (const elem of obj.a) {
                 total += elem;
@@ -29,7 +29,7 @@ describe('Reactive / array', () => {
     it(
         'reset length',
         should('notify change', async (scene) => {
-            const obj = new Reactive({ a: ['first', 'second'] }).attachTo(scene);
+            const obj = reactive({ a: ['first', 'second'] }).attachTo(scene);
             const future = new Future(async () => {
                 return obj.a[0];
             });
