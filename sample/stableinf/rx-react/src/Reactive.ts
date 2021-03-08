@@ -1,36 +1,48 @@
-import { Atom, SimpleAtom, ChangeTracker } from '@stableinf/io';
+import { Atom, SimpleAtom, ChangeTracker, Scene } from '@stableinf/io';
 
 const mapMutatorMethods: PropertyKey[] = ['set', 'clear', 'delete'];
 const mapIteratorMethods: PropertyKey[] = ['keys', 'values', 'entries', Symbol.iterator];
 const setMutatorMethods: PropertyKey[] = ['add', 'clear', 'delete'];
 const setIteratorMethods: PropertyKey[] = ['keys', 'values', 'entries', Symbol.iterator];
 
+const rawValue = Symbol.for('rawValue');
+
+// @internal
 export class Reactive {
     private atoms = new Map<PropertyKey, Atom>();
+    private [rawValue] = this;
     constructor(props?: Record<string, any>) {
         Object.assign(this, props);
     }
     public attachTo(tracker: ChangeTracker) {
+        // 避免被 Proxy 包两遍，先把实际的原始值取出来
+        const _this = this[rawValue];
         const baseHandler: ProxyHandler<any> = {
             get: (target, propertyKey, receiver) => {
-                tracker.subscribe(this.atom(propertyKey));
-                return this.wrapValue(
+                if (propertyKey === rawValue || propertyKey === 'attachTo') {
+                    return Reflect.get(target, propertyKey);
+                }
+                tracker.subscribe(_this.atom(propertyKey));
+                return _this.wrapValue(
                     tracker,
-                    this.atom(propertyKey),
+                    _this.atom(propertyKey),
                     Reflect.get(target, propertyKey),
                 );
             },
             set: (target, propertyKey, value, receiver) => {
                 const returnValue = Reflect.set(target, propertyKey, value, receiver);
-                tracker.notifyChange(this.atom(propertyKey));
+                tracker.notifyChange(_this.atom(propertyKey));
                 return returnValue;
             },
         };
-        return new Proxy(this, baseHandler);
+        return new Proxy(_this, baseHandler);
     }
     private wrapValue(tracker: ChangeTracker, atom: Atom, wrappee: any): any {
         if (typeof wrappee === 'object') {
-            if (wrappee instanceof Map) {
+            if (wrappee instanceof Reactive) {
+                // 不要包两遍，Reactive 独立跟踪自己的订阅者
+                return wrappee[rawValue];
+            } else if (wrappee instanceof Map) {
                 return new Proxy(wrappee, {
                     get: (target, propertyKey, receiver) => {
                         return this.wrapMapValue(
@@ -149,6 +161,24 @@ export class Reactive {
             this.atoms.set(propertyKey, (atom = new ReactiveProp(propertyKey)));
         }
         return atom;
+    }
+}
+
+export function reactive<T>(initData: T): T & { attachTo(scene: Scene): T } {
+    return new Reactive(initData).attachTo(delegatesChnageTracker) as any;
+}
+reactive.currentChangeTracker = undefined as ChangeTracker | undefined;
+
+// @internal
+export const delegatesChnageTracker: ChangeTracker = {
+    subscribe(atom) {
+        if (!reactive.currentChangeTracker) {
+            throw new Error('reactive.currentChangeTracker is undefined, can not read from reactive');
+        }
+        return reactive.currentChangeTracker.subscribe(atom);
+    },
+    notifyChange(atom) {
+        throw new Error('reactive() can not be modified before attachTo a change tracker')
     }
 }
 

@@ -1,4 +1,4 @@
 export * from './Widget';
 export * from './Future';
-export * from './BrowserLocation'
+export * from './getLocationHash'
 export * from './callbackTracker';

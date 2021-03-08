@@ -45,6 +45,7 @@ Sell/Ui/ProductDetailsPage.js
 * 修复 demo：多点几次“重算一次”会没反应
 * 尝试 Reactive 基类，特别是嵌套 Form
 * 把 BrowserLocation 改为基于 Reactive 实现的
+* 创建 Widget 而不渲染，把数据库的内容先复制成 Widget，然后渲染 Form
 * 提供一个基于 aws 的 cloud
 * io 中增加 association 提供关联关系的定义和遍历，attachTo scene
 * 给 service 声明 prefetch

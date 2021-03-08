@@ -1,13 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Suspense } from 'react';
-import { Database, Operation, ServiceProtocol, Scene, newOperation } from '@stableinf/io';
-import {
-    enableChangeNotification,
-    ensureReadonly,
-    Future,
-} from './Future';
+import { Database, Operation, ServiceProtocol, Scene, newOperation, Atom } from '@stableinf/io';
+import { enableChangeNotification, ensureReadonly, Future } from './Future';
 import { currentOperation, runInOperation } from './Operation';
+import { reactive } from './Reactive';
 
 // 展示界面，其数据来自两部分
 // 父组件传递过来的 props
@@ -21,7 +18,8 @@ export abstract class Widget {
     public static serviceProtocol: ServiceProtocol;
     private unmounted?: boolean;
     // 外部状态
-    private subscriptions: Map<string, Future> = new Map();
+    private futures: Map<string, Future> = new Map();
+    private subscribed: Set<Atom> = new Set();
     // 父组件传入的 props
     constructor(public props?: Record<string, any>) {}
 
@@ -54,7 +52,7 @@ export abstract class Widget {
         // afterMounted
         for (const [k, v] of Object.entries(this)) {
             if (v && v instanceof Future) {
-                this.subscriptions.set(k, v);
+                this.futures.set(k, v);
             }
         }
         await this.refreshSubscriptions(op, true);
@@ -63,7 +61,7 @@ export abstract class Widget {
     private async refreshSubscriptions(op: Operation, isMounting: boolean) {
         const promises = new Map<string, Promise<any>>();
         // 并发计算
-        for (const [k, future] of this.subscriptions.entries()) {
+        for (const [k, future] of this.futures.entries()) {
             const scene = ensureReadonly(newScene(op));
             const promise = scene.execute(future, future.get);
             promise.catch(op.onError);
@@ -90,10 +88,14 @@ export abstract class Widget {
 
     private unmount() {
         this.unmounted = true;
-        for (const future of this.subscriptions.values()) {
+        for (const future of this.futures.values()) {
             future.dispose();
         }
-        this.subscriptions.clear();
+        this.futures.clear();
+        for (const atom of this.subscribed) {
+            atom.deleteSubscriber(this);
+        }
+        this.subscribed.clear();
         const scene = enableChangeNotification(newScene(`unMount ${this.constructor.name}`));
         scene.execute(this, this.onUnmount);
     }
@@ -143,6 +145,8 @@ export abstract class Widget {
             return { widget, initialRenderOp: currentOperation() };
         });
         const [isReady, setReady] = React.useState<false | true | Promise<void>>(false);
+        // 无论是否要渲染，setupHooks 都必须执行，react 要求 hooks 数量永远不变
+        const hooks = widget.setupHooks();
         React.useEffect(() => {
             // mount 之后触发外部状态的获取
             const promise = widget.mount(initialRenderOp);
@@ -167,8 +171,6 @@ export abstract class Widget {
                 widget.unmount();
             };
         }, []); // [] 表示该 Effect 仅执行一次，也就是 mount/unmount
-        // 无论是否要渲染，setupHooks 都必须执行，react 要求 hooks 数量永远不变
-        const hooks = widget.setupHooks();
         // react 组件处于 false => 初始化中 => true 三种状态之一
         if (isReady === true) {
             if (isForceRender) {
@@ -177,7 +179,20 @@ export abstract class Widget {
                 // 刷新是异步的，刷新完成了之后会再次重渲染 react 组件重新走到这里
                 // refreshSubscriptions 内部会判重，不会死循环
             }
-            return widget.render(hooks);
+            reactive.currentChangeTracker = {
+                subscribe: (atom) => {
+                    atom.addSubscriber(widget);
+                    widget.subscribed.add(atom);
+                },
+                notifyChange: (atom) => {
+                    throw new Error(`render should be readonly, but modified: ${atom}`);
+                }
+            }
+            try {
+                return widget.render(hooks);
+            } finally {
+                reactive.currentChangeTracker = undefined;
+            }
         } else if (isReady === false) {
             // 第一次不能直接 throw promise，否则 react 会把所有 state 给扔了，只能渲染个空白出去
             return <></>;

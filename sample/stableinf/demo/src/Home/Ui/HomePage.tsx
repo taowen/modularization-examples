@@ -1,24 +1,14 @@
 import * as React from 'react';
 import { Suspense } from 'react';
-import { Scene } from '@stableinf/io';
-import { BrowserLocation, renderWidget, Widget } from '@stableinf/rx-react';
+import { getLocationHash, renderWidget, Widget } from '@stableinf/rx-react';
 import { CounterDemo } from './CounterDemo';
 import { Greeting } from './Greeting';
 import { TaskList } from './TaskList';
 import { RandomNumberPage } from './RandomNumberPage';
 
 export class HomePage extends Widget {
-    // 把 window.location 同步到内存数据库中
-    public async onMount(scene: Scene) {
-        await BrowserLocation.startSyncing(scene);
-    }
-    // 从内存数据库读取到最新的 window.location 达到间接订阅 window hashchange 的目的
-    // 当用户点了链接之后，因为这里的订阅会重新渲染
-    public locationHash = this.subscribe(async (scene) => {
-        return (await scene.get(BrowserLocation)).hash;
-    });
     public render() {
-        switch (this.locationHash) {
+        switch (getLocationHash()) {
             case '#counter-demo':
                 return renderWidget(CounterDemo);
             case '#task-list':
