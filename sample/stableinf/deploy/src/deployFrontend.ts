@@ -21,6 +21,8 @@ export async function deployFrontend(cloud: Cloud, project: Project) {
             bundle: true,
             entryPoints: ['frontend.js'],
             write: false,
+            platform: 'browser',
+            target: 'es2020',
             absWorkingDir: project.projectDir,
             define: { 'process.env.NODE_ENV': `"development"` },
             plugins: [esbuildPlugin(project)],

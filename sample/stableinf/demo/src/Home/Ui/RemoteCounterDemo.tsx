@@ -9,7 +9,7 @@ function $(scene: Scene) {
     return scene.useServices<typeof Counter & typeof GreetingWordsGateway>();
 }
 
-export class CounterDemo extends Widget {
+export class RemoteCounterDemo extends Widget {
     public greetingWords = this.subscribe(async (scene) => {
         return await $(scene).getGreetingWords();
     });

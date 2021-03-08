@@ -6,10 +6,12 @@ import { enableChangeNotification, ensureReadonly, Future } from './Future';
 import { currentOperation, runInOperation } from './Operation';
 import { reactive, ReactiveObject } from './reactive';
 
+const transientProps = new Set<PropertyKey>(['unmounted', 'futures', 'subscribed', 'props', 'render']);
+
 // 展示界面，其数据来自两部分
 // 父组件传递过来的 props
 // 从 I/O 获得的外部状态，保存在 futures 里
-export abstract class Widget extends ReactiveObject {
+export abstract class Widget<P = any> extends ReactiveObject {
     // 可以覆盖这个回调来实现全局写操作的异常处理，读操作的异常用 ErrorBoundary 去抓
     public static onUnhandledCallbackError = (scene: Scene, e: any) => {
         console.error(`unhandled callback error: ${scene}`, e);
@@ -20,18 +22,17 @@ export abstract class Widget extends ReactiveObject {
     // 外部状态
     private futures: Map<string, Future> = new Map();
     private subscribed: Set<Atom> = new Set();
+    public readonly props: P;
     // 父组件传入的 props
-    constructor(public props?: Record<string, any>) {
-        super();
+    constructor(props: P) {
+        super({ props });
     }
 
     // 批量编辑，父子表单等类型的界面需要有可编辑的前端状态，放在本地的内存 database 里
     // onMount 的时候从 remoteService 把数据复制到内存 database 里进行编辑
     // onUnmount 的时候清理本地的内存 database
-    // @internal
-    public async onMount(scene: Scene) {}
-    // @internal
-    public async onUnmount(scene: Scene) {}
+    public onMount: (scene: Scene) => Promise<void>
+    public onUnmount: (scene: Scene) => Promise<void>
     // react 的钩子不能写在 render 里，必须写在这里
     public setupHooks(): any {}
     // 当外部状态获取完毕之后，会调用 render
@@ -50,14 +51,14 @@ export abstract class Widget extends ReactiveObject {
     public notifyChange: (op: Operation) => void;
 
     private async mount(op: Operation) {
-        await enableChangeNotification(newScene(op)).execute(this, this.onMount);
-        // afterMounted
-        for (const [k, v] of Object.entries(this)) {
-            if (v && v instanceof Future) {
-                this.futures.set(k, v);
-            }
+        if (this.onMount) {
+            await enableChangeNotification(newScene(op)).execute(this, this.onMount);
         }
         await this.refreshSubscriptions(op, true);
+    }
+
+    private get needMount() {
+        return !!this.onMount || this.futures.size > 0;
     }
 
     private async refreshSubscriptions(op: Operation, isMounting: boolean) {
@@ -83,7 +84,7 @@ export abstract class Widget extends ReactiveObject {
                 }
             }
         }
-        if (dirty) {
+        if (dirty && !isMounting) {
             this.notifyChange(op);
         }
     }
@@ -99,7 +100,9 @@ export abstract class Widget extends ReactiveObject {
         }
         this.subscribed.clear();
         const scene = enableChangeNotification(newScene(`unMount ${this.constructor.name}`));
-        scene.execute(this, this.onUnmount);
+        if (this.onUnmount) {
+            scene.execute(this, this.onUnmount);
+        }
     }
 
     protected callback<M extends keyof this>(methodName: M): OmitOneArg<this[M]>;
@@ -128,7 +131,10 @@ export abstract class Widget extends ReactiveObject {
     // 以下是 react 的黑魔法，看不懂是正常的
     // 实际交给 react 执行的组件是下面这个函数，它屏蔽了异步 I/O，使得 this.render 只需要处理同步的渲染
     // @internal
-    public static reactComponent(widgetClass: WidgetClass, props?: Record<string, any>) {
+    public static reactComponent(
+        widgetClass: WidgetClass,
+        props: Record<string, any>,
+    ) {
         // 我们没有把状态存在 react 的体系内，而是完全外置的状态
         // 并不打算支持 react concurrent，也绝对会有 tearing 的问题，don't care
         // 目标就是业务代码中完全没有 useState 和 useContext，全部用 scene 获取的状态代替
@@ -136,7 +142,13 @@ export abstract class Widget extends ReactiveObject {
         const [isForceRender, forceRender] = React.useState(0);
         // 创建 widget，仅会在首次渲染时执行一次
         const [{ widget, initialRenderOp }, _] = React.useState(() => {
-            const widget: Widget = new widgetClass(props as any);
+            const widget: Widget = props.__borrowed__ || new widgetClass(props as any);
+            
+        for (const [k, v] of Object.entries(widget)) {
+            if (v && v instanceof Future) {
+                widget.futures.set(k, v);
+            }
+        }
             widget.notifyChange = (op) => {
                 if (!widget.unmounted) {
                     runInOperation(op, () => {
@@ -146,28 +158,31 @@ export abstract class Widget extends ReactiveObject {
             };
             return { widget, initialRenderOp: currentOperation() };
         });
-        const [isReady, setReady] = React.useState<false | true | Promise<void>>(false);
+        const [isReady, setReady] = React.useState<false | true | Promise<void>>(!widget.needMount);
         // 无论是否要渲染，setupHooks 都必须执行，react 要求 hooks 数量永远不变
         const hooks = widget.setupHooks();
         React.useEffect(() => {
             // mount 之后触发外部状态的获取
-            const promise = widget.mount(initialRenderOp);
-            setReady(promise);
-            promise
-                .then(() => {
-                    // 如果数据获取成功则开始真正渲染
-                    if (!widget.unmounted) {
+            if (widget.needMount) {
+                const promise = ((async () => {
+                    try {
+                        widget.unmounted = false;
+                        await widget.mount(initialRenderOp)
+                        // 如果数据获取成功则开始真正渲染
+                        if (!widget.unmounted) {
+                            runInOperation(initialRenderOp, () => {
+                                setReady(true);
+                            });
+                        }
+                    } catch(e) {
+                        // 否则把异常设置到 state 里，下面 throw isReady 的时候抛给父组件
                         runInOperation(initialRenderOp, () => {
-                            setReady(true);
+                            setReady(e);
                         });
                     }
-                })
-                .catch((exception: any) => {
-                    // 否则把异常设置到 state 里，下面 throw isReady 的时候抛给父组件
-                    runInOperation(initialRenderOp, () => {
-                        setReady(exception);
-                    });
-                });
+                }))();
+                setReady(promise);
+            }
             // 此处返回的回调会在 unmount 的时候调用
             return () => {
                 widget.unmount();
@@ -188,8 +203,8 @@ export abstract class Widget extends ReactiveObject {
                 },
                 notifyChange: (atom) => {
                     throw new Error(`render should be readonly, but modified: ${atom}`);
-                }
-            }
+                },
+            };
             try {
                 return widget.attachTo(reactive.currentChangeTracker).render(hooks);
             } finally {
@@ -203,7 +218,19 @@ export abstract class Widget extends ReactiveObject {
             throw isReady;
         }
     }
+
+    protected shouldTrack(propertyKey: PropertyKey) {
+        if (transientProps.has(propertyKey)) {
+            return false;
+        }
+        return super.shouldTrack(propertyKey);
+    }
 }
+
+for(const methodName of Object.getOwnPropertyNames(Widget.prototype)) {
+    transientProps.add(methodName);
+}
+
 
 // 给回调提供 scene，并统一捕获异常兜底
 export function bindCallback<T extends (...args: any[]) => any>(
@@ -238,7 +265,7 @@ export function bindCallback(traceOp: string, cb: any, ...boundArgs: any[]): any
 }
 
 export type WidgetClass<T extends Widget = any> = Function & {
-    new (scene: Scene, props?: Record<string, any>): T;
+    new (props?: Record<string, any>): T;
 };
 
 function newScene(op: string | Operation) {
@@ -263,15 +290,27 @@ export function renderRootWidget(
     const operation = newOperation(`initial render ${window.location.href}`);
     runInOperation(operation, () => {
         ReactDOM.render(
-            <Suspense fallback={<></>}>{renderWidget(widgetClass as any)}</Suspense>,
+            <Suspense fallback={<span>loading</span>}>{renderWidget(widgetClass as any)}</Suspense>,
             elem,
         );
     });
 }
 
-export function renderWidget<T extends Widget>(widgetClass: WidgetClass<T>, props?: T['props']) {
-    const Component = Widget.reactComponent.bind(undefined, widgetClass);
-    return <Component {...props} />;
+export function renderWidget<T extends Widget>(
+    widgetClass: WidgetClass<T>,
+    props?: T['props'],
+): React.ReactElement;
+export function renderWidget<T extends Widget>(widget: Widget): React.ReactElement;
+export function renderWidget<T extends Widget>(arg1: WidgetClass<T> | Widget, props?: T['props']) {
+    if (arg1 instanceof Widget) {
+        const widget = arg1;
+        const Component = React.memo(Widget.reactComponent.bind(undefined, widget.constructor as any));
+        return <Component __borrowed__={widget} />;
+    } else {
+        const widgetClass = arg1;
+        const Component = React.memo(Widget.reactComponent.bind(undefined, widgetClass));
+        return <Component {...props} />;
+    }
 }
 
 type OmitOneArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;
