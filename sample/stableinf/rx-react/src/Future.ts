@@ -73,24 +73,3 @@ export class Future<T = any> {
         this.loading = undefined;
     }
 }
-
-// 对每个写操作的 scene 都打开改动通知
-// @internal
-export function enableChangeNotification(scene: Scene) {
-    scene.operation.onError = (e) => {
-        Widget.onUnhandledCallbackError(scene, e);
-    };
-    scene.notifyChange = (atom) => {
-        atom.notifyChange(scene.operation);
-    };
-    return scene;
-}
-
-// 读操作应该是只读的
-// @internal
-export function ensureReadonly(scene: Scene) {
-    scene.notifyChange = (tableName) => {
-        throw new Error(`detected readonly scene ${scene} changed ${tableName}`);
-    };
-    return scene;
-}

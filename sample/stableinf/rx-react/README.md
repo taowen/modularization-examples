@@ -2,13 +2,13 @@
 
 react 并不 reactive。
 
-io-react 其目的是为了让 react 组件能够订阅它读取了的 ActiveRecord，包括浏览器本地内存数据库里的 ActiveRecord（所谓前端 store），以及远程服务后面的 Active（可能是存在 MySQL 里的，也可能是其他数据库）。当 ActiveRecord 被修改了之后，对应的 react 组件应该被自动重新渲染。
+rx-react 其目的是为了让 react 组件能够订阅它读取了的 ActiveRecord，包括浏览器本地内存数据库里的 ActiveRecord（所谓前端 store），以及远程服务后面的 Active（可能是存在 MySQL 里的，也可能是其他数据库）。当 ActiveRecord 被修改了之后，对应的 react 组件应该被自动重新渲染。
 
 实现方式是继承 Widget 来写 react 组件，其提供了如下能力：
 
 * this.subscribe 用 scene 进行异步 I/O 并订阅。subscribe 返回非 Promise 的普通数据，可以直接被 react 渲染使用
 * this.callback 给回调提供 scene 参数，从而能执行异步 I/O，并根据 I/O 改动的 ActiveRecord，自动触发页面刷新
-* this.executing 判断指定的 callback 是不是还在执行中，用来实现按钮置灰，防止重复点击的需求
+* this.isExecuting 判断指定的 callback 是不是还在执行中，用来实现按钮置灰，防止重复点击的需求
 * 组件 mount 时的数据加载可以由 Suspense 捕捉，错误由 ErrorBoundary 捕捉。这可以用来实现第一次打开时的转圈圈
 * 由 callback 触发的页面刷新，其数据加载不会触发 Suspense（避免界面闪烁），数据加载遇到的异常由 Widget.onUnhandledCallbackError 捕捉
 

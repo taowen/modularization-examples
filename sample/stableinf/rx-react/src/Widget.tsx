@@ -2,9 +2,10 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Suspense } from 'react';
 import { Database, Operation, ServiceProtocol, Scene, newOperation, Atom, useTrace } from '@stableinf/io';
-import { enableChangeNotification, ensureReadonly, Future } from './Future';
+import { Future } from './Future';
 import { currentOperation, runInOperation } from './Operation';
 import { reactive, ReactiveObject } from './reactive';
+import { UiScene } from './UiScene';
 
 const trace = useTrace(Symbol.for('Widget'));
 const transientProps = new Set<PropertyKey>([
@@ -15,20 +16,16 @@ const transientProps = new Set<PropertyKey>([
     'render',
 ]);
 
-// 展示界面，其数据来自两部分
+// 展示界面，其数据来自三部分
 // 父组件传递过来的 props
-// 从 I/O 获得的外部状态，保存在 futures 里
+// 从 I/O 获得的外部状态，保存在 asyncDeps 里
+// 从其他 reactive 的对象获得的外部状态，保存在 syncDeps 里
 export abstract class Widget<P = any> extends ReactiveObject {
-    // 可以覆盖这个回调来实现全局写操作的异常处理，读操作的异常用 ErrorBoundary 去抓
-    public static onUnhandledCallbackError = (scene: Scene, e: any) => {
-        console.error(`unhandled callback error: ${scene}`, e);
-    };
-    public static database: Database;
-    public static serviceProtocol: ServiceProtocol;
+    // 异步操作回调可能发生在组件卸载之后
     private unmounted?: boolean;
     // 外部状态
-    private futures: Map<string, Future> = new Map();
-    private subscribed: Set<Atom> = new Set();
+    private asyncDeps: Map<string, Future> = new Map();
+    private syncDeps: Set<Atom> = new Set();
     public readonly props: P;
     // 父组件传入的 props
     constructor(props: P) {
@@ -43,8 +40,7 @@ export abstract class Widget<P = any> extends ReactiveObject {
     // react 的钩子不能写在 render 里，必须写在这里
     public setupHooks(): any {}
     // 当外部状态获取完毕之后，会调用 render
-    // @internal
-    public abstract render(hooks: ReturnType<this['setupHooks']>): React.ReactElement;
+    protected abstract render(hooks: ReturnType<this['setupHooks']>): React.ReactElement;
 
     // 声明一份对外部状态的依赖，async 计算过程中的所有读到的表（含RPC服务端读的表）都会被收集到依赖关系里
     // 不同于 vue 和 mobx 的细粒度状态订阅，这里实现的订阅是表级别的，而不是行级别的
@@ -59,20 +55,20 @@ export abstract class Widget<P = any> extends ReactiveObject {
 
     private async mount(op: Operation) {
         if (this.onMount) {
-            await enableChangeNotification(newScene(op)).execute(this, this.onMount);
+            await UiScene.createRW(op).execute(this, this.onMount);
         }
-        await this.refreshSubscriptions(op, true);
+        await this.refreshAsyncDeps(op, true);
     }
 
     private get needMountAsync() {
-        return !!this.onMount || this.futures.size > 0;
+        return !!this.onMount || this.asyncDeps.size > 0;
     }
 
-    private async refreshSubscriptions(op: Operation, isMounting: boolean) {
+    private async refreshAsyncDeps(op: Operation, isMounting: boolean) {
         const promises = new Map<string, Promise<any>>();
         // 并发计算
-        for (const [k, future] of this.futures.entries()) {
-            const scene = ensureReadonly(newScene(op));
+        for (const [k, future] of this.asyncDeps.entries()) {
+            const scene = UiScene.createRO(op);
             const promise = scene.execute(future, future.get);
             promise.catch(op.onError);
             promises.set(k, promise);
@@ -98,15 +94,15 @@ export abstract class Widget<P = any> extends ReactiveObject {
 
     private unmount() {
         this.unmounted = true;
-        for (const future of this.futures.values()) {
+        for (const future of this.asyncDeps.values()) {
             future.dispose();
         }
-        this.futures.clear();
-        for (const atom of this.subscribed) {
+        this.asyncDeps.clear();
+        for (const atom of this.syncDeps) {
             atom.deleteSubscriber(this);
         }
-        this.subscribed.clear();
-        const scene = enableChangeNotification(newScene(`unMount ${this.constructor.name}`));
+        this.syncDeps.clear();
+        const scene = UiScene.createRW(`unMount ${this.constructor.name}`);
         if (this.onUnmount) {
             scene.execute(this, this.onUnmount);
         }
@@ -123,12 +119,12 @@ export abstract class Widget<P = any> extends ReactiveObject {
         const cb = Reflect.get(this, methodName);
         return (...args: any[]) => {
             const traceOp = `callback ${this.constructor.name}.${methodName}`;
-            const scene = enableChangeNotification(newScene(traceOp));
+            const scene = UiScene.createRW(traceOp);
             return (async () => {
                 try {
                     return await scene.execute(this.attachTo(scene), cb, ...boundArgs, ...args);
                 } catch (e) {
-                    Widget.onUnhandledCallbackError(scene, e);
+                    UiScene.onUnhandledCallbackError(scene, e);
                     return undefined;
                 }
             })();
@@ -151,7 +147,7 @@ export abstract class Widget<P = any> extends ReactiveObject {
                 const widget: Widget = props.__borrowed__ || new widgetClass(props as any);
                 for (const [k, v] of Object.entries(widget)) {
                     if (v && v instanceof Future) {
-                        widget.futures.set(k, v);
+                        widget.asyncDeps.set(k, v);
                     }
                 }
                 widget.notifyChange = (op) => {
@@ -162,7 +158,7 @@ export abstract class Widget<P = any> extends ReactiveObject {
                         });
                     }
                 };
-                trace`inited widget instance with ${widget.futures.size} futures`;
+                trace`inited widget instance with ${widget.asyncDeps.size} futures`;
                 return { widget, initialRenderOp: currentOperation() };
             });
             trace`widget: ${widget}`;
@@ -209,14 +205,14 @@ export abstract class Widget<P = any> extends ReactiveObject {
             if (isReady === true) {
                 if (isForceRender) {
                     // isReady 了之后，后续的重渲染都是因为外部状态改变而触发的，所以要刷一下
-                    widget.refreshSubscriptions(currentOperation(), false);
+                    widget.refreshAsyncDeps(currentOperation(), false);
                     // 刷新是异步的，刷新完成了之后会再次重渲染 react 组件重新走到这里
                     // refreshSubscriptions 内部会判重，不会死循环
                 }
                 reactive.currentChangeTracker = {
                     subscribe: (atom) => {
                         atom.addSubscriber(widget);
-                        widget.subscribed.add(atom);
+                        widget.syncDeps.add(atom);
                     },
                     notifyChange: (atom) => {
                         throw new Error(`render should be readonly, but modified: ${atom}`);
@@ -277,12 +273,12 @@ export function bindCallback<T extends (...args: any[]) => any>(
 export function bindCallback<T>(traceOp: string, cb: T): OmitOneArg<T>;
 export function bindCallback(traceOp: string, cb: any, ...boundArgs: any[]): any {
     return (...args: any[]) => {
-        const scene = enableChangeNotification(newScene(traceOp));
+        const scene = UiScene.createRW(traceOp);
         return (async () => {
             try {
                 return await scene.execute(undefined, cb, ...boundArgs, ...args);
             } catch (e) {
-                Widget.onUnhandledCallbackError(scene, e);
+                UiScene.onUnhandledCallbackError(scene, e);
                 return undefined;
             }
         })();
@@ -293,20 +289,12 @@ export type WidgetClass<T extends Widget = any> = Function & {
     new (props?: Record<string, any>): T;
 };
 
-function newScene(op: string | Operation) {
-    return new Scene({
-        database: Widget.database,
-        serviceProtocol: Widget.serviceProtocol,
-        operation: typeof op === 'string' ? newOperation(op) : op,
-    });
-}
-
 export function renderRootWidget(
     widgetClass: WidgetClass,
     options: { database: Database; serviceProtocol: ServiceProtocol },
 ) {
-    Widget.database = options.database;
-    Widget.serviceProtocol = options.serviceProtocol;
+    UiScene.database = options.database;
+    UiScene.serviceProtocol = options.serviceProtocol;
     const elem = document.getElementById('RootWidget');
     if (!elem) {
         console.error('missing element #RootWidget');
