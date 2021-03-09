@@ -3,6 +3,7 @@ import type { MethodsOf } from './MethodsOf';
 import type { GatewayClass } from './Gateway';
 import { uuid } from './uuid';
 import { useTrace } from './useTrace';
+import { ConstructorType } from './ConstructorType';
 
 const trace = useTrace(Symbol.for('Scene'));
 const reactive_trace = useTrace(Symbol.for('reactive'));
@@ -188,7 +189,7 @@ export class Scene {
         return new Proxy({}, { get }) as any;
     }
 
-    public insert<T>(table: Table<T>, props: Partial<T>): Promise<T> {
+    public insert<T>(table: Table<T>, props: Partial<ConstructorType<T>>): Promise<T> {
         this.assertExecuting();
         return this.database.insert(this, table, props) as any;
     }

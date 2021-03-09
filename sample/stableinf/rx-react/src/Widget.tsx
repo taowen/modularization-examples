@@ -244,6 +244,10 @@ export abstract class Widget<P = any> extends ReactiveObject {
         return super.shouldTrack(propertyKey);
     }
 
+    public toJSON() {
+        return { ...this, subscribed: undefined, futures: undefined }
+    }
+
     public get [Symbol.toStringTag]() {
         return `[W]${this.constructor.name} with ${JSON.stringify(this.props)}`
     }

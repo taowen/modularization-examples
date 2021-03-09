@@ -10,11 +10,9 @@ function $(scene: Scene) {
 let idGen = 1;
 
 export class BatchSaveCounterDemo extends Widget {
-    private localCounters: LocalCounter[] = [
-        new LocalCounter({ unsaved: `unsaved-${idGen++}`, count: 3 }),
-        new LocalCounter({ unsaved: `unsaved-${idGen++}`, count: 1 }),
-    ];
+    public readonly localCounters: LocalCounter[] = [];
     public onMount = async (scene: Scene) => {
+        this.localCounters.length = 0;
         const counters = await $(scene).queryCounters();
         for (const counter of counters) {
             this.localCounters.push(new LocalCounter(counter));
@@ -41,7 +39,9 @@ export class BatchSaveCounterDemo extends Widget {
     }
 
     public async batchSave(scene: Scene) {
-        console.log(JSON.stringify(this));
+        await $(scene).batchSave(this);
+        // 重新加载数据，以获得 id，要不然下次保存还是 insert 新记录
+        await this.onMount(scene);
     }
 }
 
@@ -49,7 +49,7 @@ type LocalCounterProps = Partial<Counter> & { unsaved?: string };
 
 class LocalCounter extends Widget<LocalCounterProps> {
     public readonly id: string;
-    private count: number;
+    public count: number;
     constructor(props: LocalCounterProps) {
         super(props);
         Object.assign(this, props);

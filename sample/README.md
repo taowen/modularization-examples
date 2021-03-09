@@ -43,7 +43,6 @@ Sell/Ui/ProductDetailsPage.js
 # TODO
 
 * 修复 demo：多点几次“重算一次”会没反应
-* 用全局变量收集日志
 * 提供一个基于 aws 的 cloud
 * io 中增加 association 提供关联关系的定义和遍历，attachTo scene
 * 给 service 声明 prefetch
