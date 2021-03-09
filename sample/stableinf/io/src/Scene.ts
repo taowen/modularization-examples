@@ -2,6 +2,10 @@ import { ActiveRecord, ActiveRecordClass } from './ActiveRecord';
 import type { MethodsOf } from './MethodsOf';
 import type { GatewayClass } from './Gateway';
 import { uuid } from './uuid';
+import { useTrace } from './useTrace';
+
+const trace = useTrace(Symbol.for('Scene'));
+const reactive_trace = useTrace(Symbol.for('reactive'));
 
 // trace -> operation -> scene
 // 一个 trace 会有多个进程被多次执行，每次执行是一个 operation（或者叫span）
@@ -48,12 +52,19 @@ export class SimpleAtom {
     private readonly subscribers = new Set<AtomSubscriber>();
 
     public addSubscriber(subscriber: AtomSubscriber) {
+        reactive_trace`addSubscriber: ${subscriber} subscribe ${this}`;
         this.subscribers.add(subscriber);
     }
     public deleteSubscriber(subscriber: AtomSubscriber) {
+        reactive_trace`deleteSubscriber: ${subscriber} unsubscribe ${this}`;
         this.subscribers.delete(subscriber);
     }
     public notifyChange(operation: Operation) {
+        if (this.subscribers.size === 0) {
+            reactive_trace`notifyChange: operation ${operation.traceOp} notify ${this} changed, but there is no subscriber`;
+            return;
+        }
+        reactive_trace`notify ${this} changed`;
         for (const subscriber of this.subscribers) {
             subscriber.notifyChange(operation);
         }
@@ -121,7 +132,10 @@ export class Scene {
         this.executing = (async () => {
             this.status = STATUS_EXECUTING;
             try {
-                return await task.call(theThis, this, ...args);
+                return await trace.execute(
+                    `operation ${this.operation.traceOp} scene.execute`,
+                    () => task.call(theThis, this, ...args),
+                );
             } finally {
                 this.executing = undefined;
                 this.status = STATUS_FINISHED;

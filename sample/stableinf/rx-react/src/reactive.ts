@@ -1,4 +1,6 @@
-import { Atom, SimpleAtom } from '@stableinf/io';
+import { Atom, Operation, SimpleAtom, useTrace } from '@stableinf/io';
+
+const trace = useTrace(Symbol.for('reative'));
 
 const mapMutatorMethods: PropertyKey[] = ['set', 'clear', 'delete'];
 const mapIteratorMethods: PropertyKey[] = ['keys', 'values', 'entries', Symbol.iterator];
@@ -29,7 +31,7 @@ export class Ref<T = any> extends SimpleAtom {
         this.value = newVal;
         (changeTracker || delegatesChnageTracker).notifyChange(this);
     }
-    
+
     public get(changeTracker?: { subscribe(atom: Atom): void }) {
         (changeTracker || delegatesChnageTracker).subscribe(this);
         return this.value;
@@ -62,6 +64,8 @@ export class ReactiveObject {
                 const returnValue = Reflect.set(target, propertyKey, value, receiver);
                 if (this.shouldTrack(propertyKey)) {
                     tracker.notifyChange(_this.atom(propertyKey));
+                } else {
+                    trace`proxy baseHandler ignored property set: ${propertyKey}`;
                 }
                 return returnValue;
             },
@@ -204,17 +208,22 @@ export class ReactiveObject {
 const delegatesChnageTracker: ChangeTracker = {
     subscribe(atom) {
         if (!reactive.currentChangeTracker) {
-            throw new Error('reactive.currentChangeTracker is undefined, can not read from reactive');
+            throw new Error(
+                'reactive.currentChangeTracker is undefined, can not read from reactive',
+            );
         }
         return reactive.currentChangeTracker.subscribe(atom);
     },
     notifyChange(atom) {
-        throw new Error('reactive() can not be modified before attachTo a change tracker')
-    }
-}
+        throw new Error('reactive() can not be modified before attachTo a change tracker');
+    },
+};
 
 class ReactiveProp extends SimpleAtom {
     constructor(public readonly propertyKey: PropertyKey) {
         super();
+    }
+    public get [Symbol.toStringTag]() {
+        return `[ReactiveProp]${this.propertyKey.toString()}`;
     }
 }

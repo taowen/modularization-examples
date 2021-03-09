@@ -10,3 +10,4 @@ import * as HttpX from './HttpX/HttpX';
 export { HttpX };
 export * from './Serverless/handleCall';
 export * from './Serverless/ServerlessClient';
+export * from './useTrace';

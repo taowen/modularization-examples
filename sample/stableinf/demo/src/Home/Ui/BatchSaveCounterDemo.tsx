@@ -1,4 +1,4 @@
-import { Scene } from '@stableinf/io';
+import { newOperation, Scene } from '@stableinf/io';
 import { renderWidget, Widget } from '@stableinf/rx-react';
 import * as React from 'react';
 import type { Counter } from '../Private/Counter';
@@ -14,7 +14,7 @@ export class BatchSaveCounterDemo extends Widget {
         new LocalCounter({ unsaved: `unsaved-${idGen++}`, count: 3 }),
         new LocalCounter({ unsaved: `unsaved-${idGen++}`, count: 1 }),
     ];
-    public async onMount(scene: Scene) {
+    public onMount = async (scene: Scene) => {
         const counters = await $(scene).queryCounters();
         for (const counter of counters) {
             this.localCounters.push(new LocalCounter(counter));
@@ -31,6 +31,7 @@ export class BatchSaveCounterDemo extends Widget {
                     ))}
                 </ul>
                 <button onClick={this.callback('addCounter')}>新建 counter</button>
+                <button onClick={this.callback('batchSave')}>保存</button>
             </div>
         );
     }
@@ -38,23 +39,35 @@ export class BatchSaveCounterDemo extends Widget {
     public addCounter() {
         this.localCounters.push(new LocalCounter({ unsaved: `unsaved-${idGen++}`, count: 0 }));
     }
+
+    public async batchSave(scene: Scene) {
+        console.log(JSON.stringify(this));
+    }
 }
 
 type LocalCounterProps = Partial<Counter> & { unsaved?: string };
 
 class LocalCounter extends Widget<LocalCounterProps> {
-    private value: number;
+    public readonly id: string;
+    private count: number;
     constructor(props: LocalCounterProps) {
         super(props);
-        this.value = props.count!;
+        Object.assign(this, props);
     }
     public render() {
         return (
             <li>
-                <button>-</button>
-                {this.value}
-                <button>+</button>
+                <button onClick={this.callback('decrement')}>-</button>
+                {this.count}
+                <button onClick={this.callback('increment')}>+</button>
             </li>
         );
+    }
+    public decrement() {
+        this.count--;
+        this.notifyChange(newOperation('hahah'))
+    }
+    public increment() {
+        this.count++;
     }
 }
