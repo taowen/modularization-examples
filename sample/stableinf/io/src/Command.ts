@@ -1,5 +1,4 @@
-import type { ConstructorType } from "./ConstructorType";
-import { Scene } from "./Scene";
+import type { ConstructorType, Scene } from "./Scene";
 
 // 封装写操作，进行业务规则校验
 export abstract class Command {

@@ -1,6 +1,5 @@
 import { call, Command } from './Command';
-import type { ConstructorType } from './ConstructorType';
-import type { MethodsOf } from './MethodsOf';
+import type { ConstructorType, MethodsOf } from './Scene';
 import { AtomSubscriber, Operation, Scene, Table } from './Scene';
 
 // 数据库表
