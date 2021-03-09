@@ -1,0 +1,1 @@
+![mindmap](./mindmap.drawio.svg)
