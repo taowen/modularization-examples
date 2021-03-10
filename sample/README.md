@@ -43,7 +43,6 @@ Sell/Ui/ProductDetailsPage.js
 # TODO
 
 * 提供一个基于 aws 的 cloud
-* 简化 callbackTracker
 * io 中增加 association 提供关联关系的定义和遍历，attachTo scene
 * 给 service 声明 prefetch
 * 拆分 rx-core 和 rx-react

@@ -1,10 +1,18 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Suspense } from 'react';
-import { Database, Operation, ServiceProtocol, Scene, newOperation, Atom, useTrace } from '@stableinf/io';
+import {
+    Database,
+    Operation,
+    ServiceProtocol,
+    Scene,
+    newOperation,
+    Atom,
+    useTrace,
+} from '@stableinf/io';
 import { Future } from './Future';
 import { currentOperation, runInOperation } from './Operation';
-import { reactive, ReactiveObject } from './reactive';
+import { reactive, ReactiveObject, Ref } from './reactive';
 import { UiScene } from './UiScene';
 
 const trace = useTrace(Symbol.for('Widget'));
@@ -45,8 +53,7 @@ export abstract class Widget<P = any> extends ReactiveObject {
     // 声明一份对外部状态的依赖，async 计算过程中的所有读到的表（含RPC服务端读的表）都会被收集到依赖关系里
     // 不同于 vue 和 mobx 的细粒度状态订阅，这里实现的订阅是表级别的，而不是行级别的
     // 也就是一张表中的任意新增删除修改，都会触发所有订阅者的刷新
-    // @internal
-    public subscribe<T>(compute: (scene: Scene) => Promise<T>): T {
+    protected subscribe<T>(compute: (scene: Scene) => Promise<T>): T {
         return new Future(compute, this) as any;
     }
 
@@ -102,10 +109,27 @@ export abstract class Widget<P = any> extends ReactiveObject {
             atom.deleteSubscriber(this);
         }
         this.syncDeps.clear();
-        const scene = UiScene.createRW(`unMount ${this.constructor.name}`);
         if (this.onUnmount) {
-            scene.execute(this, this.onUnmount);
+            UiScene.createRW(`unMount ${this.constructor.name}`).execute(this, this.onUnmount);
         }
+    }
+
+    protected isExecuting<M extends keyof this>(methodName: M): boolean {
+        const isExecuting = new Ref(false);
+        const method = Reflect.get(this, methodName);
+        Reflect.set(this, methodName, async function(this: any, scene: Scene, ...args: any) {
+            isExecuting.set(true, scene);
+            await scene.sleep(0);
+            try {
+                return method.call(this, scene, ...args);
+            } finally {
+                isExecuting.set(false, scene);
+            }
+        })
+        const future = this.subscribe(async (scene) => {
+            return isExecuting.get(scene);
+        }) as any;
+        return future;
     }
 
     protected callback<M extends keyof this>(methodName: M): OmitOneArg<this[M]>;
@@ -134,7 +158,10 @@ export abstract class Widget<P = any> extends ReactiveObject {
     // 以下是 react 的黑魔法，看不懂是正常的
     // 实际交给 react 执行的组件是下面这个函数，它屏蔽了异步 I/O，使得 this.render 只需要处理同步的渲染
     // @internal
-    public static reactComponent(widgetClass: WidgetClass, props: Record<string, any>): React.ReactElement {
+    public static reactComponent(
+        widgetClass: WidgetClass,
+        props: Record<string, any>,
+    ): React.ReactElement {
         return trace.execute('render reactComponent', () => {
             // 我们没有把状态存在 react 的体系内，而是完全外置的状态
             // 并不打算支持 react concurrent，也绝对会有 tearing 的问题，don't care
@@ -168,39 +195,42 @@ export abstract class Widget<P = any> extends ReactiveObject {
             trace`isReady: ${isReady}`;
             // 无论是否要渲染，setupHooks 都必须执行，react 要求 hooks 数量永远不变
             const hooks = widget.setupHooks();
-            React.useEffect(trace.wrap('mount reactComponent', () => {
-                trace`widget: ${widget}`;
-                // mount 之后触发外部状态的获取
-                if (widget.unmounted) {
-                    widget.unmounted = false;
-                    trace`reset widget unmounted flag`;
-                }
-                trace`needMountAsync: ${widget.needMountAsync}`;
-                if (widget.needMountAsync) {
-                    const promise = (async () => {
-                        try {
-                            await widget.mount(initialRenderOp);
-                            // 如果数据获取成功则开始真正渲染
-                            if (!widget.unmounted) {
+            React.useEffect(
+                trace.wrap('mount reactComponent', () => {
+                    trace`widget: ${widget}`;
+                    // mount 之后触发外部状态的获取
+                    if (widget.unmounted) {
+                        widget.unmounted = false;
+                        trace`reset widget unmounted flag`;
+                    }
+                    trace`needMountAsync: ${widget.needMountAsync}`;
+                    if (widget.needMountAsync) {
+                        const promise = (async () => {
+                            try {
+                                await widget.mount(initialRenderOp);
+                                // 如果数据获取成功则开始真正渲染
+                                if (!widget.unmounted) {
+                                    runInOperation(initialRenderOp, () => {
+                                        setReady(true);
+                                    });
+                                }
+                            } catch (e) {
+                                // 否则把异常设置到 state 里，下面 throw isReady 的时候抛给父组件
                                 runInOperation(initialRenderOp, () => {
-                                    setReady(true);
+                                    setReady(e);
                                 });
                             }
-                        } catch (e) {
-                            // 否则把异常设置到 state 里，下面 throw isReady 的时候抛给父组件
-                            runInOperation(initialRenderOp, () => {
-                                setReady(e);
-                            });
-                        }
-                    })();
-                    setReady(promise);
-                }
-                // 此处返回的回调会在 unmount 的时候调用
-                return trace.wrap('unmount reactComponent', () => {
-                    trace`widget: ${widget}`;
-                    widget.unmount();
-                });
-            }), []); // [] 表示该 Effect 仅执行一次，也就是 mount/unmount
+                        })();
+                        setReady(promise);
+                    }
+                    // 此处返回的回调会在 unmount 的时候调用
+                    return trace.wrap('unmount reactComponent', () => {
+                        trace`widget: ${widget}`;
+                        widget.unmount();
+                    });
+                }),
+                [],
+            ); // [] 表示该 Effect 仅执行一次，也就是 mount/unmount
             // react 组件处于 false => 初始化中 => true 三种状态之一
             if (isReady === true) {
                 if (isForceRender) {
@@ -230,7 +260,7 @@ export abstract class Widget<P = any> extends ReactiveObject {
                 // 把 loading 或者 loadFailed 往父组件抛，被 <Suspense> 或者 <ErrorBoundary> 给抓住
                 throw isReady;
             }
-        })
+        });
     }
 
     protected shouldTrack(propertyKey: PropertyKey) {
@@ -241,11 +271,11 @@ export abstract class Widget<P = any> extends ReactiveObject {
     }
 
     public toJSON() {
-        return { ...this, subscribed: undefined, futures: undefined }
+        return { ...this, subscribed: undefined, futures: undefined };
     }
 
     public get [Symbol.toStringTag]() {
-        return `[W]${this.constructor.name} with ${JSON.stringify(this.props)}`
+        return `[W]${this.constructor.name} with ${JSON.stringify(this.props)}`;
     }
 }
 

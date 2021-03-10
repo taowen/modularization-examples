@@ -1,5 +1,5 @@
-import { Atom, Operation, Scene } from '@stableinf/io';
-import { Widget } from './Widget';
+import type { Atom, Operation, Scene } from '@stableinf/io';
+import type { Widget } from './Widget';
 
 // Future 是一个 async 计算流程，通过 scene 访问 I/O，从而对所访问的 table 进行订阅
 export class Future<T = any> {
