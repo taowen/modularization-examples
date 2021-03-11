@@ -1,6 +1,9 @@
-const SERVERLESS = { functions: {} }; $sharedLayer
+const SERVERLESS = { functions: {} }; 
 
-SERVERLESS.routes = $routes;
+global.SERVERLESS = SERVERLESS;
+require(process.argv[2]);
+
+SERVERLESS.routes = require(process.argv[3]);
 
 const http = require('http');
 startServer();

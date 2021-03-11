@@ -11,6 +11,7 @@ export interface Serverless {
 
 export interface ApiGateway {
     createRoute(options: {
+        projectPackageName: string,
         path: string;
         httpMethod: string;
         // reference Serverless function

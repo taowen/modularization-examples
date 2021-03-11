@@ -7,7 +7,7 @@ export class Project {
     private readonly knownPackageNames = new Set<string>();
     public subscribePath = (filePath: string): void => {}
     
-    constructor(private readonly projectPackageName: string) {
+    constructor(public readonly projectPackageName: string) {
         const packageJsonPath = require.resolve(`${this.projectPackageName}/package.json`);
         this.projectDir = path.dirname(packageJsonPath);
         const packageJson = require(`${this.projectPackageName}/package.json`);

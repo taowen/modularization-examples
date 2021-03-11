@@ -1,9 +1,7 @@
 import { ActiveRecord, ActiveRecordClass } from './ActiveRecord';
-import type { MethodsOf } from './MethodsOf';
 import type { GatewayClass } from './Gateway';
 import { uuid } from './uuid';
 import { useTrace } from './useTrace';
-import { ConstructorType } from './ConstructorType';
 
 const trace = useTrace(Symbol.for('Scene'));
 const reactive_trace = useTrace(Symbol.for('reactive'));
@@ -130,6 +128,9 @@ export class Scene {
         task: T,
         ...args: Parameters<OmitFirstArg<T>>
     ): ReturnType<T> {
+        if (!task) {
+            throw new Error('task is undefined');
+        }
         this.executing = (async () => {
             this.status = STATUS_EXECUTING;
             try {

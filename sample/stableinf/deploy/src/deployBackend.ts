@@ -12,7 +12,7 @@ export async function deployBackend(cloud: Cloud, project: Project) {
         result = await result.rebuild();
     } else {
         result = await (esbuild.build({
-            sourcemap: false,
+            sourcemap: 'inline',
             keepNames: true,
             bundle: true,
             entryPoints: ['serverlessFunctions.js'],
@@ -31,6 +31,7 @@ export async function deployBackend(cloud: Cloud, project: Project) {
     await cloud.serverless.createSharedLayer(result.outputFiles[0].text);
     await cloud.serverless.createFunction('handleBatchCall');
     await cloud.apiGateway.createRoute({
+        projectPackageName: project.projectPackageName,
         path: '/batchCall',
         httpMethod: 'POST',
         functionName: 'handleBatchCall',

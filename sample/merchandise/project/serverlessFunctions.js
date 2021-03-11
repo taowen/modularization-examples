@@ -8,7 +8,7 @@ SERVERLESS.sceneConf = {
 };
 if (SERVERLESS.insertTestData) {
     const scene = new Scene({...SERVERLESS.sceneConf, operation: newOperation('initTestData')});
-    SERVERLESS.insertTestData(scene);
+    scene.execute(undefined, SERVERLESS.insertTestData);
 }
 require('@motherboard/Sell/Private/Product');
 require('@motherboard/Sell/Private/UnpublishProducts');

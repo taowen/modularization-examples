@@ -18,7 +18,7 @@ SERVERLESS.sceneConf = {
 };
 if (SERVERLESS.insertTestData) {
     const scene = new Scene({...SERVERLESS.sceneConf, operation: newOperation('initTestData')});
-    scene.execute(SERVERLESS.insertTestData);
+    scene.execute(undefined, SERVERLESS.insertTestData);
 }`,
     ];
     for (const qualifiedName of listBackendQualifiedNames(project)) {
