@@ -16,12 +16,18 @@ export class ProductDetailsPage extends Widget {
     );
   }
 
-  // 留给 ordinary-product 去实现
+  /** 
+   * 留给 ordinary-product 去实现
+   * @virtual
+   */
   public renderProductBasics() {
     return <></>;
   }
 
-  // 留给 xszk-promotion 去实现
+  /** 
+   * 留给 xszk-promotion 去实现
+   * @virtual
+   */
   public renderXszk() {
     return <></>;
   }

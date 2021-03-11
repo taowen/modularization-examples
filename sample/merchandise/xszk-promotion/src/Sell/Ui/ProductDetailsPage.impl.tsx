@@ -1,4 +1,4 @@
-import { override, Scene } from '@stableinf/io';
+import { Scene } from '@stableinf/io';
 import * as React from 'react';
 import { ProductDetailsPage as INF } from '@motherboard/Sell/Ui/ProductDetailsPage';
 import { XszkPromotion } from '../Private/XszkPromotion';
@@ -13,7 +13,7 @@ export class ProductDetailsPage extends INF {
         return await $(scene).listActiveXszkPromotions();
     });
 
-    @override
+    /** @override */
     public renderXszk() {
         for (const promotion of this.activeXszkPromotions) {
             if (promotion.targetProductName === this.props.productName) {

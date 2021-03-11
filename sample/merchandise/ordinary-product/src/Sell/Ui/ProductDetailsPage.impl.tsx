@@ -1,4 +1,4 @@
-import { override, Scene } from '@stableinf/io';
+import { Scene } from '@stableinf/io';
 import * as React from 'react';
 import { ProductDetailsPage as INF } from '@motherboard/Sell/Ui/ProductDetailsPage';
 import type { Product } from '../Private/Product';
@@ -13,7 +13,7 @@ export class ProductDetailsPage extends INF {
         return await $(scene).loadProduct({ name: this.props.productName });
     });
 
-    @override
+    /** @override */
     public renderProductBasics() {
         return <div>product name: {this.theProduct.name}</div>;
     }

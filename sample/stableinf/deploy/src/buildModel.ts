@@ -194,8 +194,14 @@ function mergeClassDecls(
                 continue;
             }
             if (babel.isIdentifier(member.key)) {
-                if (methods.has(member.key.name) && !hasOverrideDecorator(member)) {
-                    throw new Error('must decorate method with @override to implement interface');
+                const baseMethod = methods.get(member.key.name);
+                if (baseMethod) {
+                    if (!hasVirtualTag(baseMethod)) {
+                        throw new Error(`must use @virtual tsdoc comment to mark a method as interface: ${member.key.name}`);
+                    }
+                    if (!hasOverrideTag(member)) {
+                        throw new Error(`must use @override tsdoc comment to implement virtual method: ${member.key.name}`);
+                    }
                 }
                 methods.set(member.key.name, { ...member, decorators: [] });
             } else {
@@ -209,12 +215,24 @@ function mergeClassDecls(
     };
 }
 
-function hasOverrideDecorator(method: babel.ClassMethod) {
-    if (!method.decorators) {
+function hasOverrideTag(method: babel.ClassMethod) {
+    if (!method.leadingComments) {
         return false;
     }
-    for (const decorator of method.decorators) {
-        if (babel.isIdentifier(decorator.expression) && decorator.expression.name === 'override') {
+    for (const comment of method.leadingComments) {
+        if (comment.value.includes('@override')) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function hasVirtualTag(method: babel.ClassMethod) {
+    if (!method.leadingComments) {
+        return false;
+    }
+    for (const comment of method.leadingComments) {
+        if (comment.value.includes('@virtual')) {
             return true;
         }
     }
