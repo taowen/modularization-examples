@@ -38,3 +38,11 @@
 具体如何实践 Monorepo + Feature Toggle 按照 https://www.branchbyabstraction.com/ 和 https://trunkbaseddevelopment.com/ 的指导去做就可以了。
 
 # 第二步：管控集成类需求的代码审查
+
+当我们把代码都放一个代码仓库里之后，立即要面临的问题是代码不会写乱么？你怎么控制什么代码写在哪里？每一行代码写之前都来问你，每一行代码写完了都需要你来 Review 么？
+
+所以，我们需要一种强制检查代码写在了正确的位置的自动化机制。这个机制就叫“依赖管理”。对应常见的编程语言
+
+* 如果是 TypeScript，这个叫 package.json
+* 如果是 Golang，这个叫 go.mod
+* 如果是 Java，这个叫 POM.xml
