@@ -34,3 +34,5 @@
 * 可以更容易实现开发时辅助和检查工具，可以很方便地阅读跨模块的代码
 * 变更风险更小，不仅仅开关回滚很快，而且开关可以灵活地定向灰度，而且一个开关的控制范围大小也可大可小，粒度非常灵活。
 * 弹性边界更灵活，不需要因为要独立扩缩容，就得把代码切分出去
+
+具体如何实践 Monorepo + Feature Toggle 按照 https://www.branchbyabstraction.com/ 和 https://trunkbaseddevelopment.com/ 的指导去做就可以了。
