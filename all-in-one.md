@@ -48,3 +48,7 @@
 * 如果是 TypeScript，这个叫 package.json
 * 如果是 Golang，这个叫 go.mod
 * 如果是 Java，这个叫 POM.xml
+
+当我们把代码拆分成多个包（或者叫模块），并使得这些包（模块）形成特定的依赖关系，就可以通过编译器检查控制什么代码必须写在什么地方，从而不需要靠人去检查。这个依赖关系如下图所示
+
+![motherboard](docs/Part1/InformationHiding/Motherboard-2.drawio.svg)
