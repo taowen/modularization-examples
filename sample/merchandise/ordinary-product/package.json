@@ -1,9 +1,0 @@
-{
-    "version": "0.0.1",
-    "private": true,
-    "name": "@merchandise/ordinary-product",
-    "dependencies": {
-        "@stableinf/io": "0.0.1",
-        "@merchandise/motherboard": "0.0.1"
-    }
-}
