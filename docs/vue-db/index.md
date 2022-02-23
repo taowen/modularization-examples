@@ -2,7 +2,7 @@
 layout: default
 title: vue-db
 titleLink: https://github.com/taowen/vue-db
-description: Vue 3 data binding, within 500 lines of code
+description: Get rid of as many mutable state as possible
 ---
 
 ## About
