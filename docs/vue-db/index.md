@@ -7,9 +7,9 @@ description: Vue 3 data binding, within 500 lines of code
 
 ## About
 
-[vue-db](https://github.com/taowen/vue-db/tree/main/packages/vue-db/src/index.ts) unleash [vue 3 reactivity system](https://vuejs.org/api/reactivity-core.html) full potential
+Oh, no, not another state management library! Other state management library encourages you to maintain more state, vue-db does the opposite. The sole goal of [vue-db](https://github.com/taowen/vue-db/tree/main/packages/vue-db/src/index.ts) is to unleash [vue 3 reactivity system](https://vuejs.org/api/reactivity-core.html) full potential to get rid of as many mutable state as possible
 
-* cross component data sync, such as form
+* direct cross component data sync, such as form
 * javascript based animation without cost of vue reconciliation
 * load data from backend and keeping it up to date
 * server side rendering (SSR) data fetching
