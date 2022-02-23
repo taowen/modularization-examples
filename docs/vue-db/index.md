@@ -2,12 +2,12 @@
 layout: default
 title: vue-db
 titleLink: https://github.com/taowen/vue-db
-description: Get rid of as many mutable state as possible
+description: Get rid of as many mutable states as possible
 ---
 
 ## About
 
-The sole goal of [vue-db](https://github.com/taowen/vue-db/tree/main/packages/vue-db/src/index.ts) is to unleash [vue 3 reactivity system](https://vuejs.org/api/reactivity-core.html) full potential to get rid of as many mutable state as possible. When other state management library encrouages maintaining a separate copy of data store, vue-db tries to do the opposite.
+The sole goal of [vue-db](https://github.com/taowen/vue-db/tree/main/packages/vue-db/src/index.ts) is to unleash [vue 3 reactivity system](https://vuejs.org/api/reactivity-core.html) full potential to get rid of as many mutable states as possible. When other state management library encrouages maintaining a separate copy of data store, vue-db tries to do the opposite.
 
 * direct cross component data sync, such as form
 * load data from backend and keeping it up to date
