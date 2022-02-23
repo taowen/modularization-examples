@@ -1,8 +1,12 @@
-# vue-db
+---
+layout: default
+title: vue-db
+description: Vue 3 data binding, within 500 lines of code
+---
 
-Vue 3 data binding, within [**500**](https://github.com/taowen/vue-db/tree/main/packages/vue-db/src/index.ts) lines of code
+## About
 
-Majority of the work is done by [vue 3 reactivity system](https://vuejs.org/api/reactivity-core.html), vue-db just unleash its full potential
+[vue-db](https://github.com/taowen/vue-db/tree/main/packages/vue-db/src/index.ts) unleash [vue 3 reactivity system](https://vuejs.org/api/reactivity-core.html) full potential
 
 * cross component data sync, such as form
 * javascript based animation without cost of vue reconciliation
