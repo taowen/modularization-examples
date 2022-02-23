@@ -1,21 +1,21 @@
 ---
 layout: default
 title: vue-db
-url: https://github.com/taowen/vue-db
+titleLink: https://github.com/taowen/vue-db
 description: Vue 3 data binding, within 500 lines of code
 ---
 
 ## About
 
-Oh, no, not another state management library! Other state management library encourages you to maintain more state, vue-db does the opposite. The sole goal of [vue-db](https://github.com/taowen/vue-db/tree/main/packages/vue-db/src/index.ts) is to unleash [vue 3 reactivity system](https://vuejs.org/api/reactivity-core.html) full potential to get rid of as many mutable state as possible
+The sole goal of [vue-db](https://github.com/taowen/vue-db/tree/main/packages/vue-db/src/index.ts) is to unleash [vue 3 reactivity system](https://vuejs.org/api/reactivity-core.html) full potential to get rid of as many mutable state as possible. When other state management library encrouages maintaining a separate copy of data store, vue-db tries to do the opposite.
 
 * direct cross component data sync, such as form
-* javascript based animation without cost of vue reconciliation
 * load data from backend and keeping it up to date
 * server side rendering (SSR) data fetching
 * type-safe RPC with graph query opt-in
+* javascript based animation without cost of vdom reconciliation
 
-It looks like a lot, but it is a tiny library only depending on vue
+It looks like a lot, but it is a 500 line library only depending on vue
 
 ## Form
 
@@ -33,16 +33,6 @@ Checkout following examples
 | [flat form](https://github.com/taowen/vue-db/tree/main/packages/demo-flat-form) | [flat form](https://autonomy.design/vue-db/demo-flat-form) | `vdb.walk` to dump form state |
 | [nested form](https://github.com/taowen/vue-db/tree/main/packages/demo-nested-form) | [nested form](https://autonomy.design/vue-db/demo-nested-form) | `vdb.load` with $parent allowing multiple form instances |
 | [todo list](https://github.com/taowen/vue-db/tree/main/packages/demo-todo-local) | [todo list](https://autonomy.design/vue-db/demo-todo-local) | `vdb.waitNextTick` to add new todo item |
-
-
-## Animation
-
-Animate with vue reconciliation is slow. CSS animation is feature limited. There are times (such as spring animation) we need javascript based animation.
-vue-db serves as a data binding tool between computed property and DOM element attributes. Unlike normal vue computed property, here we bypass vue re-rendering to meet the frame rate target.
-
-| code | live | demo |
-| --- | --- | --- |
-| [animation](https://github.com/taowen/vue-db/tree/main/packages/demo-animation) | [animation](https://autonomy.design/vue-db/demo-animation) | `vdb.animate` to bind animated props to html element |
 
 ## Async data binding
 
@@ -86,3 +76,12 @@ Checkout following examples
 | code | live | demo |
 | --- | --- | --- |
 | [nested resource](https://github.com/taowen/vue-db/tree/main/packages/demo-nested-resource) | [nested resource](https://autonomy.design/vue-db/demo-nested-resource) | `vdb.defineResource` refer other resource |
+
+## Animation
+
+Animate with vue reconciliation is slow. CSS animation is feature limited. There are times (such as spring animation) we need javascript based animation.
+vue-db serves as a data binding tool between computed property and DOM element attributes. Unlike normal vue computed property, here we bypass vue re-rendering to meet the frame rate target.
+
+| code | live | demo |
+| --- | --- | --- |
+| [animation](https://github.com/taowen/vue-db/tree/main/packages/demo-animation) | [animation](https://autonomy.design/vue-db/demo-animation) | `vdb.animate` to bind animated props to html element |
