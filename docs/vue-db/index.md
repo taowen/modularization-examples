@@ -1,6 +1,7 @@
 ---
 layout: default
 title: vue-db
+url: https://github.com/taowen/vue-db
 description: Vue 3 data binding, within 500 lines of code
 ---
 
@@ -22,26 +23,26 @@ Instead of using https://vuex.vuejs.org/ to hold the state, vue-db use the vue c
 
 * user type inputs into the form components through ui
 * in computed property, use `vdb.load` or `vdb.query` to locate the data source and keep data in sync
-* when submit, use `vdb.walk` to walk component tree to dump the form state out
+* when submit, use `vdb.walk` to dump the form state out and show validation error back
 
 Checkout following examples
 
 | code | live | demo | 
 | --- | --- | --- |
-| [counter](https://github.com/taowen/vue-db/tree/main/packages/demo-counter) | [counter](https://vue-db.js.org/demo-counter) | `vdb.load` with $root from current page |
-| [flat form](https://github.com/taowen/vue-db/tree/main/packages/demo-flat-form) | [flat form](https://vue-db.js.org/demo-flat-form) | `vdb.walk` to dump form state |
-| [nested form](https://github.com/taowen/vue-db/tree/main/packages/demo-nested-form) | [nested form](https://vue-db.js.org/demo-nested-form) | `vdb.load` with $parent allowing multiple form instances |
-| [todo list](https://github.com/taowen/vue-db/tree/main/packages/demo-todo-local) | [todo list](https://vue-db.js.org/demo-todo-local) | `vdb.waitNextTick` to add new todo item |
+| [counter](https://github.com/taowen/vue-db/tree/main/packages/demo-counter) | [counter](https://autonomy.design/vue-db/demo-counter) | `vdb.load` with $root from current page |
+| [flat form](https://github.com/taowen/vue-db/tree/main/packages/demo-flat-form) | [flat form](https://autonomy.design/vue-db/demo-flat-form) | `vdb.walk` to dump form state |
+| [nested form](https://github.com/taowen/vue-db/tree/main/packages/demo-nested-form) | [nested form](https://autonomy.design/vue-db/demo-nested-form) | `vdb.load` with $parent allowing multiple form instances |
+| [todo list](https://github.com/taowen/vue-db/tree/main/packages/demo-todo-local) | [todo list](https://autonomy.design/vue-db/demo-todo-local) | `vdb.waitNextTick` to add new todo item |
 
 
 ## Animation
 
-Animate with vue reconciliation is slow. CSS animation is feature limited. There are times we need to update the DOM element directly without triggering vue to re-render.
-vue-db serves as a data binding tool between computed property and DOM element attributes.
+Animate with vue reconciliation is slow. CSS animation is feature limited. There are times (such as spring animation) we need javascript based animation.
+vue-db serves as a data binding tool between computed property and DOM element attributes. Unlike normal vue computed property, here we bypass vue re-rendering to meet the frame rate target.
 
 | code | live | demo |
 | --- | --- | --- |
-| [animation](https://github.com/taowen/vue-db/tree/main/packages/demo-animation) | [animation](https://vue-db.js.org/demo-animation) | `vdb.animate` to bind animated props to html element |
+| [animation](https://github.com/taowen/vue-db/tree/main/packages/demo-animation) | [animation](https://autonomy.design/vue-db/demo-animation) | `vdb.animate` to bind animated props to html element |
 
 ## Async data binding
 
@@ -58,7 +59,7 @@ Checkout following examples
 
 | code | live | demo |
 | --- | --- | --- |
-| todo [client](https://github.com/taowen/vue-db/tree/main/packages/demo-todo-client) [server](https://github.com/taowen/vue-db/tree/main/packages/demo-todo-server) | todo [client](https://vue-db.js.org/demo-todo-client) server | `vdb.defineResource` and `vdb.defineCommand` to bind with backend data |
+| todo [client](https://github.com/taowen/vue-db/tree/main/packages/demo-todo-client) [server](https://github.com/taowen/vue-db/tree/main/packages/demo-todo-server) | todo [client](https://autonomy.design/vue-db/demo-todo-client) server | `vdb.defineResource` and `vdb.defineCommand` to bind with backend data |
 
 ## SSR
 
@@ -74,7 +75,7 @@ Checkout following examples
 | code | live | demo |
 | --- | --- | --- |
 | [static page](https://github.com/taowen/vue-db/tree/main/packages/demo-static-page) | static page | renderToString in node with async data provided by `vdb.query` |
-| [server side render](https://github.com/taowen/vue-db/tree/main/packages/demo-server-side-render) | [server side render](https://vue-db.js.org/demo-server-side-render) | async data `vdb.query` in server side, then hydrated in client side |
+| [server side render](https://github.com/taowen/vue-db/tree/main/packages/demo-server-side-render) | [server side render](https://autonomy.design/vue-db/demo-server-side-render) | async data `vdb.query` in server side, then hydrated in client side |
 
 ## Type-safe RPC
 
@@ -84,4 +85,4 @@ Checkout following examples
 
 | code | live | demo |
 | --- | --- | --- |
-| [nested resource](https://github.com/taowen/vue-db/tree/main/packages/demo-nested-resource) | [nested resource](https://vue-db.js.org/demo-nested-resource) | `vdb.defineResource` refer other resource |
+| [nested resource](https://github.com/taowen/vue-db/tree/main/packages/demo-nested-resource) | [nested resource](https://autonomy.design/vue-db/demo-nested-resource) | `vdb.defineResource` refer other resource |
