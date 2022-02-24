@@ -11,11 +11,16 @@ The sole goal of [vue-db](https://github.com/taowen/vue-db/tree/main/packages/vu
 
 * direct cross component data sync, such as form
 * load data from backend and keeping it up to date
-* server side rendering (SSR) data fetching
 * type-safe RPC with graph query opt-in
-* javascript based animation without cost of vdom reconciliation
+* server side rendering (SSR) data fetching
 
-It looks like a lot, but it is a 500 line library only depending on vue
+It looks like a lot, but it is a 500 line library only depending on vue. Install it via `npm install vue-db`, then register to vue app
+
+```ts
+import * as vdb from 'vue-db'
+
+app.use(vdb);
+```
 
 ## Form
 
@@ -51,6 +56,16 @@ Checkout following examples
 | --- | --- | --- |
 | todo [client](https://github.com/taowen/vue-db/tree/main/packages/demo-todo-client) [server](https://github.com/taowen/vue-db/tree/main/packages/demo-todo-server) | todo [client](https://autonomy.design/vue-db/demo-todo-client) server | `vdb.defineResource` and `vdb.defineCommand` to bind with backend data |
 
+## Type-safe RPC
+
+If both server and client are written in typescript, the `.d.ts` file can be used as type-safe RPC data schema. vue-db allow you to `import type` and hand-write a RPC stub with very little code, instead of resorting to full blown code generation solution. Also `vdb.defineResource` support declaring nested resource, allow client to query for a object graph in one RPC roundtrip. However, the wire-protocol and server side implementation is excluded from the scope. vue-db is just a tiny library depending only on vue 3, it will not enforce a server/client framework to you.
+
+Checkout following examples 
+
+| code | live | demo |
+| --- | --- | --- |
+| [nested resource](https://github.com/taowen/vue-db/tree/main/packages/demo-nested-resource) | [nested resource](https://autonomy.design/vue-db/demo-nested-resource) | `vdb.defineResource` refer other resource |
+
 ## SSR
 
 Fetching initial data for server side rendering is a hard job. It normally requires you to extract out async data dependency into a central place, which makes CSR and SSR code different. vue-db aims to making same component code run in both client and server. You no longer need to lift the data fetching logic to page level, every component can declare its own async data dependency.
@@ -66,22 +81,3 @@ Checkout following examples
 | --- | --- | --- |
 | [static page](https://github.com/taowen/vue-db/tree/main/packages/demo-static-page) | static page | renderToString in node with async data provided by `vdb.query` |
 | [server side render](https://github.com/taowen/vue-db/tree/main/packages/demo-server-side-render) | [server side render](https://autonomy.design/vue-db/demo-server-side-render) | async data `vdb.query` in server side, then hydrated in client side |
-
-## Type-safe RPC
-
-If both server and client are written in typescript, the `.d.ts` file can be used as type-safe RPC data schema. vue-db allow you to `import type` and hand-write a RPC stub with very little code, instead of resorting to full blown code generation solution. Also `vdb.defineResource` support declaring nested resource, allow client to query for a object graph in one RPC roundtrip. However, the wire-protocol and server side implementation is excluded from the scope. vue-db is just a tiny library depending only on vue 3, it will not enforce a server/client framework to you.
-
-Checkout following examples 
-
-| code | live | demo |
-| --- | --- | --- |
-| [nested resource](https://github.com/taowen/vue-db/tree/main/packages/demo-nested-resource) | [nested resource](https://autonomy.design/vue-db/demo-nested-resource) | `vdb.defineResource` refer other resource |
-
-## Animation
-
-Animate with vue reconciliation is slow. CSS animation is feature limited. There are times (such as spring animation) we need javascript based animation.
-vue-db serves as a data binding tool between computed property and DOM element attributes. Unlike normal vue computed property, here we bypass vue re-rendering to meet the frame rate target.
-
-| code | live | demo |
-| --- | --- | --- |
-| [animation](https://github.com/taowen/vue-db/tree/main/packages/demo-animation) | [animation](https://autonomy.design/vue-db/demo-animation) | `vdb.animate` to bind animated props to html element |
