@@ -73,7 +73,9 @@ Fetching initial data for server side rendering is a hard job. It normally requi
 * async data fetched in server side
 * intercept component `render` function to dehydrate the state into `data-dehydrated` attribute of rendered html element
 * client side got the html and start hydration
-* in client component `beforeMount` lifecycle hook, read `data-dehydrated` and set state into component data
+* define component `beforeMount` lifecycle hook, read `data-dehydrated` and set state into component data
+
+vue-db can work with any SSR framework, we recommend [vue-fusion](https://github.com/taowen/vue-fusion)
 
 Checkout following examples 
 
