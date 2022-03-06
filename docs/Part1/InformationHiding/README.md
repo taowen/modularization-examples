@@ -132,3 +132,11 @@ David Parnas 在 1971 年就写了 [On the Criteria To Be Used in Decomposing Sy
 ![Motherboard-2](./Motherboard-2.drawio.svg)
 
 如上图所示的“信息隐藏”的做法，其实质是为了“代码防腐”。在这样的依赖关系下，插件的 Git 仓库是不会造成全局的影响的。这样我们就可以放心的把新人分配去写一个独立的插件，而不用担心其设计选择造成大面积的代码腐化。Code Review 仅需要集中关照主板。并且评价“高内聚低耦合”的标准也可以用主板的代码行数进行量化（在完成需求的前提下，主板的代码行数越少就是越好）。
+
+## 编译期组装主板和插件的实现方案
+
+不同的语言和编译工具链，实现方案会有所不同
+
+* TypeScript + Vite: https://github.com/taowen/vite-ioc-demo/
+* TypeScript + NPM: https://github.com/taowen/npm-ioc-demo/
+* TODO: 补充更多的语言和编译工具链的实现方案
