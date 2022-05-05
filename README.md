@@ -32,3 +32,7 @@
 * [Part.1 代码防腐](./docs/Part1/README.md)
 * [Part.2 只对自己写的代码负责](./docs/Part2/README.md)
 * [Part.3 突出大逻辑，隐藏小细节](./docs/Part3/README.md)
+
+# RSS 订阅【每日阅读】
+
+https://github.com/taowen/modularization-examples/commits.atom
